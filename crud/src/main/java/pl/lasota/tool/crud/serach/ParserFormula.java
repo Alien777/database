@@ -1,30 +1,21 @@
 package pl.lasota.tool.crud.serach;
 
 import java.text.NumberFormat;
-import java.text.ParseException;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-public class ParserFormula {
+public class ParserFormula implements Parser<String, List<Field>> {
 
     private final static Pattern NUMBER_PATTERN = Pattern.compile("-?\\d+(\\.\\d+)?");
 
-    private static boolean test(String s) {
-        Optional<String> first = Arrays.stream(PredictionType.values()).map(Enum::toString).filter(new Predicate<String>() {
-            @Override
-            public boolean test(String s1) {
-                return s1.equals(s);
-            }
-        }).findFirst();
-        return first.isPresent();
-    }
 
     //?username=adam,or,like&text,int,or
-    public List<Field> parser(String formula) throws ParseException {
+    @Override
+    public List<Field> parse(String formula) throws Exception{
         List<Field> fields = new LinkedList<>();
         int i = formula.indexOf("?");
         String[] rawFields = formula.substring(i + 1).split("&");
@@ -81,5 +72,6 @@ public class ParserFormula {
                 .findFirst();
         return first.orElse(ConditionNumber.EQUALS);
     }
+
 
 }

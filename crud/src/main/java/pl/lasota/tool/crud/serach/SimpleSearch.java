@@ -12,9 +12,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 @AllArgsConstructor
-public class SimpleSearch<T> implements Specification<T> {
+public class SimpleSearch<T, SOURCE> implements Specification<T> {
 
-    private final ProviderSimpleSearch<T> providerSimpleSearch;
+    private final ProviderSimpleSearch<T, SOURCE> providerSimpleSearch;
 
     @Override
     public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {

@@ -35,7 +35,7 @@ public class Controler {
         List<FieldString> fieldStrings = new LinkedList<>();
         fieldStrings.add(new FieldString("name",name, PredictionType.AND, ConditionString.EQUALS));
         fieldStrings.add(new FieldString("name",name1, PredictionType.OR, ConditionString.EQUALS));
-        return  null
+        return  null;
 
     }
 
