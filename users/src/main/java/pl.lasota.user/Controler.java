@@ -1,17 +1,12 @@
 package pl.lasota.user;
 
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
-import pl.lasota.tool.crud.serach.ConditionString;
-import pl.lasota.tool.crud.serach.FieldString;
-import pl.lasota.tool.crud.serach.PredictionType;
+import org.springframework.data.domain.Page;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.*;
+import pl.lasota.tool.crud.serach.parser.ParserField;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 public class Controler {
@@ -30,12 +25,9 @@ public class Controler {
         return userCrudService.get(id);
     }
 
-    @GetMapping("/search/{name}/{name1}")
-    public List<User> search(@PathVariable String name, @PathVariable String name1) {
-        List<FieldString> fieldStrings = new LinkedList<>();
-        fieldStrings.add(new FieldString("name",name, PredictionType.AND, ConditionString.EQUALS));
-        fieldStrings.add(new FieldString("name",name1, PredictionType.OR, ConditionString.EQUALS));
-        return  null;
+    @GetMapping("/search")
+    public Page<UserDto> search(@RequestParam MultiValueMap<String, String> allRequestParams) throws Exception {
+        return userSearchService.find(new ParserField().parse(allRequestParams));
 
     }
 

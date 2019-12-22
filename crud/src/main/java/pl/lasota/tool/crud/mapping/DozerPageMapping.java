@@ -1,8 +1,12 @@
-package pl.lasota.tool.crud;
+package pl.lasota.tool.crud.mapping;
 
 import org.springframework.data.domain.Page;
-import pl.lasota.tool.crud.mapping.Mapping;
 
+/**
+ *  * Simple Implementation using Dozer Mapper to map one spring page to another spring page with different objects type
+ * @param <SOURCE>
+ * @param <DESTINATION>
+ */
 public final class DozerPageMapping<SOURCE, DESTINATION> implements Mapping<Page<SOURCE>, Page<DESTINATION>> {
 
     private final DozerMapper<SOURCE, DESTINATION> mapper;

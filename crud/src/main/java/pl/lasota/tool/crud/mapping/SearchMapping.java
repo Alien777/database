@@ -4,8 +4,12 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-public interface SearchMapping<READ, MODEL> {
-    Page<READ> mapping(Page<MODEL> model);
-
-    List<READ> mapping(List<MODEL> model);
+/**
+ * Provide behavior mapping for search type service
+ *
+ * @param <READING>
+ * @param <MODEL>
+ */
+public interface SearchMapping<READING, MODEL> {
+    Page<READING> mapping(Page<MODEL> model);
 }

@@ -1,30 +1,33 @@
-package pl.lasota.tool.crud.serach;
+package pl.lasota.tool.crud.serach.criteria;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 
 import java.util.LinkedList;
 import java.util.List;
 
 @AllArgsConstructor
-public class SimpleSearch<T, SOURCE> implements Specification<T> {
+public final class BuildingCriteriaSpecification<MODEL> implements Specification<MODEL> {
 
-    private final ProviderSimpleSearch<T, SOURCE> providerSimpleSearch;
+    private final CriteriaSupplier<MODEL> criteriaSupplier;
 
     @Override
-    public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+    public Predicate toPredicate(Root<MODEL> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+        List<Order> orders = new LinkedList<>();
+        criteriaSupplier.sort(orders,root,criteriaBuilder);
+        Order[] ordersArray = orders.toArray(new Order[0]);
+        if(ordersArray.length>0) {
+            query.orderBy(ordersArray);
+        }
 
         List<Predicate> predicateAndList = new LinkedList<>();
-        providerSimpleSearch.predicateAnd(predicateAndList, root, criteriaBuilder);
+        criteriaSupplier.and(predicateAndList, root, criteriaBuilder);
         Predicate[] predicatesAnd = predicateAndList.toArray(new Predicate[0]);
 
         List<Predicate> predicateOrList = new LinkedList<>();
-        providerSimpleSearch.predicateOr(predicateOrList, root, criteriaBuilder);
+        criteriaSupplier.or(predicateOrList, root, criteriaBuilder);
         Predicate[] predicateOr = predicateOrList.toArray(new Predicate[0]);
 
         Predicate or = criteriaBuilder.or(predicateOr);
@@ -32,7 +35,7 @@ public class SimpleSearch<T, SOURCE> implements Specification<T> {
         Predicate and = criteriaBuilder.and(predicatesAnd);
 
         if (predicatesAnd.length >= 1 && predicateOr.length >= 1) {
-            return criteriaBuilder.and(and, or);
+            return criteriaBuilder.or(and, or);
         } else if (predicatesAnd.length >= 1) {
             return criteriaBuilder.and(predicatesAnd);
         }

@@ -5,6 +5,5 @@ import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.Repository;
 
 @NoRepositoryBean
-public interface SearchRepository<MODEL extends EntityBase, ID extends Number>
-        extends Repository<MODEL, ID>, JpaSpecificationExecutor<MODEL> {
+public interface SearchRepository<MODEL extends EntityBase> extends Repository<MODEL, Long>, JpaSpecificationExecutor<MODEL> {
 }

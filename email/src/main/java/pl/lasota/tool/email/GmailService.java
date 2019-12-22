@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public final class Gmail implements MailService {
+public final class GmailService implements MailService {
 
     private final String applicationName;
     private final String tokenPath;
@@ -38,7 +38,7 @@ public final class Gmail implements MailService {
     private final Credential credential;
     private final String host;
 
-    public Gmail(String accessType, String host, int port, String applicationName, String tokenPath, String credentialPath, String userId, String mail)
+    public GmailService(String accessType, String host, int port, String applicationName, String tokenPath, String credentialPath, String userId, String mail)
             throws GeneralSecurityException, IOException {
 
         this.applicationName = applicationName;

@@ -1,11 +1,14 @@
-package pl.lasota.tool.crud;
-
-import org.springframework.data.domain.Page;
-import pl.lasota.tool.crud.mapping.Mapping;
+package pl.lasota.tool.crud.mapping;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Simple Implementation using Dozer Mapper to map one list to another list with different objects type
+ *
+ * @param <SOURCE>
+ * @param <DESTINATION>
+ */
 public final class DozerListMapping<SOURCE, DESTINATION> implements Mapping<List<SOURCE>, List<DESTINATION>> {
 
     private final DozerMapper<SOURCE, DESTINATION> mapper;

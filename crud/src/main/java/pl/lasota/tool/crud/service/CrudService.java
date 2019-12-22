@@ -2,17 +2,16 @@ package pl.lasota.tool.crud.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 
 
-public interface CrudService<CREATE, READ, UPDATING, ID> {
+public interface CrudService<CREATING, READING, UPDATING> {
 
-    READ save(CREATE create);
+    READING save(@Nullable CREATING CREATING);
 
-    READ get(ID id);
+    READING get(@Nullable Long id);
 
-    Page<READ> getAll(Pageable criteria);
+    void delete(@Nullable Long id);
 
-    void delete(ID id);
-
-    READ update(UPDATING updating);
+    READING update(@Nullable UPDATING updating);
 }
