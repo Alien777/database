@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public enum CriteriaType {
-    AND, OR, SORT;
+    AND, OR, SORT, SET;
 
     public static CriteriaType find(String[] pre) {
         Optional<CriteriaType> first = Arrays.stream(CriteriaType.values())

@@ -12,5 +12,8 @@ import javax.persistence.Table;
 
 @Data
 public class UserDto {
+    public long id;
+
     public String name;
+    public String password;
 }

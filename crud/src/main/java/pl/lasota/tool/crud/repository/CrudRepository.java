@@ -1,8 +1,13 @@
 package pl.lasota.tool.crud.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.NoRepositoryBean;
+import org.springframework.lang.Nullable;
 
-@NoRepositoryBean
-public interface CrudRepository<MODEL> extends JpaRepository<MODEL, Long> {
+public interface CrudRepository<MODEL> {
+
+    MODEL save(@Nullable MODEL create);
+
+    MODEL get(@Nullable Long id);
+
+    void delete(@Nullable Long id);
+
 }

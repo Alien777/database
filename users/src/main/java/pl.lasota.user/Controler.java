@@ -36,6 +36,12 @@ public class Controler {
         return userCrudService.update(user);
     }
 
+    @GetMapping("/delete/{id}")
+    public void de(@PathVariable long id) {
+        userCrudService.delete(id);
+    }
+
+
     @GetMapping("/add/{name}")
     public User get(@PathVariable String name) {
         User user = new User();

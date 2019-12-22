@@ -9,11 +9,9 @@ import org.springframework.data.jpa.domain.Specification;
 import pl.lasota.tool.crud.mapping.SearchMapping;
 import pl.lasota.tool.crud.repository.EntityBase;
 import pl.lasota.tool.crud.repository.SearchRepository;
-import pl.lasota.tool.crud.serach.criteria.BuildingCriteriaSpecification;
-import pl.lasota.tool.crud.serach.criteria.DistributeField;
+import pl.lasota.tool.crud.serach.criteria.*;
 import pl.lasota.tool.crud.serach.field.CriteriaField;
 import pl.lasota.tool.crud.serach.field.Field;
-import pl.lasota.tool.crud.serach.criteria.Mapper;
 import pl.lasota.tool.crud.serach.field.PaginationField;
 
 import java.util.List;
@@ -54,13 +52,15 @@ public class CriteriaSearchService<READING, MODEL extends EntityBase> implements
         return searchService.count(createCriteriaSearch(formula));
     }
 
-    private BuildingCriteriaSpecification<MODEL> createCriteriaSearch(List<Field> formula) {
+    private BuildingSearchCriteriaSpecification<MODEL> createCriteriaSearch(List<Field> formula) {
         List<CriteriaField> collect = formula.stream()
                 .filter(field -> field instanceof CriteriaField)
                 .map(field -> (CriteriaField) field).collect(Collectors.toList());
 
-        DistributeField<MODEL> distributeField = new DistributeField<>(collect, mapper);
-        return new BuildingCriteriaSpecification<>(distributeField);
+        CriteriaOrSupplier<MODEL> criteriaOrSupplier = new DistributeOrField<>(collect, mapper);
+        CriteriaAndSupplier<MODEL> criteriaAndSupplier = new DistributeAndField<>(collect, mapper);
+        CriteriaSortSupplier<MODEL> criteriaSortSupplier = new DistributeSortField<>(collect, mapper);
+        return new BuildingSearchCriteriaSpecification<>(criteriaAndSupplier, criteriaOrSupplier, criteriaSortSupplier);
     }
 
 }

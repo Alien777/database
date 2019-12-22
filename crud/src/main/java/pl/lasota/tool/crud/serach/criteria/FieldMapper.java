@@ -61,6 +61,11 @@ public final class FieldMapper<MODEL> implements Mapper<MODEL> {
         }
     }
 
+    @Override
+    public void map(CriteriaField fields, CriteriaUpdate criteriaUpdate) {
+
+    }
+
 
     private void create(RangeStringField field, List<Predicate> predicates, Root<MODEL> root, CriteriaBuilder cb) throws ParseException {
 
