@@ -34,10 +34,9 @@ public class SimpleSearchRepository<MODEL extends EntityBase> implements SearchR
         Predicate predicate1 = specification.toPredicate(root, query, cb);
         query.where(predicate1);
         List<MODEL> resultList = em.createQuery(query)
-                .setMaxResults(pageable.getPageSize())
+                .setMaxResults(pageable.getPageSize() * (pageable.getPageNumber() + 1))
                 .setFirstResult(pageable.getPageSize() * pageable.getPageNumber())
                 .getResultList();
-
 
         return new PageImpl<>(resultList, pageable, 100);
     }

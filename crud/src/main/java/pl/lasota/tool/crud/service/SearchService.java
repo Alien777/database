@@ -6,7 +6,7 @@ import pl.lasota.tool.crud.serach.field.Field;
 
 import java.util.List;
 
-public interface SearchService<READING> {
+public interface SearchService<READING, MODEL> extends SpecificationProvider<MODEL> {
 
     Page<READING> find(List<Field<?>> source, Pageable pageable);
 

@@ -14,22 +14,19 @@ public class UpdateCriteriaSpecification<MODEL> extends SearchCriteriaSpecificat
     private DistributeFieldFactory<MODEL> distributeFieldFactory;
 
     public UpdateCriteriaSpecification(DistributeFieldFactory<MODEL> distributeFieldFactory) {
-        super(distributeFieldFactory);
+        super(distributeFieldFactory.swap());
         this.distributeFieldFactory = distributeFieldFactory;
     }
 
     @Override
     public Predicate toPredicate(Root<MODEL> root, CriteriaUpdate<MODEL> criteriaUpdate, CriteriaBuilder criteriaBuilder) {
-        List<Predicate> predicateAndList = new LinkedList<>();
-        List<Predicate> predicateOrList = new LinkedList<>();
         Map<String, Object> stringStringMap = new HashMap<>();
 
-        distributeFieldFactory.and(predicateAndList, root, criteriaBuilder)
-                .or(predicateOrList, root, criteriaBuilder)
-                .set(stringStringMap, root);
+        distributeFieldFactory.set(stringStringMap, root);
 
         stringStringMap.forEach(criteriaUpdate::set);
 
-        return super.search(predicateAndList, predicateOrList, criteriaBuilder);
+        return super.toPredicate(root, criteriaBuilder);
     }
+
 }

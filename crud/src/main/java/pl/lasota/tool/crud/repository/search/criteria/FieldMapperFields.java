@@ -46,7 +46,6 @@ public final class FieldMapperFields<MODEL> implements MapperFields<MODEL> {
     @Override
     public void map(SortField field, List<Order> orders, Root<MODEL> root, CriteriaBuilder cb) {
         Class<MODEL> bindableJavaType = root.getModel().getBindableJavaType();
-        System.out.println(field);
         Order order = null;
         if (field.getValue() == Sort.ASC) {
             order = cb.asc(root.get(mapAlias(field.getName(), bindableJavaType)));

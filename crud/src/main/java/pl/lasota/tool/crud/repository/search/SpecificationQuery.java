@@ -2,7 +2,7 @@ package pl.lasota.tool.crud.repository.search;
 
 import javax.persistence.criteria.*;
 
-public interface SpecificationQuery<MODEL> {
+public interface SpecificationQuery<MODEL> extends Specification<MODEL> {
 
     Predicate toPredicate(Root<MODEL> root, CriteriaQuery<MODEL> criteriaQuery, CriteriaBuilder criteriaBuilder);
 

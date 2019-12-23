@@ -27,14 +27,20 @@ public class SearchCriteriaSpecification<MODEL> implements SpecificationQuery<MO
         return search(predicateAndList, predicateOrList, criteriaBuilder);
     }
 
+    @Override
+    public Predicate toPredicate(Root<MODEL> root, CriteriaBuilder criteriaBuilder) {
+        return toPredicate(root, null, criteriaBuilder);
+    }
+
     private void sort(CriteriaQuery<MODEL> criteriaQuery, List<Order> orders) {
         Order[] ordersArray = orders.toArray(new Order[0]);
-        if (ordersArray.length > 0) {
+        if (ordersArray.length > 0 && criteriaQuery != null) {
             criteriaQuery.orderBy(ordersArray);
         }
     }
 
-    protected Predicate search(List<Predicate> predicateAndList, List<Predicate> predicateOrList, CriteriaBuilder criteriaBuilder) {
+    private Predicate search(List<Predicate> predicateAndList, List<Predicate> predicateOrList, CriteriaBuilder criteriaBuilder) {
+
         Predicate[] predicatesAnd = predicateAndList.toArray(new Predicate[0]);
         Predicate[] predicateOr = predicateOrList.toArray(new Predicate[0]);
 
@@ -48,5 +54,4 @@ public class SearchCriteriaSpecification<MODEL> implements SpecificationQuery<MO
         }
         return criteriaBuilder.or(predicateOr);
     }
-
 }

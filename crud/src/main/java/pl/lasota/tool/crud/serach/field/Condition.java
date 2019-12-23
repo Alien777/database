@@ -8,7 +8,8 @@ public enum Condition {
 
     public static Condition find(String[] pre) {
         Optional<Condition> first = Arrays.stream(Condition.values())
-                .map(Condition::toString).filter(s -> Arrays.stream(pre).anyMatch(s1 -> s1.toUpperCase().equals(s)))
+                .map(Condition::toString)
+                .filter(s -> Arrays.stream(pre).anyMatch(s1 -> s1.toUpperCase().equals(s)))
                 .map(Condition::valueOf)
                 .findFirst();
         return first.orElse(Condition.EQUALS);
