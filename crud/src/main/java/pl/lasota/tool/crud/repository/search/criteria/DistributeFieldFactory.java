@@ -57,4 +57,9 @@ public class DistributeFieldFactory<MODEL> {
         return this;
     }
 
+    public DistributeFieldFactory<MODEL> swap() {
+
+
+        return this;
+    }
 }

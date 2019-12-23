@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.crud.mapping.Mapping;
 import pl.lasota.tool.crud.repository.EntityBase;
 import pl.lasota.tool.crud.repository.search.SearchRepository;
@@ -23,13 +24,15 @@ public abstract class BaseSearchService<READING, MODEL extends EntityBase> imple
     private final Mapping<Page<MODEL>, Page<READING>> mapping;
 
     @Override
+    @Transactional(readOnly = true)
     public Page<READING> find(List<Field<?>> source, Pageable pageable) {
-        Page<MODEL> models = repository.find(providerSpecificationQuery(source), pageable);
+        Page<MODEL> models = repository.find(providerSpecification(source), pageable);
         return mapping.mapper(models);
 
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<READING> find(List<Field<?>> source) {
         Optional<PaginationField> first = source.stream().filter(field -> field instanceof PaginationField)
                 .map(field -> (PaginationField) field).findFirst();
@@ -40,5 +43,5 @@ public abstract class BaseSearchService<READING, MODEL extends EntityBase> imple
         return this.find(source, PageRequest.of(page.getPage(), page.getLimit()));
     }
 
-    protected abstract SpecificationQuery<MODEL> providerSpecificationQuery(List<Field<?>> fields);
+    protected abstract SpecificationQuery<MODEL> providerSpecification(List<Field<?>> fields);
 }

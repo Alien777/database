@@ -1,5 +1,6 @@
 package pl.lasota.tool.crud.repository.update;
 
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.crud.repository.EntityBase;
 
@@ -9,12 +10,12 @@ import java.util.List;
 
 
 @Transactional(readOnly = true)
-public class UpdateFieldRepository<MODEL extends EntityBase> implements UpdateRepository<MODEL> {
+public class SimpleUpdateRepository<MODEL extends EntityBase> implements UpdateRepository<MODEL> {
 
     private final EntityManager em;
     private final Class<MODEL> modelClass;
 
-    public UpdateFieldRepository(EntityManager em, Class<MODEL> modelClass) {
+    public SimpleUpdateRepository(EntityManager em, Class<MODEL> modelClass) {
         this.em = em;
         this.modelClass = modelClass;
     }

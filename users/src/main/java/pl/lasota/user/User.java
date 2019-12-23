@@ -3,7 +3,7 @@ package pl.lasota.user;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import pl.lasota.tool.crud.repository.AliasName;
+import pl.lasota.tool.crud.repository.annotaction.AliasColumn;
 import pl.lasota.tool.crud.repository.EntityBase;
 
 import javax.persistence.*;
@@ -21,7 +21,7 @@ public class User extends EntityBase {
     public String password;
 
     @Column
-    @AliasName(values = "login")
+    @AliasColumn(names = "login")
     public String name;
 
     @Column

@@ -1,6 +1,5 @@
 package pl.lasota.tool.crud.repository.crud;
 
-
 import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.crud.repository.EntityBase;
 

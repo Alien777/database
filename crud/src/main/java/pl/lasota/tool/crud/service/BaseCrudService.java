@@ -29,6 +29,7 @@ public class BaseCrudService<CREATING, READING, UPDATING, MODEL extends EntityBa
     }
 
     @Override
+    @Transactional(readOnly = true)
     public READING get(Long id) {
         MODEL model = repository.get(id);
         if (model == null) {
