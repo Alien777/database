@@ -1,7 +1,7 @@
 package pl.lasota.tool.crud.serach.field;
 
 import lombok.ToString;
-import pl.lasota.tool.crud.serach.criteria.CriteriaType;
+import pl.lasota.tool.crud.repository.search.criteria.CriteriaType;
 
 @ToString(callSuper = true)
 public final class StringField extends CriteriaField<String> {

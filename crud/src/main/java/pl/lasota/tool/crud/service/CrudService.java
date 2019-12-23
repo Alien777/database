@@ -11,7 +11,7 @@ public interface CrudService<CREATING, READING, UPDATING> {
 
     READING get(@Nullable Long id);
 
-    void delete(@Nullable Long id);
+    Long delete(@Nullable Long id);
 
     READING update(@Nullable UPDATING updating);
 }

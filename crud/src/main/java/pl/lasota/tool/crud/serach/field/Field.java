@@ -1,7 +1,6 @@
 package pl.lasota.tool.crud.serach.field;
 
 import lombok.ToString;
-import pl.lasota.tool.crud.serach.criteria.CriteriaType;
 
 @ToString
 public class Field<VALUE> {

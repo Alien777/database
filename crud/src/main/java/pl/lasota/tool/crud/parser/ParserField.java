@@ -1,7 +1,7 @@
-package pl.lasota.tool.crud.serach.parser;
+package pl.lasota.tool.crud.parser;
 
 import org.springframework.util.MultiValueMap;
-import pl.lasota.tool.crud.serach.criteria.CriteriaType;
+import pl.lasota.tool.crud.repository.search.criteria.CriteriaType;
 import pl.lasota.tool.crud.serach.field.*;
 
 import java.util.Arrays;
@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-public class ParserField implements Parser<MultiValueMap<String, String>, List<Field>> {
+public class ParserField implements Parser<MultiValueMap<String, String>, List<Field<?>>> {
 
 
     private static final String BETWEEN_SEPARATOR = "!";
@@ -17,8 +17,8 @@ public class ParserField implements Parser<MultiValueMap<String, String>, List<F
 
     //?username=adam,or,like&text,int,or
     @Override
-    public List<Field> parse(MultiValueMap<String, String> formula) throws Exception {
-        List<Field> fields = new LinkedList<>();
+    public List<Field<?>> parse(MultiValueMap<String, String> formula) throws Exception {
+        List<Field<?>> fields = new LinkedList<>();
         try {
             formula.forEach((nameField, value) -> {
                 value.stream().map(s -> s.split(";")).forEach(secondRaw -> {
@@ -26,6 +26,11 @@ public class ParserField implements Parser<MultiValueMap<String, String>, List<F
                     String[] withoutValue = Arrays.copyOfRange(secondRaw, 1, secondRaw.length);
                     CriteriaType criteriaTypeField = CriteriaType.find(withoutValue);
 
+
+                    if (criteriaTypeField==CriteriaType.SET) {
+
+                        fields.add(new SetField(nameField,valueField));
+                    }
                     if (nameField.equals(PAGE)) {
                         String[] pages = valueField.split(BETWEEN_SEPARATOR);
                         fields.add(new PaginationField(new Page( Integer.parseInt(pages[0]),Integer.parseInt(pages[1]))));

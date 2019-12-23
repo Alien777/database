@@ -1,34 +1,31 @@
 package pl.lasota.tool.crud.service;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import org.springframework.transaction.annotation.Transactional;
-import pl.lasota.tool.crud.repository.CrudRepository;
-import pl.lasota.tool.crud.mapping.CrudMapping;
+import pl.lasota.tool.crud.mapping.Mapping;
+import pl.lasota.tool.crud.repository.crud.CrudRepository;
 import pl.lasota.tool.crud.repository.EntityBase;
 
-import java.util.Optional;
-
+@AllArgsConstructor
 public class BaseCrudService<CREATING, READING, UPDATING, MODEL extends EntityBase>
         implements CrudService<CREATING, READING, UPDATING> {
 
     private final CrudRepository<MODEL> repository;
-
-    private final CrudMapping<CREATING, READING, UPDATING, MODEL> crudMapping;
-
-    public BaseCrudService(CrudRepository<MODEL> repository, CrudMapping<CREATING, READING, UPDATING, MODEL> crudMapping) {
-        this.repository = repository;
-        this.crudMapping = crudMapping;
-    }
+    private final Mapping<CREATING, MODEL> creatingToModel;
+    private final Mapping<UPDATING, MODEL> updatingToModel;
+    private final Mapping<MODEL, READING> modelToReading;
 
     @Override
     @Transactional
     public READING save(CREATING create) {
-        MODEL model = crudMapping.creatingToModel(create);
+        MODEL model = creatingToModel.mapper(create);
         model.setId(null);
         MODEL save = repository.save(model);
         if (save == null) {
             return null;
         }
-        return crudMapping.modelToReading(save);
+        return modelToReading.mapper(save);
     }
 
     @Override
@@ -37,26 +34,26 @@ public class BaseCrudService<CREATING, READING, UPDATING, MODEL extends EntityBa
         if (model == null) {
             return null;
         }
-        return crudMapping.modelToReading(model);
+        return modelToReading.mapper(model);
     }
 
     @Override
     @Transactional
-    public void delete(Long id) {
-        repository.delete(id);
+    public Long delete(Long id) {
+        return repository.delete(id);
     }
 
     @Override
     @Transactional
     public READING update(UPDATING updating) {
-        MODEL model = crudMapping.updatingToModel(updating);
+        MODEL model = updatingToModel.mapper(updating);
         if (model.getId() == null) {
             return null;
         }
-        MODEL updated = repository.save(model);
+        MODEL updated = repository.update(model);
         if (updated == null) {
             return null;
         }
-        return crudMapping.modelToReading(updated);
+        return modelToReading.mapper(updated);
     }
 }

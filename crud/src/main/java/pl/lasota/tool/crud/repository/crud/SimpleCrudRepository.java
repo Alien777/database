@@ -1,7 +1,8 @@
-package pl.lasota.tool.crud.repository;
+package pl.lasota.tool.crud.repository.crud;
 
 
 import org.springframework.transaction.annotation.Transactional;
+import pl.lasota.tool.crud.repository.EntityBase;
 
 import javax.persistence.EntityManager;
 
@@ -18,16 +19,11 @@ public class SimpleCrudRepository<MODEL extends EntityBase> implements CrudRepos
     @Override
     @Transactional
     public MODEL save(MODEL create) {
-        if (create.getId() == null) {
-            em.persist(create);
-            return create;
-        } else {
-            MODEL model = em.find(modelClass, create.getId());
-            if (model == null) {
-                return null;
-            }
-            return em.merge(create);
+        if (create.getId() != null) {
+            return null;
         }
+        em.persist(create);
+        return create;
     }
 
     @Override
@@ -42,8 +38,21 @@ public class SimpleCrudRepository<MODEL extends EntityBase> implements CrudRepos
 
     @Override
     @Transactional
-    public void delete(Long id) {
+    public Long delete(Long id) {
         MODEL model = em.find(modelClass, id);
         em.remove(em.contains(model) ? model : em.merge(model));
+        return id;
+    }
+
+    @Override
+    public MODEL update(MODEL create) {
+        if (create.getId() == null) {
+            return null;
+        }
+        MODEL model = em.find(modelClass, create.getId());
+        if (model == null) {
+            return null;
+        }
+        return em.merge(create);
     }
 }

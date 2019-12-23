@@ -1,4 +1,4 @@
-package pl.lasota.tool.crud.serach.criteria;
+package pl.lasota.tool.crud.repository.search.criteria;
 
 import java.util.Arrays;
 import java.util.Optional;

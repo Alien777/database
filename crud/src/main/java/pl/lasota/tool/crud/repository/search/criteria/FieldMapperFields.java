@@ -1,29 +1,28 @@
-package pl.lasota.tool.crud.serach.criteria;
+package pl.lasota.tool.crud.repository.search.criteria;
 
 
-import pl.lasota.tool.crud.repository.AliasName;
-import pl.lasota.tool.crud.repository.AliasNameDiscovery;
+import pl.lasota.tool.crud.repository.annotaction.AliasColumnDiscovery;
 import pl.lasota.tool.crud.serach.field.*;
 
 import javax.persistence.criteria.*;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
-public final class FieldMapper<MODEL> implements Mapper<MODEL> {
+public final class FieldMapperFields<MODEL> implements MapperFields<MODEL> {
 
     private final static Pattern NUMBER_PATTERN = Pattern.compile("-?\\d+([.|,]\\d+)?");
-    private final AliasNameDiscovery aliasNameDiscovery;
+    private final AliasColumnDiscovery<MODEL> aliasColumnDiscovery;
 
-    public FieldMapper() {
-        aliasNameDiscovery = new AliasNameDiscovery();
+    public FieldMapperFields() {
+        aliasColumnDiscovery = new AliasColumnDiscovery<>();
     }
 
     @Override
-    public void map(CriteriaField field, List<Predicate> predicates, Root<MODEL> root, CriteriaBuilder cb) {
+    public void map(CriteriaField<?> field, List<Predicate> predicates, Root<MODEL> root, CriteriaBuilder cb) {
 
         if (field instanceof RangeStringField) {
             try {
@@ -62,13 +61,23 @@ public final class FieldMapper<MODEL> implements Mapper<MODEL> {
     }
 
     @Override
-    public void map(CriteriaField fields, CriteriaUpdate criteriaUpdate) {
-
+    public void map(SetField field, Map<String, Object> criteriaUpdate, Root<MODEL> modelRoot) {
+        try {
+            create(field, criteriaUpdate, modelRoot);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
+    private void create(SetField field, Map<String, Object> criteriaUpdate, Root<MODEL> root) throws ParseException {
+        Class<MODEL> bindableJavaType = root.getModel().getBindableJavaType();
+        String s = mapAlias(field.getName(), bindableJavaType);
+        Path<Object> objectPath = root.get(s);
+        Object o = convertClass(objectPath.getJavaType().getTypeName(), field.getValue());
+        criteriaUpdate.put(s, o);
+    }
 
     private void create(RangeStringField field, List<Predicate> predicates, Root<MODEL> root, CriteriaBuilder cb) throws ParseException {
-
         Class<MODEL> bindableJavaType = root.getModel().getBindableJavaType();
         Predicate predicate = null;
         Path<Object> path = root.get(mapAlias(field.getName(), bindableJavaType));
@@ -122,7 +131,7 @@ public final class FieldMapper<MODEL> implements Mapper<MODEL> {
     }
 
     private String mapAlias(String name, Class<MODEL> bindableJavaType) {
-        return aliasNameDiscovery.discover(name, bindableJavaType);
+        return aliasColumnDiscovery.discover(name, bindableJavaType);
     }
 
 

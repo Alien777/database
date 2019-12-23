@@ -2,12 +2,13 @@ package pl.lasota.tool.crud.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import pl.lasota.tool.crud.serach.field.Field;
 
-public interface SearchService<READING, SOURCE> {
+import java.util.List;
 
-    Page<READING> find(SOURCE source, Pageable pageable);
+public interface SearchService<READING> {
 
-    Page<READING> find(SOURCE source);
+    Page<READING> find(List<Field<?>> source, Pageable pageable);
 
-    long count(SOURCE source);
+    Page<READING> find(List<Field<?>> source);
 }

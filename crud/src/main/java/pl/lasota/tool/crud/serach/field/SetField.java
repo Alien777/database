@@ -1,16 +1,16 @@
 package pl.lasota.tool.crud.serach.field;
 
 import lombok.ToString;
-import pl.lasota.tool.crud.serach.criteria.CriteriaType;
+import pl.lasota.tool.crud.repository.search.criteria.CriteriaType;
 
 @ToString(callSuper = true)
-public final class SetField extends CriteriaField<Sort> {
-    public SetField(String name, Sort value) {
-        super(name, value, CriteriaType.SORT);
+public final class SetField extends CriteriaField<String> {
+    public SetField(String name, String value) {
+        super(name, value, CriteriaType.SET);
     }
 
     @Override
     public Condition condition() {
-        return Condition.SORT;
+        return Condition.SET;
     }
 }

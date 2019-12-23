@@ -1,40 +1,44 @@
 package pl.lasota.tool.crud.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
-import org.springframework.data.jpa.domain.Specification;
-import pl.lasota.tool.crud.mapping.SearchMapping;
+import pl.lasota.tool.crud.mapping.Mapping;
 import pl.lasota.tool.crud.repository.EntityBase;
-import pl.lasota.tool.crud.repository.SearchRepository;
+import pl.lasota.tool.crud.repository.search.SearchRepository;
+import pl.lasota.tool.crud.repository.search.SpecificationQuery;
+import pl.lasota.tool.crud.serach.field.Field;
+import pl.lasota.tool.crud.serach.field.PaginationField;
+
+import java.util.List;
+import java.util.Optional;
 
 
-public class BaseSearchService<READING, MODEL extends EntityBase> implements SearchService<READING, Specification<MODEL>> {
+@AllArgsConstructor
+public abstract class BaseSearchService<READING, MODEL extends EntityBase> implements SearchService<READING> {
 
-    private SearchRepository<MODEL> repository;
-    private SearchMapping<READING, MODEL> mapping;
-    private int limit;
+    private final SearchRepository<MODEL> repository;
+    private final Mapping<Page<MODEL>, Page<READING>> mapping;
 
-    public BaseSearchService(SearchRepository<MODEL> repository, SearchMapping<READING, MODEL> mapping, int limit) {
-        this.repository = repository;
-        this.mapping = mapping;
-        this.limit = limit;
+    @Override
+    public Page<READING> find(List<Field<?>> source, Pageable pageable) {
+        Page<MODEL> models = repository.find(providerSpecificationQuery(source), pageable);
+        return mapping.mapper(models);
+
     }
 
     @Override
-    public Page<READING> find(Specification<MODEL> spec, Pageable pageable) {
-        return this.mapping.mapping(repository.findAll(spec, pageable));
+    public Page<READING> find(List<Field<?>> source) {
+        Optional<PaginationField> first = source.stream().filter(field -> field instanceof PaginationField)
+                .map(field -> (PaginationField) field).findFirst();
+
+        PaginationField paginationField = first.orElse(new PaginationField(new pl.lasota.tool.crud.serach.field.Page(0, 10)));
+
+        pl.lasota.tool.crud.serach.field.Page page = paginationField.getValue();
+        return this.find(source, PageRequest.of(page.getPage(), page.getLimit()));
     }
 
-    @Override
-    public Page<READING> find(Specification<MODEL> modelSpecification) {
-        return this.mapping.mapping(repository.findAll(modelSpecification, PageRequest.of(0, limit)));
-    }
-
-    @Override
-    public long count(Specification<MODEL> spec) {
-        return repository.count(spec);
-    }
+    protected abstract SpecificationQuery<MODEL> providerSpecificationQuery(List<Field<?>> fields);
 }

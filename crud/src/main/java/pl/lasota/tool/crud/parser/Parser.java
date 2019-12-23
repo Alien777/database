@@ -1,4 +1,4 @@
-package pl.lasota.tool.crud.serach.parser;
+package pl.lasota.tool.crud.parser;
 
 
 public interface Parser<S, D> {
