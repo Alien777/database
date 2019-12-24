@@ -1,8 +1,8 @@
 package pl.lasota.tool.crud.service;
 
-import pl.lasota.tool.crud.repository.search.Specification;
-import pl.lasota.tool.crud.serach.field.CriteriaField;
-import pl.lasota.tool.crud.serach.field.Field;
+import pl.lasota.tool.crud.repository.Specification;
+import pl.lasota.tool.crud.repository.field.CriteriaField;
+import pl.lasota.tool.crud.field.Field;
 
 import java.util.List;
 import java.util.stream.Collectors;

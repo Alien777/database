@@ -2,20 +2,15 @@ package pl.lasota.tool.crud.service;
 
 
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.crud.mapping.Mapping;
 import pl.lasota.tool.crud.repository.*;
-import pl.lasota.tool.crud.repository.search.SearchRepository;
-import pl.lasota.tool.crud.repository.search.Specification;
-import pl.lasota.tool.crud.repository.search.SpecificationQuery;
-import pl.lasota.tool.crud.repository.search.criteria.DistributeFieldFactory;
-import pl.lasota.tool.crud.repository.search.criteria.FieldMapperFields;
-import pl.lasota.tool.crud.repository.search.criteria.SearchCriteriaSpecification;
+import pl.lasota.tool.crud.repository.DistributeFieldFactory;
+import pl.lasota.tool.crud.repository.FieldMapperFields;
 import pl.lasota.tool.crud.repository.update.SpecificationUpdate;
 import pl.lasota.tool.crud.repository.update.UpdateRepository;
 import pl.lasota.tool.crud.repository.update.criteria.UpdateCriteriaSpecification;
-import pl.lasota.tool.crud.serach.field.Field;
+import pl.lasota.tool.crud.field.Field;
 
 import java.util.List;
 

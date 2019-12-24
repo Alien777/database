@@ -1,8 +1,11 @@
 package pl.lasota.tool.crud.parser;
 
 import org.springframework.util.MultiValueMap;
-import pl.lasota.tool.crud.repository.search.criteria.CriteriaType;
-import pl.lasota.tool.crud.serach.field.*;
+import pl.lasota.tool.crud.field.*;
+import pl.lasota.tool.crud.repository.Condition;
+import pl.lasota.tool.crud.repository.CriteriaType;
+import pl.lasota.tool.crud.repository.field.*;
+
 
 import java.util.Arrays;
 import java.util.LinkedList;

@@ -1,5 +1,6 @@
 package pl.lasota.tool.crud.repository.update;
 
+import org.springframework.core.ResolvableType;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.crud.repository.EntityBase;
@@ -10,14 +11,17 @@ import java.util.List;
 
 
 @Transactional(readOnly = true)
+@Repository
 public class SimpleUpdateRepository<MODEL extends EntityBase> implements UpdateRepository<MODEL> {
 
     private final EntityManager em;
-    private final Class<MODEL> modelClass;
+    private Class<MODEL> modelClass;
 
-    public SimpleUpdateRepository(EntityManager em, Class<MODEL> modelClass) {
+    public SimpleUpdateRepository(EntityManager em) {
+        ResolvableType generic = ResolvableType.forClass(this.getClass()).getGeneric(0);
+        modelClass = (Class<MODEL>) generic.getRawClass();
+
         this.em = em;
-        this.modelClass = modelClass;
     }
 
     @Override
@@ -39,5 +43,11 @@ public class SimpleUpdateRepository<MODEL extends EntityBase> implements UpdateR
         query.where(queryPredicate);
         return em.createQuery(query).getResultList();
 
+    }
+
+    @Override
+    public void modelClass(Class<MODEL> modelClass) {
+
+        this.modelClass = modelClass;
     }
 }

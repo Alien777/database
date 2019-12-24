@@ -1,8 +1,8 @@
-package pl.lasota.tool.crud.repository.search.criteria;
+package pl.lasota.tool.crud.repository;
 
-import pl.lasota.tool.crud.serach.field.CriteriaField;
-import pl.lasota.tool.crud.serach.field.SetField;
-import pl.lasota.tool.crud.serach.field.SortField;
+import pl.lasota.tool.crud.repository.field.CriteriaField;
+import pl.lasota.tool.crud.repository.field.SetField;
+import pl.lasota.tool.crud.repository.field.SortField;
 
 import javax.persistence.criteria.*;
 import java.util.List;

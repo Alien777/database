@@ -1,7 +1,8 @@
-package pl.lasota.tool.crud.serach.field;
+package pl.lasota.tool.crud.repository.field;
 
 import lombok.ToString;
-import pl.lasota.tool.crud.repository.search.criteria.CriteriaType;
+import pl.lasota.tool.crud.repository.Condition;
+import pl.lasota.tool.crud.repository.CriteriaType;
 
 @ToString(callSuper = true)
 public final class SortField extends CriteriaField<Sort> {

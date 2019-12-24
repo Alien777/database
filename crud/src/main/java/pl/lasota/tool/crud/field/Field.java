@@ -1,4 +1,4 @@
-package pl.lasota.tool.crud.serach.field;
+package pl.lasota.tool.crud.field;
 
 import lombok.ToString;
 
@@ -6,7 +6,7 @@ import lombok.ToString;
 public class Field<VALUE> {
     private final VALUE value;
 
-    Field(VALUE value) {
+    public Field(VALUE value) {
         this.value = value;
     }
     public VALUE getValue() {

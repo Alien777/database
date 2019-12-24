@@ -1,6 +1,6 @@
 package pl.lasota.tool.crud.repository.update;
 
-import pl.lasota.tool.crud.repository.search.Specification;
+import pl.lasota.tool.crud.repository.Specification;
 import pl.lasota.tool.crud.repository.search.SpecificationQuery;
 
 import javax.persistence.criteria.CriteriaBuilder;

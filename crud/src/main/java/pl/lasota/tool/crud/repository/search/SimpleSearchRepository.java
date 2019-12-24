@@ -1,28 +1,37 @@
 package pl.lasota.tool.crud.repository.search;
 
 
+import com.google.common.reflect.TypeToken;
+import org.springframework.core.GenericTypeResolver;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.support.JpaEntityInformation;
+import org.springframework.data.jpa.repository.support.JpaEntityInformationSupport;
+import org.springframework.data.jpa.repository.support.JpaPersistableEntityInformation;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.crud.repository.EntityBase;
+import pl.lasota.tool.crud.repository.delete.SimpleDeleteRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.List;
 
 @Transactional(readOnly = true)
+@Repository
 public class SimpleSearchRepository<MODEL extends EntityBase> implements SearchRepository<MODEL> {
 
     private final EntityManager em;
-    private final Class<MODEL> modelClass;
+    private Class<MODEL> modelClass;
 
-    public SimpleSearchRepository(EntityManager em, Class<MODEL> modelClass) {
+
+    public SimpleSearchRepository(EntityManager em) {
         this.em = em;
-        this.modelClass = modelClass;
     }
-
 
     @Override
     public Page<MODEL> find(SpecificationQuery<MODEL> specification, Pageable pageable) {
@@ -39,5 +48,10 @@ public class SimpleSearchRepository<MODEL extends EntityBase> implements SearchR
                 .getResultList();
 
         return new PageImpl<>(resultList, pageable, 100);
+    }
+
+    @Override
+    public void modelClass(Class<MODEL> modelClass) {
+        this.modelClass = modelClass;
     }
 }

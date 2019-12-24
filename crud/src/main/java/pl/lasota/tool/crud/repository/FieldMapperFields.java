@@ -1,8 +1,9 @@
-package pl.lasota.tool.crud.repository.search.criteria;
+package pl.lasota.tool.crud.repository;
 
 
 import pl.lasota.tool.crud.repository.annotaction.AliasColumnDiscovery;
-import pl.lasota.tool.crud.serach.field.*;
+import pl.lasota.tool.crud.repository.field.*;
+
 
 import javax.persistence.criteria.*;
 

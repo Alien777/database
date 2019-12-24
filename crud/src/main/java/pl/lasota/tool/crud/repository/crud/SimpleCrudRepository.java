@@ -1,18 +1,19 @@
 package pl.lasota.tool.crud.repository.crud;
 
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.crud.repository.EntityBase;
 
 import javax.persistence.EntityManager;
 
 @Transactional(readOnly = true)
+@Repository
 public class SimpleCrudRepository<MODEL extends EntityBase> implements CrudRepository<MODEL> {
     private final EntityManager em;
-    private final Class<MODEL> modelClass;
+    private Class<MODEL> modelClass;
 
-    public SimpleCrudRepository(EntityManager em, Class<MODEL> modelClass) {
+    public SimpleCrudRepository(EntityManager em) {
         this.em = em;
-        this.modelClass = modelClass;
     }
 
     @Override
@@ -53,5 +54,11 @@ public class SimpleCrudRepository<MODEL extends EntityBase> implements CrudRepos
             return null;
         }
         return em.merge(create);
+    }
+
+    @Override
+    public void modelClass(Class<MODEL> modelClass) {
+
+        this.modelClass = modelClass;
     }
 }

@@ -1,4 +1,4 @@
-package pl.lasota.tool.crud.serach.field;
+package pl.lasota.tool.crud.field;
 
 import lombok.ToString;
 

@@ -1,4 +1,4 @@
-package pl.lasota.tool.crud.serach.field;
+package pl.lasota.tool.crud.field;
 
 import lombok.ToString;
 
@@ -6,7 +6,7 @@ import lombok.ToString;
 public class NamedField<VALUE> extends Field<VALUE> {
     private final String name;
 
-    NamedField(String name, VALUE value) {
+    public NamedField(String name, VALUE value) {
         super(value);
         this.name = name;
     }

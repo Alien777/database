@@ -6,9 +6,7 @@ import pl.lasota.tool.crud.field.Field;
 
 import java.util.List;
 
-public interface SearchService<READING, MODEL> extends SpecificationProvider<MODEL> {
+public interface DeleteService<MODEL> extends SpecificationProvider<MODEL> {
 
-    Page<READING> find(List<Field<?>> source, Pageable pageable);
-
-    Page<READING> find(List<Field<?>> source);
+    List<Long> delete(List<Field<?>> source);
 }

@@ -1,4 +1,4 @@
-package pl.lasota.tool.crud.repository.search;
+package pl.lasota.tool.crud.repository;
 
 import javax.persistence.criteria.*;
 

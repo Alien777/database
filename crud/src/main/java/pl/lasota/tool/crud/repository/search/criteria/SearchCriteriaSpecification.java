@@ -1,10 +1,10 @@
 package pl.lasota.tool.crud.repository.search.criteria;
 
 import lombok.AllArgsConstructor;
+import pl.lasota.tool.crud.repository.DistributeFieldFactory;
 import pl.lasota.tool.crud.repository.search.SpecificationQuery;
 
 import javax.persistence.criteria.*;
-
 import java.util.LinkedList;
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package pl.lasota.tool.crud.serach.field;
+package pl.lasota.tool.crud.repository.field;
 
 import java.util.Arrays;
 import java.util.Optional;
