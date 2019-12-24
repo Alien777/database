@@ -4,9 +4,7 @@ package pl.lasota.tool.crud.repository;
 import pl.lasota.tool.crud.repository.annotaction.AliasColumnDiscovery;
 import pl.lasota.tool.crud.repository.field.*;
 
-
 import javax.persistence.criteria.*;
-
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.List;

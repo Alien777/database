@@ -1,24 +1,18 @@
 package pl.lasota.tool.crud.repository.search;
 
 
-import com.google.common.reflect.TypeToken;
-import org.springframework.core.GenericTypeResolver;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.support.JpaEntityInformation;
-import org.springframework.data.jpa.repository.support.JpaEntityInformationSupport;
-import org.springframework.data.jpa.repository.support.JpaPersistableEntityInformation;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.crud.repository.EntityBase;
-import pl.lasota.tool.crud.repository.delete.SimpleDeleteRepository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.*;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Transactional(readOnly = true)
@@ -40,14 +34,20 @@ public class SimpleSearchRepository<MODEL extends EntityBase> implements SearchR
         CriteriaQuery<MODEL> query = cb.createQuery(modelClass);
         Root<MODEL> root = query.from(modelClass);
 
-        Predicate predicate1 = specification.toPredicate(root, query, cb);
-        query.where(predicate1);
+        Predicate predicate = specification.toPredicate(root, query, cb);
+        query.where(predicate);
         List<MODEL> resultList = em.createQuery(query)
-                .setMaxResults(pageable.getPageSize() * (pageable.getPageNumber() + 1))
+                .setMaxResults(pageable.getPageSize())
                 .setFirstResult(pageable.getPageSize() * pageable.getPageNumber())
                 .getResultList();
 
-        return new PageImpl<>(resultList, pageable, 100);
+
+        CriteriaBuilder qb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> cq = qb.createQuery(Long.class);
+        cq.select(qb.count(cq.from(modelClass)));
+        cq.where(predicate);
+
+        return new PageImpl<>(resultList, pageable, em.createQuery(cq).getSingleResult());
     }
 
     @Override

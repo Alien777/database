@@ -1,8 +1,5 @@
 package pl.lasota.tool.crud.field;
 
-import lombok.ToString;
-
-@ToString
 public class NamedField<VALUE> extends Field<VALUE> {
     private final String name;
 

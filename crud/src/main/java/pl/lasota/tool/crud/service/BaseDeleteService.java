@@ -1,6 +1,5 @@
 package pl.lasota.tool.crud.service;
 
-import lombok.AllArgsConstructor;
 import pl.lasota.tool.crud.field.Field;
 import pl.lasota.tool.crud.repository.EntityBase;
 import pl.lasota.tool.crud.repository.FieldMapperFields;
@@ -11,12 +10,13 @@ import pl.lasota.tool.crud.repository.distributed.DistributeFactory;
 
 import java.util.List;
 
-
-@AllArgsConstructor
 public class BaseDeleteService<MODEL extends EntityBase> implements DeleteService<MODEL> {
 
     private final DeleteRepository<MODEL> repository;
-    private final Class<MODEL> modelClass;
+
+    public BaseDeleteService(DeleteRepository<MODEL> repository) {
+        this.repository = repository;
+    }
 
     @Override
     public List<Long> delete(List<Field<?>> source) {

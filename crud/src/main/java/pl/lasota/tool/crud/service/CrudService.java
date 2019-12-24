@@ -1,17 +1,12 @@
 package pl.lasota.tool.crud.service;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.lang.Nullable;
-
-
 public interface CrudService<CREATING, READING, UPDATING> {
 
-    READING save(@Nullable CREATING CREATING);
+    READING save(CREATING CREATING);
 
-    READING get(@Nullable Long id);
+    READING get(Long id);
 
-    Long delete(@Nullable Long id);
+    Long delete(Long id);
 
-    READING update(@Nullable UPDATING updating);
+    READING update(UPDATING updating);
 }

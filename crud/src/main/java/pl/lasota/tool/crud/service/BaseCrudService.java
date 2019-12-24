@@ -1,13 +1,10 @@
 package pl.lasota.tool.crud.service;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.crud.mapping.Mapping;
-import pl.lasota.tool.crud.repository.crud.CrudRepository;
 import pl.lasota.tool.crud.repository.EntityBase;
+import pl.lasota.tool.crud.repository.crud.CrudRepository;
 
-@AllArgsConstructor
 public class BaseCrudService<CREATING, READING, UPDATING, MODEL extends EntityBase>
         implements CrudService<CREATING, READING, UPDATING> {
 
@@ -15,6 +12,14 @@ public class BaseCrudService<CREATING, READING, UPDATING, MODEL extends EntityBa
     private final Mapping<CREATING, MODEL> creatingToModel;
     private final Mapping<UPDATING, MODEL> updatingToModel;
     private final Mapping<MODEL, READING> modelToReading;
+
+    public BaseCrudService(CrudRepository<MODEL> repository, Mapping<CREATING, MODEL> creatingToModel,
+                           Mapping<UPDATING, MODEL> updatingToModel, Mapping<MODEL, READING> modelToReading) {
+        this.repository = repository;
+        this.creatingToModel = creatingToModel;
+        this.updatingToModel = updatingToModel;
+        this.modelToReading = modelToReading;
+    }
 
     @Override
     @Transactional

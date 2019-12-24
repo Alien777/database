@@ -8,7 +8,7 @@ import pl.lasota.tool.crud.service.BaseUpdateService;
 import pl.lasota.user.User;
 
 @Service
-public class UpdateService extends BaseUpdateService<User, User> {
+public class D extends BaseUpdateService<User, User> {
 
     public UpdateService(UpdateRepository<User> repository) {
         super(repository, new DozerListMapping<>(User.class), User.class);

@@ -1,30 +1,31 @@
 package pl.lasota.tool.crud.service;
 
-import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
+import pl.lasota.tool.crud.field.Field;
+import pl.lasota.tool.crud.field.PaginationField;
 import pl.lasota.tool.crud.mapping.Mapping;
 import pl.lasota.tool.crud.repository.EntityBase;
+import pl.lasota.tool.crud.repository.FieldMapperFields;
 import pl.lasota.tool.crud.repository.distributed.DistributeFactory;
 import pl.lasota.tool.crud.repository.search.SearchRepository;
 import pl.lasota.tool.crud.repository.search.SpecificationQuery;
-import pl.lasota.tool.crud.repository.FieldMapperFields;
 import pl.lasota.tool.crud.repository.search.criteria.SearchCriteriaSpecification;
-import pl.lasota.tool.crud.field.Field;
-import pl.lasota.tool.crud.field.PaginationField;
 
 import java.util.List;
 import java.util.Optional;
 
-
-@AllArgsConstructor
 public class BaseSearchService<READING, MODEL extends EntityBase> implements SearchService<READING, MODEL> {
 
     private final SearchRepository<MODEL> repository;
     private final Mapping<Page<MODEL>, Page<READING>> mapping;
+
+    public BaseSearchService(SearchRepository<MODEL> repository, Mapping<Page<MODEL>, Page<READING>> mapping) {
+        this.repository = repository;
+        this.mapping = mapping;
+    }
 
     @Override
     @Transactional(readOnly = true)

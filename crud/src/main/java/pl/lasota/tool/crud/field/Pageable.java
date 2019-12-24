@@ -1,8 +1,5 @@
 package pl.lasota.tool.crud.field;
 
-import lombok.Getter;
-
-@Getter
 public final class Pageable {
 
     public Pageable(int page, int limit) {
@@ -12,4 +9,12 @@ public final class Pageable {
 
     private int page;
     private int limit;
+
+    public int getPage() {
+        return page;
+    }
+
+    public int getLimit() {
+        return limit;
+    }
 }

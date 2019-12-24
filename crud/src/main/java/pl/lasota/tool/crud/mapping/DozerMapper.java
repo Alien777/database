@@ -1,7 +1,6 @@
 package pl.lasota.tool.crud.mapping;
 
 import org.dozer.DozerBeanMapper;
-import pl.lasota.tool.crud.mapping.Mapping;
 
 import java.util.ArrayList;
 import java.util.List;

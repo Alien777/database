@@ -4,7 +4,10 @@ import pl.lasota.tool.crud.repository.distributed.DistributeFactory;
 import pl.lasota.tool.crud.repository.search.criteria.SearchCriteriaSpecification;
 import pl.lasota.tool.crud.repository.update.SpecificationUpdate;
 
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaUpdate;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.HashMap;
 import java.util.Map;
 

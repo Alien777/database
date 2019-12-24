@@ -1,6 +1,5 @@
 package pl.lasota.tool.crud.repository.update;
 
-import org.springframework.core.ResolvableType;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.crud.repository.EntityBase;
@@ -18,9 +17,6 @@ public class SimpleUpdateRepository<MODEL extends EntityBase> implements UpdateR
     private Class<MODEL> modelClass;
 
     public SimpleUpdateRepository(EntityManager em) {
-        ResolvableType generic = ResolvableType.forClass(this.getClass()).getGeneric(0);
-        modelClass = (Class<MODEL>) generic.getRawClass();
-
         this.em = em;
     }
 

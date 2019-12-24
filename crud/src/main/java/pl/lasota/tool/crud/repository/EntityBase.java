@@ -1,10 +1,7 @@
 package pl.lasota.tool.crud.repository;
 
-import lombok.Data;
-
 import javax.persistence.*;
 
-@Data
 @MappedSuperclass
 public abstract class EntityBase {
 
@@ -12,4 +9,16 @@ public abstract class EntityBase {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id",unique=true, nullable = false)
     private Long id;
+
+
+    public EntityBase() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

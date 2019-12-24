@@ -1,6 +1,5 @@
 package pl.lasota.tool.crud.repository.distributed;
 
-import pl.lasota.tool.crud.repository.MapperFields;
 import pl.lasota.tool.crud.repository.annotaction.AliasColumnDiscovery;
 import pl.lasota.tool.crud.repository.field.*;
 
