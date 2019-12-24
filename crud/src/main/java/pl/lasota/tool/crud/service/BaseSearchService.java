@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.crud.mapping.Mapping;
 import pl.lasota.tool.crud.repository.EntityBase;
-import pl.lasota.tool.crud.repository.distributed.AbstractDistribute;
+import pl.lasota.tool.crud.repository.distributed.DistributeFactory;
 import pl.lasota.tool.crud.repository.search.SearchRepository;
 import pl.lasota.tool.crud.repository.search.SpecificationQuery;
 import pl.lasota.tool.crud.repository.FieldMapperFields;
@@ -40,15 +40,15 @@ public class BaseSearchService<READING, MODEL extends EntityBase> implements Sea
         Optional<PaginationField> first = source.stream().filter(field -> field instanceof PaginationField)
                 .map(field -> (PaginationField) field).findFirst();
 
-        PaginationField paginationField = first.orElse(new PaginationField(new pl.lasota.tool.crud.field.Page(0, 10)));
+        PaginationField paginationField = first.orElse(new PaginationField(new pl.lasota.tool.crud.field.Pageable(0, 10)));
 
-        pl.lasota.tool.crud.field.Page page = paginationField.getValue();
-        return this.find(source, PageRequest.of(page.getPage(), page.getLimit()));
+        pl.lasota.tool.crud.field.Pageable pageable = paginationField.getValue();
+        return this.find(source, PageRequest.of(pageable.getPage(), pageable.getLimit()));
     }
 
 
     @Override
     public SpecificationQuery<MODEL> providerSpecification(List<Field<?>> fields) {
-        return new SearchCriteriaSpecification<>(new AbstractDistribute<>(filter(fields), new FieldMapperFields<>()));
+        return new SearchCriteriaSpecification<>(new DistributeFactory<>(filter(fields), new FieldMapperFields<>()));
     }
 }

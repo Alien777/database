@@ -10,38 +10,38 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Map;
 
-public class AbstractDistribute<MODEL> {
+public class DistributeFactory<MODEL> {
 
     private final List<CriteriaField<?>> fields;
     private final MapperFields<MODEL> mapperFields;
 
-    public AbstractDistribute(List<CriteriaField<?>> fields, MapperFields<MODEL> mapperFields) {
+    public DistributeFactory(List<CriteriaField<?>> fields, MapperFields<MODEL> mapperFields) {
         this.fields = fields;
         this.mapperFields = mapperFields;
     }
 
-    public AbstractDistribute<MODEL> set(Map<String, Object> criteriaUpdate, Root<MODEL> modelRoot) {
+    public DistributeFactory<MODEL> set(Map<String, Object> criteriaUpdate, Root<MODEL> modelRoot) {
         new SetDistribute<>(fields, mapperFields).process(criteriaUpdate, modelRoot);
         return this;
     }
 
-    public AbstractDistribute<MODEL> and(List<Predicate> predicates, Root<MODEL> root, CriteriaBuilder cb) {
+    public DistributeFactory<MODEL> and(List<Predicate> predicates, Root<MODEL> root, CriteriaBuilder cb) {
         new AndDistribute<>(fields, mapperFields).process(predicates, root, cb);
         return this;
     }
 
-    public AbstractDistribute<MODEL> or(List<Predicate> predicates, Root<MODEL> root, CriteriaBuilder cb) {
+    public DistributeFactory<MODEL> or(List<Predicate> predicates, Root<MODEL> root, CriteriaBuilder cb) {
         new OrDistribute<>(fields, mapperFields).process(predicates, root, cb);
         return this;
     }
 
-    public AbstractDistribute<MODEL> sort(List<Order> orders, Root<MODEL> root, CriteriaBuilder cb) {
+    public DistributeFactory<MODEL> sort(List<Order> orders, Root<MODEL> root, CriteriaBuilder cb) {
         new SortDistribute<>(fields, mapperFields).process(orders, root, cb);
         return this;
     }
 
-    public AbstractDistribute<MODEL> swap(Class<MODEL> modelClass) {
+    public DistributeFactory<MODEL> swap(Class<MODEL> modelClass) {
         List<CriteriaField<?>> processed = new SwapDistribute<MODEL>(fields, modelClass).processed();
-        return new AbstractDistribute<>(processed, mapperFields);
+        return new DistributeFactory<>(processed, mapperFields);
     }
 }

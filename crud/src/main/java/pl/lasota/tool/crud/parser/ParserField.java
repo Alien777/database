@@ -36,7 +36,7 @@ public class ParserField implements Parser<MultiValueMap<String, String>, List<F
                     }
                     if (nameField.equals(PAGE)) {
                         String[] pages = valueField.split(BETWEEN_SEPARATOR);
-                        fields.add(new PaginationField(new Page( Integer.parseInt(pages[0]),Integer.parseInt(pages[1]))));
+                        fields.add(new PaginationField(new Pageable( Integer.parseInt(pages[0]),Integer.parseInt(pages[1]))));
                     } else if (isBetweenNumber(valueField)) {
                         try {
                             String[] values = valueField.split(BETWEEN_SEPARATOR);
