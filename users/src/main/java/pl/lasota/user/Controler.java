@@ -2,14 +2,15 @@ package pl.lasota.user;
 
 import org.springframework.data.domain.Page;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.*;
-import pl.lasota.tool.crud.serach.field.Field;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import pl.lasota.tool.crud.field.Field;
 import pl.lasota.tool.crud.parser.ParserField;
-import pl.lasota.user.service.CrudService;
-import pl.lasota.user.service.SearchService;
-import pl.lasota.user.service.UpdateService;
 
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class Controler {
@@ -20,10 +21,14 @@ public class Controler {
 
     private final UpdateService updateService;
 
-    public Controler(CrudService crudService, SearchService searchService, UpdateService updateService) {
+    private final DeleteService deleteService;
+
+
+    public Controler(CrudService crudService, SearchService searchService, UpdateService updateService, DeleteService deleteService) {
         this.crudService = crudService;
         this.searchService = searchService;
         this.updateService = updateService;
+        this.deleteService = deleteService;
     }
 
     @GetMapping("/{id}")
@@ -44,6 +49,14 @@ public class Controler {
         return updateService.update(parse);
 
     }
+
+    @GetMapping("/delete")
+    public List<Long> delete(@RequestParam MultiValueMap<String, String> allRequestParams) throws Exception {
+        List<Field<?>> parse = new ParserField().parse(allRequestParams);
+        return deleteService.delete(parse);
+
+    }
+
 
     @GetMapping("/delete/{id}")
     public Long de(@PathVariable long id) {
