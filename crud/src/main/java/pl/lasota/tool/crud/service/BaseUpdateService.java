@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.crud.mapping.Mapping;
 import pl.lasota.tool.crud.repository.*;
-import pl.lasota.tool.crud.repository.DistributeFieldFactory;
 import pl.lasota.tool.crud.repository.FieldMapperFields;
+import pl.lasota.tool.crud.repository.distributed.AbstractDistribute;
 import pl.lasota.tool.crud.repository.update.SpecificationUpdate;
 import pl.lasota.tool.crud.repository.update.UpdateRepository;
 import pl.lasota.tool.crud.repository.update.criteria.UpdateCriteriaSpecification;
@@ -31,7 +31,7 @@ public class BaseUpdateService<READING, MODEL extends EntityBase> implements Upd
 
     @Override
     public SpecificationUpdate<MODEL> providerSpecification(List<Field<?>> fields) {
-        return new UpdateCriteriaSpecification<>(new DistributeFieldFactory<>(filter(fields), new FieldMapperFields<>(), modelClass));
+        return new UpdateCriteriaSpecification<>(new AbstractDistribute<>(filter(fields), new FieldMapperFields<>()), modelClass);
     }
 
 }

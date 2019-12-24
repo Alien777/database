@@ -8,9 +8,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.crud.mapping.Mapping;
 import pl.lasota.tool.crud.repository.EntityBase;
+import pl.lasota.tool.crud.repository.distributed.AbstractDistribute;
 import pl.lasota.tool.crud.repository.search.SearchRepository;
 import pl.lasota.tool.crud.repository.search.SpecificationQuery;
-import pl.lasota.tool.crud.repository.DistributeFieldFactory;
 import pl.lasota.tool.crud.repository.FieldMapperFields;
 import pl.lasota.tool.crud.repository.search.criteria.SearchCriteriaSpecification;
 import pl.lasota.tool.crud.field.Field;
@@ -25,7 +25,6 @@ public class BaseSearchService<READING, MODEL extends EntityBase> implements Sea
 
     private final SearchRepository<MODEL> repository;
     private final Mapping<Page<MODEL>, Page<READING>> mapping;
-    private final Class<MODEL> modelClass;
 
     @Override
     @Transactional(readOnly = true)
@@ -50,6 +49,6 @@ public class BaseSearchService<READING, MODEL extends EntityBase> implements Sea
 
     @Override
     public SpecificationQuery<MODEL> providerSpecification(List<Field<?>> fields) {
-        return new SearchCriteriaSpecification<>(new DistributeFieldFactory<>(filter(fields), new FieldMapperFields<>(), modelClass));
+        return new SearchCriteriaSpecification<>(new AbstractDistribute<>(filter(fields), new FieldMapperFields<>()));
     }
 }

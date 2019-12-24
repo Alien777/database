@@ -1,7 +1,8 @@
 package pl.lasota.tool.crud.repository.search.criteria;
 
 import lombok.AllArgsConstructor;
-import pl.lasota.tool.crud.repository.DistributeFieldFactory;
+import pl.lasota.tool.crud.repository.distributed.AbstractDistribute;
+import pl.lasota.tool.crud.repository.field.CriteriaField;
 import pl.lasota.tool.crud.repository.search.SpecificationQuery;
 
 import javax.persistence.criteria.*;
@@ -11,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 public class SearchCriteriaSpecification<MODEL> implements SpecificationQuery<MODEL> {
 
-    private final DistributeFieldFactory<MODEL> distributeFieldFactory;
+    private final AbstractDistribute<MODEL> abstractDistribute;
 
     @Override
     public Predicate toPredicate(Root<MODEL> root, CriteriaQuery<MODEL> criteriaQuery, CriteriaBuilder criteriaBuilder) {
@@ -19,7 +20,8 @@ public class SearchCriteriaSpecification<MODEL> implements SpecificationQuery<MO
         List<Predicate> predicateAndList = new LinkedList<>();
         List<Predicate> predicateOrList = new LinkedList<>();
 
-        distributeFieldFactory.sort(orders, root, criteriaBuilder)
+
+        abstractDistribute.sort(orders, root, criteriaBuilder)
                 .and(predicateAndList, root, criteriaBuilder)
                 .or(predicateOrList, root, criteriaBuilder);
 
