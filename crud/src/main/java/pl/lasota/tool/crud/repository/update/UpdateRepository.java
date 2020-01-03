@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface UpdateRepository<MODEL> extends Repository<MODEL> {
 
-    List<MODEL> update(SpecificationUpdate<MODEL> specification);
+    List<Long> update(SpecificationUpdate<MODEL> specification);
 
 }

@@ -44,7 +44,7 @@ public class Controler {
     }
 
     @GetMapping("/update")
-    public List<User> update(@RequestParam MultiValueMap<String, String> allRequestParams) throws Exception {
+    public List<Long> update(@RequestParam MultiValueMap<String, String> allRequestParams) throws Exception {
         List<Field<?>> parse = new ParserField().parse(allRequestParams);
         return updateService.update(parse);
 

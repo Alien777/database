@@ -1,12 +1,13 @@
-package pl.lasota.tool.crud.service;
+package pl.lasota.tool.crud.service.base;
 
 import pl.lasota.tool.crud.field.Field;
-import pl.lasota.tool.crud.repository.EntityBase;
-import pl.lasota.tool.crud.repository.FieldMapperFields;
+import pl.lasota.tool.crud.common.EntityBase;
+import pl.lasota.tool.crud.repository.mapping.FieldMapping;
 import pl.lasota.tool.crud.repository.delete.DeleteRepository;
 import pl.lasota.tool.crud.repository.delete.SpecificationDelete;
 import pl.lasota.tool.crud.repository.delete.criteria.DeleteCriteriaSpecification;
-import pl.lasota.tool.crud.repository.distributed.DistributeFactory;
+import pl.lasota.tool.crud.repository.distributed.DistributeCriteriaFactory;
+import pl.lasota.tool.crud.service.DeleteService;
 
 import java.util.List;
 
@@ -25,7 +26,8 @@ public class BaseDeleteService<MODEL extends EntityBase> implements DeleteServic
 
     @Override
     public SpecificationDelete<MODEL> providerSpecification(List<Field<?>> fields) {
-        return new DeleteCriteriaSpecification<>(new DistributeFactory<>(filter(fields), new FieldMapperFields<>()));
+        FieldMapping<MODEL> map = new FieldMapping<>();
+        return new DeleteCriteriaSpecification<>(new DistributeCriteriaFactory<>(filter(fields), map, map, map));
     }
 
 }

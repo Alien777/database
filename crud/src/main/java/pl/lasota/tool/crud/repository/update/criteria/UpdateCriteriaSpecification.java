@@ -1,6 +1,7 @@
 package pl.lasota.tool.crud.repository.update.criteria;
 
-import pl.lasota.tool.crud.repository.distributed.DistributeFactory;
+import pl.lasota.tool.crud.repository.distributed.DistributeCriteriaFactory;
+
 import pl.lasota.tool.crud.repository.search.criteria.SearchCriteriaSpecification;
 import pl.lasota.tool.crud.repository.update.SpecificationUpdate;
 
@@ -12,10 +13,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UpdateCriteriaSpecification<MODEL> extends SearchCriteriaSpecification<MODEL> implements SpecificationUpdate<MODEL> {
-    private DistributeFactory<MODEL> distributeFieldFactory;
+    private DistributeCriteriaFactory<MODEL> distributeFieldFactory;
 
-    public UpdateCriteriaSpecification(DistributeFactory<MODEL> distributeFieldFactory, Class<MODEL> modelClass) {
-        super(distributeFieldFactory.swap(modelClass));
+    public UpdateCriteriaSpecification(DistributeCriteriaFactory<MODEL> distributeFieldFactory) {
+        super(distributeFieldFactory);
         this.distributeFieldFactory = distributeFieldFactory;
     }
 

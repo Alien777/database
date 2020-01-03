@@ -1,7 +1,7 @@
 package pl.lasota.tool.crud.repository.delete.criteria;
 
 import pl.lasota.tool.crud.repository.delete.SpecificationDelete;
-import pl.lasota.tool.crud.repository.distributed.DistributeFactory;
+import pl.lasota.tool.crud.repository.distributed.DistributeCriteriaFactory;
 import pl.lasota.tool.crud.repository.search.criteria.SearchCriteriaSpecification;
 
 import javax.persistence.criteria.*;
@@ -9,9 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DeleteCriteriaSpecification<MODEL> extends SearchCriteriaSpecification<MODEL> implements SpecificationDelete<MODEL> {
-    private DistributeFactory<MODEL> distributeFieldFactory;
+    private DistributeCriteriaFactory<MODEL> distributeFieldFactory;
 
-    public DeleteCriteriaSpecification(DistributeFactory<MODEL> distributeFieldFactory) {
+    public DeleteCriteriaSpecification(DistributeCriteriaFactory<MODEL> distributeFieldFactory) {
         super(distributeFieldFactory);
         this.distributeFieldFactory = distributeFieldFactory;
     }

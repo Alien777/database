@@ -1,4 +1,4 @@
-package pl.lasota.tool.crud.repository.field;
+package pl.lasota.tool.crud.common;
 
 import java.util.Arrays;
 import java.util.Optional;

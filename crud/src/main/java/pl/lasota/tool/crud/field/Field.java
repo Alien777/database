@@ -1,5 +1,8 @@
 package pl.lasota.tool.crud.field;
 
+import lombok.ToString;
+
+@ToString
 public class Field<VALUE> {
     private final VALUE value;
 

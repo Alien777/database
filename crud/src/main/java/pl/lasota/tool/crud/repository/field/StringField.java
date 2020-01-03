@@ -1,8 +1,9 @@
 package pl.lasota.tool.crud.repository.field;
 
-import pl.lasota.tool.crud.repository.Condition;
-import pl.lasota.tool.crud.repository.CriteriaType;
-
+import lombok.ToString;
+import pl.lasota.tool.crud.common.Condition;
+import pl.lasota.tool.crud.common.CriteriaType;
+@ToString(callSuper = true)
 public final class StringField extends CriteriaField<String> {
     private final Condition condition;
 

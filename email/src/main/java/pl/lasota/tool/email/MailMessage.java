@@ -5,6 +5,7 @@ import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
@@ -17,6 +18,17 @@ public final class MailMessage implements Message {
     public MailMessage(MailService mailService) {
         this.mailService = mailService;
 
+    }
+
+    @Override
+    public Message create(String to, byte[] body) {
+        try {
+            String s = Base64.getEncoder().encodeToString(body);
+            message = createMessage("ADMIN", to, "TEKST", s);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+        return this;
     }
 
     @Override

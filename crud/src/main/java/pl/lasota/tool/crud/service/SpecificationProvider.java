@@ -1,6 +1,7 @@
 package pl.lasota.tool.crud.service;
 
 import pl.lasota.tool.crud.field.Field;
+import pl.lasota.tool.crud.fulltextrepository.SpecificationFullText;
 import pl.lasota.tool.crud.repository.Specification;
 import pl.lasota.tool.crud.repository.field.CriteriaField;
 

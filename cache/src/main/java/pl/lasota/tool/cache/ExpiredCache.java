@@ -6,7 +6,6 @@ import java.util.concurrent.TimeUnit;
 
 public class ExpiredCache<K, V> implements Cache<K, V> {
 
-
     private final ExpiredCacheProcessor<K, V> expiredCacheProcessor = new ExpiredCacheProcessor<>(new ConcurrentHashMap<>());
     private final TimeUnit timeUnit;
     private final long maxLife;

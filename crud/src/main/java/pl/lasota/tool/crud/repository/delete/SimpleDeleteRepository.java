@@ -2,7 +2,7 @@ package pl.lasota.tool.crud.repository.delete;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import pl.lasota.tool.crud.repository.EntityBase;
+import pl.lasota.tool.crud.common.EntityBase;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;

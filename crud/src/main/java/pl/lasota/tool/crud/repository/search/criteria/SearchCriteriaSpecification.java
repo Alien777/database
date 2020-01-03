@@ -1,6 +1,6 @@
 package pl.lasota.tool.crud.repository.search.criteria;
 
-import pl.lasota.tool.crud.repository.distributed.DistributeFactory;
+import pl.lasota.tool.crud.repository.distributed.DistributeCriteriaFactory;
 import pl.lasota.tool.crud.repository.search.SpecificationQuery;
 
 import javax.persistence.criteria.*;
@@ -9,10 +9,10 @@ import java.util.List;
 
 public class SearchCriteriaSpecification<MODEL> implements SpecificationQuery<MODEL> {
 
-    private final DistributeFactory<MODEL> distributeFactory;
+    private final DistributeCriteriaFactory<MODEL> distributeFactory;
 
-    public SearchCriteriaSpecification(DistributeFactory<MODEL> distributeFactory) {
-        this.distributeFactory = distributeFactory;
+    public SearchCriteriaSpecification(DistributeCriteriaFactory<MODEL> distributeCriteriaFactory) {
+        this.distributeFactory = distributeCriteriaFactory;
     }
 
     @Override
@@ -20,7 +20,6 @@ public class SearchCriteriaSpecification<MODEL> implements SpecificationQuery<MO
         List<Order> orders = new LinkedList<>();
         List<Predicate> predicateAndList = new LinkedList<>();
         List<Predicate> predicateOrList = new LinkedList<>();
-
 
         distributeFactory.sort(orders, root, criteriaBuilder)
                 .and(predicateAndList, root, criteriaBuilder)

@@ -1,10 +1,10 @@
-package pl.lasota.tool.crud.repository;
+package pl.lasota.tool.crud.common;
 
 import java.util.Arrays;
 import java.util.Optional;
 
-public enum CriteriaType {
-    AND, OR, SORT, SET;
+public enum CriteriaType  {
+    AND, OR, SORT, SET, MUST, NOT, SHOULD;
 
     public static CriteriaType find(String[] pre) {
         Optional<CriteriaType> first = Arrays.stream(CriteriaType.values())

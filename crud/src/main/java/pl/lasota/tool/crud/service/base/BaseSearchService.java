@@ -1,4 +1,4 @@
-package pl.lasota.tool.crud.service;
+package pl.lasota.tool.crud.service.base;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -7,12 +7,13 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.crud.field.Field;
 import pl.lasota.tool.crud.field.PaginationField;
 import pl.lasota.tool.crud.mapping.Mapping;
-import pl.lasota.tool.crud.repository.EntityBase;
-import pl.lasota.tool.crud.repository.FieldMapperFields;
-import pl.lasota.tool.crud.repository.distributed.DistributeFactory;
+import pl.lasota.tool.crud.common.EntityBase;
+import pl.lasota.tool.crud.repository.mapping.FieldMapping;
+import pl.lasota.tool.crud.repository.distributed.DistributeCriteriaFactory;
 import pl.lasota.tool.crud.repository.search.SearchRepository;
 import pl.lasota.tool.crud.repository.search.SpecificationQuery;
 import pl.lasota.tool.crud.repository.search.criteria.SearchCriteriaSpecification;
+import pl.lasota.tool.crud.service.SearchService;
 
 import java.util.List;
 import java.util.Optional;
@@ -50,6 +51,7 @@ public class BaseSearchService<READING, MODEL extends EntityBase> implements Sea
 
     @Override
     public SpecificationQuery<MODEL> providerSpecification(List<Field<?>> fields) {
-        return new SearchCriteriaSpecification<>(new DistributeFactory<>(filter(fields), new FieldMapperFields<>()));
+        FieldMapping<MODEL> map = new FieldMapping<>();
+        return new SearchCriteriaSpecification<>(new DistributeCriteriaFactory<>(filter(fields), map, map, map));
     }
 }

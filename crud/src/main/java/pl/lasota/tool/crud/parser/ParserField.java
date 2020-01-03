@@ -1,9 +1,11 @@
 package pl.lasota.tool.crud.parser;
 
 import org.springframework.util.MultiValueMap;
+import pl.lasota.tool.crud.common.Condition;
+import pl.lasota.tool.crud.common.CriteriaType;
+import pl.lasota.tool.crud.common.Sort;
 import pl.lasota.tool.crud.field.*;
-import pl.lasota.tool.crud.repository.Condition;
-import pl.lasota.tool.crud.repository.CriteriaType;
+
 import pl.lasota.tool.crud.repository.field.*;
 
 
@@ -31,9 +33,8 @@ public class ParserField implements Parser<MultiValueMap<String, String>, List<F
 
 
                     if (criteriaTypeField==CriteriaType.SET) {
-
                         fields.add(new SetField(nameField,valueField));
-                    }
+                    }else
                     if (nameField.equals(PAGE)) {
                         String[] pages = valueField.split(BETWEEN_SEPARATOR);
                         fields.add(new PaginationField(new Pageable( Integer.parseInt(pages[0]),Integer.parseInt(pages[1]))));

@@ -3,8 +3,8 @@ package pl.lasota.user;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import pl.lasota.tool.crud.repository.annotaction.AliasColumn;
-import pl.lasota.tool.crud.repository.EntityBase;
+import pl.lasota.tool.crud.common.AliasColumn;
+import pl.lasota.tool.crud.common.EntityBase;
 
 import javax.persistence.*;
 
@@ -12,6 +12,7 @@ import javax.persistence.*;
 @Table(name = "\"User\"")
 @Data
 @Entity
+
 public class User extends EntityBase {
 
     @Column

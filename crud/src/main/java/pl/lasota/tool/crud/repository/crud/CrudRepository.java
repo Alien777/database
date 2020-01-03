@@ -2,7 +2,7 @@ package pl.lasota.tool.crud.repository.crud;
 
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.lang.Nullable;
-import pl.lasota.tool.crud.repository.EntityBase;
+import pl.lasota.tool.crud.common.EntityBase;
 import pl.lasota.tool.crud.repository.Repository;
 
 @NoRepositoryBean

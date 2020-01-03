@@ -1,19 +1,20 @@
-package pl.lasota.tool.crud.service;
+package pl.lasota.tool.crud.service.base;
 
 
 import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.crud.field.Field;
 import pl.lasota.tool.crud.mapping.Mapping;
-import pl.lasota.tool.crud.repository.EntityBase;
-import pl.lasota.tool.crud.repository.FieldMapperFields;
-import pl.lasota.tool.crud.repository.distributed.DistributeFactory;
+import pl.lasota.tool.crud.common.EntityBase;
+import pl.lasota.tool.crud.repository.mapping.FieldMapping;
+import pl.lasota.tool.crud.repository.distributed.DistributeCriteriaFactory;
 import pl.lasota.tool.crud.repository.update.SpecificationUpdate;
 import pl.lasota.tool.crud.repository.update.UpdateRepository;
 import pl.lasota.tool.crud.repository.update.criteria.UpdateCriteriaSpecification;
+import pl.lasota.tool.crud.service.UpdateService;
 
 import java.util.List;
 
-public class BaseUpdateService<READING, MODEL extends EntityBase> implements UpdateService<READING, MODEL> {
+public class BaseUpdateService<READING, MODEL extends EntityBase> implements UpdateService<MODEL> {
 
     private final UpdateRepository<MODEL> repository;
     private final Mapping<List<MODEL>, List<READING>> mapping;
@@ -27,15 +28,16 @@ public class BaseUpdateService<READING, MODEL extends EntityBase> implements Upd
 
     @Override
     @Transactional
-    public List<READING> update(List<Field<?>> source) {
-        List<MODEL> update = repository.update(providerSpecification(source));
-        return mapping.mapper(update);
+    public List<Long> update(List<Field<?>> source) {
+
+        return repository.update(providerSpecification(source));
     }
 
 
     @Override
     public SpecificationUpdate<MODEL> providerSpecification(List<Field<?>> fields) {
-        return new UpdateCriteriaSpecification<>(new DistributeFactory<>(filter(fields), new FieldMapperFields<>()), modelClass);
+        FieldMapping<MODEL> map = new FieldMapping<>();
+        return new UpdateCriteriaSpecification<>(new DistributeCriteriaFactory<>(filter(fields), map, map, map) );
     }
 
 }

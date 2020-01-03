@@ -1,9 +1,10 @@
-package pl.lasota.tool.crud.service;
+package pl.lasota.tool.crud.service.base;
 
 import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.crud.mapping.Mapping;
-import pl.lasota.tool.crud.repository.EntityBase;
+import pl.lasota.tool.crud.common.EntityBase;
 import pl.lasota.tool.crud.repository.crud.CrudRepository;
+import pl.lasota.tool.crud.service.CrudService;
 
 public class BaseCrudService<CREATING, READING, UPDATING, MODEL extends EntityBase>
         implements CrudService<CREATING, READING, UPDATING> {

@@ -6,7 +6,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import pl.lasota.tool.crud.repository.EntityBase;
+import pl.lasota.tool.crud.common.EntityBase;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -20,7 +20,7 @@ import java.util.List;
 public class SimpleSearchRepository<MODEL extends EntityBase> implements SearchRepository<MODEL> {
 
     private final EntityManager em;
-    private Class<MODEL> modelClass;
+    protected Class<MODEL> modelClass;
 
 
     public SimpleSearchRepository(EntityManager em) {

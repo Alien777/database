@@ -1,8 +1,8 @@
 package pl.lasota.tool.crud.repository.distributed;
 
-import pl.lasota.tool.crud.repository.CriteriaType;
-import pl.lasota.tool.crud.repository.MapperFields;
+import pl.lasota.tool.crud.common.CriteriaType;
 import pl.lasota.tool.crud.repository.field.CriteriaField;
+import pl.lasota.tool.crud.repository.mapping.PredicatesMapping;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
@@ -10,21 +10,27 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Objects;
 
-public class OrDistribute<MODEL> {
+public class OrDistribute<MODEL> implements Processable {
 
-    private final List<CriteriaField<?>> lists;
-    private final MapperFields<MODEL> mapperFields;
+    private final PredicatesMapping<MODEL> predicatesMapping;
+    private final Root<MODEL> root;
+    private final List<Predicate> predicates;
+    private final CriteriaBuilder criteriaBuilder;
 
-    public OrDistribute(List<CriteriaField<?>> lists, MapperFields<MODEL> mapperFields) {
-        this.lists = lists;
-        this.mapperFields = mapperFields;
+    public OrDistribute(PredicatesMapping<MODEL> predicatesMapping,  Root<MODEL> root, List<Predicate> predicates, CriteriaBuilder criteriaBuilder) {
+        this.predicatesMapping = predicatesMapping;
+        this.root = root;
+        this.predicates = predicates;
+        this.criteriaBuilder = criteriaBuilder;
     }
 
-    public void process(List<Predicate> predicates, Root<MODEL> root, CriteriaBuilder cb) {
-        lists.stream()
+    @Override
+    public void process(List<CriteriaField<?>> fields) {
+        fields.stream()
                 .filter(Objects::nonNull)
                 .map(field -> (CriteriaField<?>) field)
                 .filter(field -> field.getCriteriaType() == CriteriaType.OR)
-                .forEach(field -> mapperFields.map(field, predicates, root, cb));
+                .forEach(field -> predicatesMapping.map(field, predicates, root, criteriaBuilder));
+
     }
 }

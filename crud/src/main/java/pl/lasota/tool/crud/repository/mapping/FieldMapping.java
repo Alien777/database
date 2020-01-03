@@ -1,7 +1,10 @@
-package pl.lasota.tool.crud.repository;
+package pl.lasota.tool.crud.repository.mapping;
 
 
-import pl.lasota.tool.crud.repository.annotaction.AliasColumnDiscovery;
+
+import pl.lasota.tool.crud.common.AliasColumnDiscovery;
+import pl.lasota.tool.crud.common.Sort;
+import pl.lasota.tool.crud.common.Condition;
 import pl.lasota.tool.crud.repository.field.*;
 
 import javax.persistence.criteria.*;
@@ -11,12 +14,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public final class FieldMapperFields<MODEL> implements MapperFields<MODEL> {
+public final class FieldMapping<MODEL> implements SortMapping<MODEL>, PredicatesMapping<MODEL>,
+        SetMapping<MODEL> {
 
     private final static Pattern NUMBER_PATTERN = Pattern.compile("-?\\d+([.|,]\\d+)?");
     private final AliasColumnDiscovery<MODEL> aliasColumnDiscovery;
 
-    public FieldMapperFields() {
+    public FieldMapping() {
         aliasColumnDiscovery = new AliasColumnDiscovery<>();
     }
 

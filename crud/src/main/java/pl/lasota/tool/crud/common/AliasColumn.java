@@ -1,4 +1,4 @@
-package pl.lasota.tool.crud.repository.annotaction;
+package pl.lasota.tool.crud.common;
 
 import java.lang.annotation.*;
 
