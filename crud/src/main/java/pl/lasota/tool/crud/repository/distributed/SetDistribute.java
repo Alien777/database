@@ -1,6 +1,7 @@
 package pl.lasota.tool.crud.repository.distributed;
 
 import pl.lasota.tool.crud.common.CriteriaType;
+import pl.lasota.tool.crud.common.Processable;
 import pl.lasota.tool.crud.repository.field.CriteriaField;
 import pl.lasota.tool.crud.repository.field.SetField;
 import pl.lasota.tool.crud.repository.mapping.SetMapping;

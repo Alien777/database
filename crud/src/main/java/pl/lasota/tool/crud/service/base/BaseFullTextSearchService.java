@@ -6,15 +6,16 @@ import pl.lasota.tool.crud.common.EntityBase;
 import pl.lasota.tool.crud.field.Field;
 import pl.lasota.tool.crud.fulltextrepository.FullTextSearchRepository;
 import pl.lasota.tool.crud.fulltextrepository.SearchSpecificationFullText;
+import pl.lasota.tool.crud.fulltextrepository.SpecificationFullText;
 import pl.lasota.tool.crud.fulltextrepository.distributed.DistributeFullTextFactory;
 import pl.lasota.tool.crud.mapping.Mapping;
-import pl.lasota.tool.crud.repository.Specification;
-import pl.lasota.tool.crud.repository.mapping.FieldMapping;
+
 import pl.lasota.tool.crud.service.SearchService;
+import pl.lasota.tool.crud.service.SpecificationProvider;
 
 import java.util.List;
 
-public class BaseFullTextSearchService<READING, MODEL extends EntityBase> implements SearchService<READING, Object> {
+public class BaseFullTextSearchService<READING, MODEL extends EntityBase> implements SearchService<READING>, SpecificationProvider<SpecificationFullText> {
 
     private final FullTextSearchRepository<MODEL> repository;
     private final Mapping<Page<MODEL>, Page<READING>> mapping;
@@ -27,21 +28,14 @@ public class BaseFullTextSearchService<READING, MODEL extends EntityBase> implem
 
     @Override
     public Page<READING> find(List<Field<?>> source, Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public Page<READING> find(List<Field<?>> source) {
-        return null;
+        Page<MODEL> models = repository.find(providerSpecification(source), pageable);
+        return mapping.mapper(models);
     }
 
 
     @Override
-    public Specification providerSpecification(List<Field<?>> fields) {
-        FieldMapping<MODEL> map = new FieldMapping<>();
-        new SearchSpecificationFullText(new DistributeFullTextFactory());
-       return  null;
+    public SpecificationFullText providerSpecification(List<Field<?>> fields) {
+
+        return new SearchSpecificationFullText(new DistributeFullTextFactory(filter(fields), mustMapping, notMustMapping, shouldMapping, sortContext));
     }
-
-
 }

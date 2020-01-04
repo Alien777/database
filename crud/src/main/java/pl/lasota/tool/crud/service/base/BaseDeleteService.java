@@ -2,16 +2,18 @@ package pl.lasota.tool.crud.service.base;
 
 import pl.lasota.tool.crud.field.Field;
 import pl.lasota.tool.crud.common.EntityBase;
+import pl.lasota.tool.crud.repository.Specification;
 import pl.lasota.tool.crud.repository.mapping.FieldMapping;
 import pl.lasota.tool.crud.repository.delete.DeleteRepository;
 import pl.lasota.tool.crud.repository.delete.SpecificationDelete;
 import pl.lasota.tool.crud.repository.delete.criteria.DeleteCriteriaSpecification;
 import pl.lasota.tool.crud.repository.distributed.DistributeCriteriaFactory;
 import pl.lasota.tool.crud.service.DeleteService;
+import pl.lasota.tool.crud.service.SpecificationProvider;
 
 import java.util.List;
 
-public class BaseDeleteService<MODEL extends EntityBase> implements DeleteService<MODEL> {
+public class BaseDeleteService<MODEL extends EntityBase> implements DeleteService, SpecificationProvider<Specification<MODEL>> {
 
     private final DeleteRepository<MODEL> repository;
 

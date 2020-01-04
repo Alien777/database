@@ -1,6 +1,7 @@
 package pl.lasota.tool.crud.repository.distributed;
 
 import pl.lasota.tool.crud.common.CriteriaType;
+import pl.lasota.tool.crud.common.Processable;
 import pl.lasota.tool.crud.repository.field.CriteriaField;
 import pl.lasota.tool.crud.repository.field.SortField;
 import pl.lasota.tool.crud.repository.mapping.SortMapping;
@@ -9,7 +10,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Root;
 import java.util.List;
-import java.util.Map;
 
 @lombok.Data(staticConstructor="of")
 public class SortDistribute<MODEL> implements Processable {

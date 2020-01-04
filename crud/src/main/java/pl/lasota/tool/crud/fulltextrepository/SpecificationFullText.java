@@ -7,7 +7,7 @@ import org.hibernate.search.query.dsl.sort.SortContext;
 import pl.lasota.tool.crud.repository.Specification;
 import pl.lasota.tool.crud.repository.search.SpecificationQuery;
 
-public interface SpecificationFullText  {
+public interface SpecificationFullText {
 
     void search(QueryBuilder queryBuilder, BooleanJunction<BooleanJunction> booleanJunction);
 

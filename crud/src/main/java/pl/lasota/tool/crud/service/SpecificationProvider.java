@@ -8,7 +8,7 @@ import pl.lasota.tool.crud.repository.field.CriteriaField;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public interface SpecificationProvider<MODEL> {
+public interface SpecificationProvider<TYPE> {
     default List<CriteriaField<?>> filter(List<Field<?>> fields) {
         return fields.stream()
                 .filter(field -> field instanceof CriteriaField<?>)
@@ -16,5 +16,5 @@ public interface SpecificationProvider<MODEL> {
                 .collect(Collectors.toList());
     }
 
-     Specification<MODEL> providerSpecification(List<Field<?>> fields);
+    TYPE providerSpecification(List<Field<?>> fields);
 }

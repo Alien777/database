@@ -24,7 +24,6 @@ public class SearchSpecificationFullText implements SpecificationFullText {
 
     @Override
     public Sort sort(SortContext sortContext) {
-
         return distributeFactory.sort(sortContext);
     }
 }

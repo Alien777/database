@@ -27,6 +27,7 @@ public class FullTextSearchSimpleRepository<MODEL extends EntityBase> implements
     private Class<MODEL> modelClass;
 
     public FullTextSearchSimpleRepository(EntityManager em) {
+
         fullTextEntityManager = null;
     }
 
@@ -38,6 +39,7 @@ public class FullTextSearchSimpleRepository<MODEL extends EntityBase> implements
     @Override
     public Page<MODEL> find(SpecificationFullText specification, Pageable pageable) {
 
+        fullTextEntityManager.getCriteriaBuilder();
         QueryBuilder queryBuilder = fullTextEntityManager.getSearchFactory()
                 .buildQueryBuilder().forEntity(modelClass).get();
 

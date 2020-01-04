@@ -3,29 +3,34 @@ package pl.lasota.tool.crud.fulltextrepository.distributed;
 import org.hibernate.search.query.dsl.BooleanJunction;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import pl.lasota.tool.crud.common.CriteriaType;
+import pl.lasota.tool.crud.common.Processable;
 import pl.lasota.tool.crud.fulltextrepository.mapping.MappingFieldFullText;
 import pl.lasota.tool.crud.repository.field.CriteriaField;
 
 import java.util.List;
 import java.util.Objects;
 
-public class ShouldDistribute<MODEL> {
+public class ShouldDistribute implements Processable {
 
-    private final List<CriteriaField<?>> fields;
 
-    private MappingFieldFullText mappingFieldFullText;
+    private final MappingFieldFullText mappingFieldFullText;
+    private final QueryBuilder queryBuilder;
+    private final BooleanJunction booleanJunction;
 
-    public ShouldDistribute(List<CriteriaField<?>> fields, MappingFieldFullText mappingFieldFullText) {
-        this.fields = fields;
+
+    public ShouldDistribute(MappingFieldFullText mappingFieldFullText, QueryBuilder queryBuilder, BooleanJunction booleanJunction) {
         this.mappingFieldFullText = mappingFieldFullText;
+        this.queryBuilder = queryBuilder;
+        this.booleanJunction = booleanJunction;
     }
 
-    public void process(QueryBuilder queryBuilder, BooleanJunction booleanJunction) {
+
+    @Override
+    public void process(List<CriteriaField<?>> fields) {
         fields.stream()
                 .filter(Objects::nonNull)
                 .map(field -> (CriteriaField<?>) field)
                 .filter(field -> field.getCriteriaType() == CriteriaType.SHOULD)
                 .forEach(field -> mappingFieldFullText.map(field, queryBuilder, booleanJunction));
     }
-
 }

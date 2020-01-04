@@ -1,4 +1,4 @@
-package pl.lasota.tool.crud.repository.distributed;
+package pl.lasota.tool.crud.common;
 
 import pl.lasota.tool.crud.repository.field.CriteriaField;
 

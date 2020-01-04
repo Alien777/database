@@ -4,17 +4,19 @@ package pl.lasota.tool.crud.service.listener;
 import pl.lasota.tool.crud.field.Field;
 import pl.lasota.tool.crud.mapping.Mapping;
 import pl.lasota.tool.crud.common.EntityBase;
+import pl.lasota.tool.crud.repository.Specification;
 import pl.lasota.tool.crud.repository.mapping.FieldMapping;
 import pl.lasota.tool.crud.repository.distributed.DistributeCriteriaFactory;
 import pl.lasota.tool.crud.repository.update.SpecificationUpdate;
 import pl.lasota.tool.crud.repository.update.UpdateRepository;
 import pl.lasota.tool.crud.repository.update.criteria.UpdateCriteriaSpecification;
+import pl.lasota.tool.crud.service.SpecificationProvider;
 import pl.lasota.tool.crud.service.UpdateService;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class ListenerUpdateService<READING, MODEL extends EntityBase> implements UpdateService<MODEL>, ListenerService<List<Long>> {
+public class ListenerUpdateService<READING, MODEL extends EntityBase> implements UpdateService, ListenerService<List<Long>>, SpecificationProvider<Specification<MODEL>> {
 
     private final List<ChangeListener<List<Long>>> changeListeners = new LinkedList<>();
 
