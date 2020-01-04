@@ -1,5 +1,6 @@
 package pl.lasota.tool.crud.repository.update.criteria;
 
+import pl.lasota.tool.crud.common.EntityBase;
 import pl.lasota.tool.crud.repository.distributed.DistributeCriteriaFactory;
 
 import pl.lasota.tool.crud.repository.search.criteria.SearchCriteriaSpecification;
@@ -12,7 +13,7 @@ import javax.persistence.criteria.Root;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UpdateCriteriaSpecification<MODEL> extends SearchCriteriaSpecification<MODEL> implements SpecificationUpdate<MODEL> {
+public class UpdateCriteriaSpecification<MODEL extends EntityBase> extends SearchCriteriaSpecification<MODEL> implements SpecificationUpdate<MODEL> {
     private DistributeCriteriaFactory<MODEL> distributeFieldFactory;
 
     public UpdateCriteriaSpecification(DistributeCriteriaFactory<MODEL> distributeFieldFactory) {

@@ -21,11 +21,9 @@ public class ListenerUpdateService<READING, MODEL extends EntityBase> implements
     private final List<ChangeListener<List<Long>>> changeListeners = new LinkedList<>();
 
     private final UpdateRepository<MODEL> repository;
-    private final Class<MODEL> modelClass;
 
-    public ListenerUpdateService(UpdateRepository<MODEL> repository, Class<MODEL> modelClass) {
+    public ListenerUpdateService(UpdateRepository<MODEL> repository) {
         this.repository = repository;
-        this.modelClass = modelClass;
     }
 
     @Override

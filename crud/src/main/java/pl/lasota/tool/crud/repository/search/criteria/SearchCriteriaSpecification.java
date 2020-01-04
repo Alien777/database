@@ -1,5 +1,6 @@
 package pl.lasota.tool.crud.repository.search.criteria;
 
+import pl.lasota.tool.crud.common.EntityBase;
 import pl.lasota.tool.crud.repository.distributed.DistributeCriteriaFactory;
 import pl.lasota.tool.crud.repository.search.SpecificationQuery;
 
@@ -7,7 +8,7 @@ import javax.persistence.criteria.*;
 import java.util.LinkedList;
 import java.util.List;
 
-public class SearchCriteriaSpecification<MODEL> implements SpecificationQuery<MODEL> {
+public class SearchCriteriaSpecification<MODEL extends EntityBase> implements SpecificationQuery<MODEL> {
 
     private final DistributeCriteriaFactory<MODEL> distributeFactory;
 

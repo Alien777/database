@@ -16,22 +16,18 @@ import pl.lasota.tool.crud.service.UpdateService;
 
 import java.util.List;
 
-public class BaseUpdateService<READING, MODEL extends EntityBase> implements UpdateService,  SpecificationProvider<Specification<MODEL>> {
+public class BaseUpdateService<MODEL extends EntityBase> implements UpdateService,  SpecificationProvider<Specification<MODEL>> {
 
     private final UpdateRepository<MODEL> repository;
-    private final Mapping<List<MODEL>, List<READING>> mapping;
-    private final Class<MODEL> modelClass;
 
-    public BaseUpdateService(UpdateRepository<MODEL> repository, Mapping<List<MODEL>, List<READING>> mapping, Class<MODEL> modelClass) {
+
+    public BaseUpdateService(UpdateRepository<MODEL> repository) {
         this.repository = repository;
-        this.mapping = mapping;
-        this.modelClass = modelClass;
     }
 
     @Override
     @Transactional
     public List<Long> update(List<Field<?>> source) {
-
         return repository.update(providerSpecification(source));
     }
 
