@@ -23,10 +23,13 @@ public class BaseSearchService<READING, MODEL extends EntityBase> implements Sea
 
     private final SearchRepository<MODEL> repository;
     private final Mapping<Page<MODEL>, Page<READING>> mapping;
+    private final FieldMapping<MODEL> map;
 
-    public BaseSearchService(SearchRepository<MODEL> repository, Mapping<Page<MODEL>, Page<READING>> mapping) {
+    public BaseSearchService(SearchRepository<MODEL> repository, Mapping<Page<MODEL>, Page<READING>> mapping, Class<MODEL> modelClass) {
         this.repository = repository;
+        repository.modelClass(modelClass);
         this.mapping = mapping;
+        map = new FieldMapping<>(modelClass);
     }
 
     @Override
@@ -38,7 +41,7 @@ public class BaseSearchService<READING, MODEL extends EntityBase> implements Sea
 
     @Override
     public SpecificationQuery<MODEL> providerSpecification(List<Field<?>> fields) {
-        FieldMapping<MODEL> map = new FieldMapping<>();
+
         return new SearchCriteriaSpecification<>(new DistributeCriteriaFactory<>(filter(fields), map, map, map));
     }
 }

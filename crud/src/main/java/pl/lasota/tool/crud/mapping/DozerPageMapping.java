@@ -1,6 +1,9 @@
 package pl.lasota.tool.crud.mapping;
 
+import com.github.dozermapper.core.Mapper;
 import org.springframework.data.domain.Page;
+
+import java.io.InputStream;
 
 /**
  *  * Simple Implementation using Dozer Mapper to map one spring page to another spring page with different objects type
@@ -9,9 +12,10 @@ import org.springframework.data.domain.Page;
  */
 public final class DozerPageMapping<SOURCE, DESTINATION> implements Mapping<Page<SOURCE>, Page<DESTINATION>> {
 
-    private final DozerMapper<SOURCE, DESTINATION> mapper;
+    private final DozerMapper<SOURCE,DESTINATION> mapper;
 
-    public DozerPageMapping(String file, Class<DESTINATION> destination) {
+
+    public DozerPageMapping(InputStream file, Class<DESTINATION> destination) {
         mapper = new DozerMapper<>(destination, file);
     }
 

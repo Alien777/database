@@ -9,8 +9,7 @@ import pl.lasota.tool.crud.service.base.BaseDeleteService;
 public class DeleteService extends BaseDeleteService<User> {
 
     public DeleteService(DeleteRepository<User> repository) {
-        super(repository);
-        repository.modelClass(User.class);
+        super(repository, User.class);
     }
 
 }

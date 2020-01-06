@@ -19,21 +19,25 @@ public class ListenerDeleteService<MODEL extends EntityBase> implements DeleteSe
     private final DeleteRepository<MODEL> repository;
 
     private final List<ChangeListener<List<Long>>> changeListeners = new LinkedList<>();
+    private final FieldMapping<MODEL> map;
 
-    public ListenerDeleteService(DeleteRepository<MODEL> repository) {
+    public ListenerDeleteService(DeleteRepository<MODEL> repository, Class<MODEL> modelClass) {
         this.repository = repository;
+        map = new FieldMapping<>(modelClass);
+        repository.modelClass(modelClass);
     }
 
     @Override
     public List<Long> delete(List<Field<?>> source) {
         List<Long> delete = repository.delete(providerSpecification(source));
         changeListeners.forEach(l -> l.onChange(delete, TypeListener.DELETE));
+
         return delete;
     }
 
     @Override
     public SpecificationDelete<MODEL> providerSpecification(List<Field<?>> fields) {
-        FieldMapping<MODEL> map = new FieldMapping<>();
+
         return new DeleteCriteriaSpecification<>(new DistributeCriteriaFactory<>(filter(fields), map, map, map));
     }
 

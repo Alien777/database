@@ -1,5 +1,6 @@
 package pl.lasota.tool.crud.mapping;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,7 +14,7 @@ public final class DozerListMapping<SOURCE, DESTINATION> implements Mapping<List
 
     private final DozerMapper<SOURCE, DESTINATION> mapper;
 
-    public DozerListMapping(String file, Class<DESTINATION> destination) {
+    public DozerListMapping(Class<DESTINATION> destination, InputStream file) {
         mapper = new DozerMapper<>(destination, file);
     }
 

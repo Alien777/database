@@ -16,9 +16,12 @@ import java.util.List;
 public class BaseDeleteService<MODEL extends EntityBase> implements DeleteService, SpecificationProvider<Specification<MODEL>> {
 
     private final DeleteRepository<MODEL> repository;
+    private final FieldMapping<MODEL> map;
 
-    public BaseDeleteService(DeleteRepository<MODEL> repository) {
+    public BaseDeleteService(DeleteRepository<MODEL> repository, Class<MODEL> modelClass) {
         this.repository = repository;
+        repository.modelClass(modelClass);
+        map = new FieldMapping<>(modelClass);
     }
 
     @Override
@@ -28,7 +31,7 @@ public class BaseDeleteService<MODEL extends EntityBase> implements DeleteServic
 
     @Override
     public SpecificationDelete<MODEL> providerSpecification(List<Field<?>> fields) {
-        FieldMapping<MODEL> map = new FieldMapping<>();
+
         return new DeleteCriteriaSpecification<>(new DistributeCriteriaFactory<>(filter(fields), map, map, map));
     }
 

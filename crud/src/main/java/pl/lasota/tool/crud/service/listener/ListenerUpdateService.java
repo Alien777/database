@@ -21,9 +21,11 @@ public class ListenerUpdateService<READING, MODEL extends EntityBase> implements
     private final List<ChangeListener<List<Long>>> changeListeners = new LinkedList<>();
 
     private final UpdateRepository<MODEL> repository;
+    private final FieldMapping<MODEL> map;
 
-    public ListenerUpdateService(UpdateRepository<MODEL> repository) {
+    public ListenerUpdateService(UpdateRepository<MODEL> repository, Class<MODEL> modelClass) {
         this.repository = repository;
+        map = new FieldMapping<>(modelClass);
     }
 
     @Override
@@ -36,7 +38,7 @@ public class ListenerUpdateService<READING, MODEL extends EntityBase> implements
 
     @Override
     public SpecificationUpdate<MODEL> providerSpecification(List<Field<?>> fields) {
-        FieldMapping<MODEL> map = new FieldMapping<>();
+
         return new UpdateCriteriaSpecification<>(new DistributeCriteriaFactory<>(filter(fields), map, map, map));
     }
 

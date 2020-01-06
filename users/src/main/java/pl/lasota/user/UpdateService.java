@@ -8,7 +8,6 @@ import pl.lasota.tool.crud.service.base.BaseUpdateService;
 public class UpdateService extends BaseUpdateService<User> {
 
     public UpdateService(UpdateRepository<User> repository) {
-        super(repository);
-        repository.modelClass(User.class);
+        super(repository, User.class);
     }
 }

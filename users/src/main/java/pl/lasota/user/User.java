@@ -22,7 +22,7 @@ public class User extends EntitySecurity {
     @AliasColumn(names = "login")
     public String name;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     public Address address;
 
     @ElementCollection

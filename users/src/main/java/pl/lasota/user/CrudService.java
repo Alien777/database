@@ -10,6 +10,5 @@ public class CrudService extends BaseCrudService<User, User, UserDto, User> {
 
     public CrudService(CrudRepository<User> repository) {
         super(repository, new DozerMapper<>(User.class), new DozerMapper<>(User.class), new DozerMapper<>(User.class), User.class);
-        repository.modelClass(User.class);
     }
 }

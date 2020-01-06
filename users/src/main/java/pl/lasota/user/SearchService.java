@@ -8,8 +8,7 @@ import pl.lasota.tool.crud.service.base.BaseSearchService;
 @Service
 public class SearchService extends BaseSearchService<User, User> {
     public SearchService(SearchRepository<User> repository) {
-        super(repository, new DozerPageMapping<>(User.class));
-        repository.modelClass(User.class);
+        super(repository, new DozerPageMapping<>(User.class), User.class);
 
     }
 }

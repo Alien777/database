@@ -1,54 +1,53 @@
 package pl.lasota.tool.crud.mapping;
 
-import org.apache.commons.lang3.reflect.FieldUtils;
-import org.dozer.DozerBeanMapper;
-import org.dozer.loader.api.BeanMappingBuilder;
-import org.dozer.loader.api.TypeMappingOptions;
-import org.springframework.core.annotation.AnnotationUtils;
+import com.github.dozermapper.core.DozerBeanMapperBuilder;
+import com.github.dozermapper.core.Mapper;
+import com.github.dozermapper.core.loader.api.BeanMappingBuilder;
+import com.github.dozermapper.core.loader.api.FieldDefinition;
+import com.github.dozermapper.core.loader.api.FieldsMappingOptions;
+import com.github.dozermapper.core.loader.api.TypeMappingOptions;
+import pl.lasota.tool.crud.reflection.UtilsReflection;
 
-import java.lang.reflect.Field;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * * Simple Implementation using Dozer Mapper to map between two different object or the same object
- *
- * @param <SOURCE>
- * @param <DESTINATION>
  */
-public final class DozerSameObject<SOURCE, DESTINATION> {
+public final class DozerSameObject<S_D> {
 
-    private final DozerBeanMapper mapper = new DozerBeanMapper();
+    private final Mapper mapper;
 
-    public DozerSameObject(Class<SOURCE> sourceClass, Class<DESTINATION> destinationClass) {
 
-        Set<String> name = new HashSet<>();
-        LinkedList<Field> fields = new LinkedList<>();
-        List<Field> fields1 = Arrays.asList(sourceClass.getDeclaredFields());
-        fields.addAll(fields1);
+    public DozerSameObject(Class<S_D> sourceClass) {
 
-        while (!fields.isEmpty()) {
-            Field poll = fields.poll();
-            System.out.println(poll.getName());
-            Class<?> type = poll.getType();
+        List<String> copyByrReferences = new LinkedList<>();
 
-            fields.addAll(Arrays.asList(type.getDeclaredFields()));
-            if (poll.isAnnotationPresent(CopyByReference.class)) {
-                name.add(type.getCanonicalName()+"."+poll.getName());
-            }
-        }
+        UtilsReflection.findAllFieldsContains(sourceClass, CopyByReference.class, fieldNode -> copyByrReferences.add(UtilsReflection.getPath(fieldNode)));
 
-        name.forEach(s -> System.out.println(s));
-        mapper.addMapping(new BeanMappingBuilder() {
+
+        List<BeanMappingBuilder> configs = new LinkedList<>();
+        BeanMappingBuilder beanMappingBuilder = new BeanMappingBuilder() {
             protected void configure() {
-                mapping(sourceClass, destinationClass, TypeMappingOptions.mapNull(false), TypeMappingOptions.mapEmptyString(true));
+                mapping(sourceClass, sourceClass, TypeMappingOptions.mapNull(false), TypeMappingOptions.mapEmptyString(true));
             }
-        });
+        };
+        configs.add(beanMappingBuilder);
+        copyByrReferences.forEach(s -> {
+            BeanMappingBuilder reference = new BeanMappingBuilder() {
+                protected void configure() {
+                    mapping(sourceClass, sourceClass, TypeMappingOptions.mapNull(false))
+                            .fields(s, s, FieldsMappingOptions.copyByReference());
+                }
+            };
+            configs.add(reference);
 
+        });
+        mapper = DozerBeanMapperBuilder.create().withMappingBuilders(configs).build();
     }
 
-    public void mapper(SOURCE source, DESTINATION destination) {
 
-
+    public void mapper(S_D source, S_D destination) {
         mapper.map(source, destination);
     }
 }

@@ -37,9 +37,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>net.sf.dozer</groupId>
-            <artifactId>dozer</artifactId>
-            <scope>compile</scope>
+            <groupId>com.github.dozermapper</groupId>
+            <artifactId>dozer-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>

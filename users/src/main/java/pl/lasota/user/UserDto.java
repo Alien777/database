@@ -15,6 +15,7 @@ public class UserDto implements UpdatingSecurity {
 
     public String name;
     public Long id;
+    public Address address;
     public Set<Access> accesses;
 
 

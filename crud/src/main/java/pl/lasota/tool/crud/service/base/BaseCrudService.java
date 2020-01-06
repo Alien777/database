@@ -16,15 +16,16 @@ public class BaseCrudService<CREATING, READING, UPDATING extends Updating, MODEL
     private final Mapping<CREATING, MODEL> creatingToModel;
     private final Mapping<UPDATING, MODEL> updatingToModel;
     private final Mapping<MODEL, READING> modelToReading;
-    private final DozerSameObject<MODEL, MODEL> modelToModel;
+    private final DozerSameObject<MODEL> modelToModel;
 
     public BaseCrudService(CrudRepository<MODEL> repository, Mapping<CREATING, MODEL> creatingToModel,
                            Mapping<UPDATING, MODEL> updatingToModel, Mapping<MODEL, READING> modelToReading, Class<MODEL> modelClass) {
         this.repository = repository;
+        repository.modelClass(modelClass);
         this.creatingToModel = creatingToModel;
         this.updatingToModel = updatingToModel;
         this.modelToReading = modelToReading;
-        modelToModel = new DozerSameObject<>(modelClass, modelClass);
+        modelToModel = new DozerSameObject<>(modelClass);
     }
 
     @Override
@@ -63,11 +64,8 @@ public class BaseCrudService<CREATING, READING, UPDATING extends Updating, MODEL
             return null;
         }
         MODEL inDatabase = repository.get(updating.getId());
-        System.out.println(inDatabase);
         MODEL inUpdated = updatingToModel.mapper(updating);
-        System.out.println(inUpdated);
         modelToModel.mapper(inUpdated, inDatabase);
-        System.out.println(inDatabase);
         return modelToReading.mapper(inDatabase);
     }
 }

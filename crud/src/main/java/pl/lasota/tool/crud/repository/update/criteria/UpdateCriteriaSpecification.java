@@ -6,10 +6,7 @@ import pl.lasota.tool.crud.repository.distributed.DistributeCriteriaFactory;
 import pl.lasota.tool.crud.repository.search.criteria.SearchCriteriaSpecification;
 import pl.lasota.tool.crud.repository.update.SpecificationUpdate;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaUpdate;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +20,7 @@ public class UpdateCriteriaSpecification<MODEL extends EntityBase> extends Searc
 
     @Override
     public Predicate toPredicate(Root<MODEL> root, CriteriaUpdate<MODEL> criteriaUpdate, CriteriaBuilder criteriaBuilder) {
-        Map<String, Object> stringStringMap = new HashMap<>();
+        Map<Path<Object>, Object> stringStringMap = new HashMap<>();
 
         distributeFieldFactory.set(stringStringMap, root);
 

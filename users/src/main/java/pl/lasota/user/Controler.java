@@ -35,6 +35,16 @@ public class Controler {
         this.deleteService = deleteService;
     }
 
+    @GetMapping("/search")
+    public Page<User> search(@RequestParam MultiValueMap<String,String> stringStringMultiValueMap) throws Exception {
+        return searchService.find(new ParserField().parse(stringStringMultiValueMap));
+    }
+
+    @GetMapping("/update")
+    public List<Long> update(@RequestParam MultiValueMap<String,String> stringStringMultiValueMap) throws Exception {
+        return updateService.update(new ParserField().parse(stringStringMultiValueMap));
+    }
+
     @GetMapping("/get/{id}/{context:.+}")
     public UserDto get(@PathVariable long id, @PathVariable String context) {
         Context context1 = new Context();
@@ -50,8 +60,8 @@ public class Controler {
         return crudService.delete(id, context1);
     }
 
-    @GetMapping("/add/{name:.+}")
-    public UserDto add(@PathVariable String name) {
+    @GetMapping("/add/{name:.+}/{ulica:.+}")
+    public UserDto add(@PathVariable String name,@PathVariable String ulica) {
         UserDto user = new UserDto();
         LinkedList<String> strings = new LinkedList<>();
         strings.add("adam");
@@ -59,6 +69,9 @@ public class Controler {
         strings.add("michal");
         user.setList(strings);
         user.setName(name);
+        Address address = new Address();
+        address.setStreet(ulica);
+        user.setAddress(address);
         Context context = new Context();
         short s = 4;
         context.add(new AccessContext("adam.lasota", s));
@@ -76,9 +89,10 @@ public class Controler {
         user.setName(name);
         LinkedList<String> strings = new LinkedList<>();
         strings.add("adam");
-        strings.add("patryk");
-        strings.add("karol");
-        strings.add("wojtek");
+        strings.add("mietek");
+        strings.add("kurwa");
+        strings.add("kurwa2");
+        strings.add("kurwa3");
         user.setList(strings);
 
         user.setId(id);

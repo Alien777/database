@@ -5,10 +5,7 @@ import pl.lasota.tool.crud.repository.mapping.SortMapping;
 import pl.lasota.tool.crud.repository.mapping.PredicatesMapping;
 import pl.lasota.tool.crud.repository.mapping.SetMapping;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +27,7 @@ public class DistributeCriteriaFactory<MODEL> {
 
     }
 
-    public DistributeCriteriaFactory<MODEL> set(Map<String, Object> criteriaUpdate, Root<MODEL> modelRoot) {
+    public DistributeCriteriaFactory<MODEL> set(Map<Path<Object>, Object> criteriaUpdate, Root<MODEL> modelRoot) {
         new SetDistribute<>(modelSetMapping, modelRoot, criteriaUpdate).process(fields);
         return this;
     }

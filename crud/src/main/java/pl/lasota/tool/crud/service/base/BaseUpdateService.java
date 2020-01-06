@@ -16,13 +16,16 @@ import pl.lasota.tool.crud.service.UpdateService;
 
 import java.util.List;
 
-public class BaseUpdateService<MODEL extends EntityBase> implements UpdateService,  SpecificationProvider<Specification<MODEL>> {
+public class BaseUpdateService<MODEL extends EntityBase> implements UpdateService, SpecificationProvider<Specification<MODEL>> {
 
     private final UpdateRepository<MODEL> repository;
 
+    private final FieldMapping<MODEL> map;
 
-    public BaseUpdateService(UpdateRepository<MODEL> repository) {
+    public BaseUpdateService(UpdateRepository<MODEL> repository, Class<MODEL> modelClass) {
         this.repository = repository;
+        repository.modelClass(modelClass);
+        map = new FieldMapping<>(modelClass);
     }
 
     @Override
@@ -34,7 +37,7 @@ public class BaseUpdateService<MODEL extends EntityBase> implements UpdateServic
 
     @Override
     public SpecificationUpdate<MODEL> providerSpecification(List<Field<?>> fields) {
-        FieldMapping<MODEL> map = new FieldMapping<>();
+
         return new UpdateCriteriaSpecification<>(new DistributeCriteriaFactory<>(filter(fields), map, map, map));
     }
 
