@@ -3,19 +3,20 @@ package pl.lasota.tool.crud.service.listener;
 import pl.lasota.tool.crud.mapping.Mapping;
 import pl.lasota.tool.crud.common.EntityBase;
 import pl.lasota.tool.crud.repository.crud.CrudRepository;
+import pl.lasota.tool.crud.security.Updating;
 import pl.lasota.tool.crud.service.base.BaseCrudService;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class ListenerCrudService<CREATING, READING, UPDATING, MODEL extends EntityBase>
+public class ListenerCrudService<CREATING, READING, UPDATING extends Updating, MODEL extends EntityBase>
         extends BaseCrudService<CREATING, READING, UPDATING, MODEL> implements ListenerService<Object> {
 
     private final List<ChangeListener<Object>> changeListeners = new LinkedList<>();
 
     public ListenerCrudService(CrudRepository<MODEL> repository, Mapping<CREATING, MODEL> creatingToModel,
-                               Mapping<UPDATING, MODEL> updatingToModel, Mapping<MODEL, READING> modelToReading) {
-        super(repository, creatingToModel, updatingToModel, modelToReading);
+                               Mapping<UPDATING, MODEL> updatingToModel, Mapping<MODEL, READING> modelToReading, Class<MODEL> modelClass) {
+        super(repository, creatingToModel, updatingToModel, modelToReading, modelClass);
     }
 
     @Override

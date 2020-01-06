@@ -6,10 +6,10 @@ import pl.lasota.tool.crud.repository.crud.CrudRepository;
 import pl.lasota.tool.crud.service.base.BaseCrudService;
 
 @Service
-public class CrudService extends BaseCrudService<User, User, User, User> {
+public class CrudService extends BaseCrudService<User, User, UserDto, User> {
 
     public CrudService(CrudRepository<User> repository) {
-        super(repository, new DozerMapper<>(User.class), new DozerMapper<>(User.class), new DozerMapper<>(User.class));
+        super(repository, new DozerMapper<>(User.class), new DozerMapper<>(User.class), new DozerMapper<>(User.class), User.class);
         repository.modelClass(User.class);
     }
 }

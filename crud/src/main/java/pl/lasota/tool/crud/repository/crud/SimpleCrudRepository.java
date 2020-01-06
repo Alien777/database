@@ -1,10 +1,12 @@
 package pl.lasota.tool.crud.repository.crud;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.crud.common.EntityBase;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 
 @Transactional(readOnly = true)
 @Repository
@@ -45,14 +47,12 @@ public class SimpleCrudRepository<MODEL extends EntityBase> implements CrudRepos
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public MODEL update(MODEL create) {
         if (create.getId() == null) {
             return null;
         }
-        MODEL model = em.find(modelClass, create.getId());
-        if (model == null) {
-            return null;
-        }
+
         return em.merge(create);
     }
 

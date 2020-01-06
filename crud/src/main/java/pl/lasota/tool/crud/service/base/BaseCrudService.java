@@ -1,25 +1,30 @@
 package pl.lasota.tool.crud.service.base;
 
 import org.springframework.transaction.annotation.Transactional;
+import pl.lasota.tool.crud.mapping.DozerSameObject;
 import pl.lasota.tool.crud.mapping.Mapping;
 import pl.lasota.tool.crud.common.EntityBase;
 import pl.lasota.tool.crud.repository.crud.CrudRepository;
+import pl.lasota.tool.crud.security.Updating;
 import pl.lasota.tool.crud.service.CrudService;
 
-public class BaseCrudService<CREATING, READING, UPDATING, MODEL extends EntityBase>
+@Transactional(readOnly = true)
+public class BaseCrudService<CREATING, READING, UPDATING extends Updating, MODEL extends EntityBase>
         implements CrudService<CREATING, READING, UPDATING> {
 
     private final CrudRepository<MODEL> repository;
     private final Mapping<CREATING, MODEL> creatingToModel;
     private final Mapping<UPDATING, MODEL> updatingToModel;
     private final Mapping<MODEL, READING> modelToReading;
+    private final DozerSameObject<MODEL, MODEL> modelToModel;
 
     public BaseCrudService(CrudRepository<MODEL> repository, Mapping<CREATING, MODEL> creatingToModel,
-                           Mapping<UPDATING, MODEL> updatingToModel, Mapping<MODEL, READING> modelToReading) {
+                           Mapping<UPDATING, MODEL> updatingToModel, Mapping<MODEL, READING> modelToReading, Class<MODEL> modelClass) {
         this.repository = repository;
         this.creatingToModel = creatingToModel;
         this.updatingToModel = updatingToModel;
         this.modelToReading = modelToReading;
+        modelToModel = new DozerSameObject<>(modelClass, modelClass);
     }
 
     @Override
@@ -35,7 +40,6 @@ public class BaseCrudService<CREATING, READING, UPDATING, MODEL extends EntityBa
     }
 
     @Override
-    @Transactional(readOnly = true)
     public READING get(Long id) {
         MODEL model = repository.get(id);
         if (model == null) {
@@ -53,14 +57,17 @@ public class BaseCrudService<CREATING, READING, UPDATING, MODEL extends EntityBa
     @Override
     @Transactional
     public READING update(UPDATING updating) {
-        MODEL model = updatingToModel.mapper(updating);
-        if (model.getId() == null) {
+        if (updating == null
+                || updating.getId() == null
+                || updating.getId() < 0) {
             return null;
         }
-        MODEL updated = repository.update(model);
-        if (updated == null) {
-            return null;
-        }
-        return modelToReading.mapper(updated);
+        MODEL inDatabase = repository.get(updating.getId());
+        System.out.println(inDatabase);
+        MODEL inUpdated = updatingToModel.mapper(updating);
+        System.out.println(inUpdated);
+        modelToModel.mapper(inUpdated, inDatabase);
+        System.out.println(inDatabase);
+        return modelToReading.mapper(inDatabase);
     }
 }

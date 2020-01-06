@@ -8,14 +8,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pl.lasota.tool.crud.field.Field;
 import pl.lasota.tool.crud.parser.ParserField;
+import pl.lasota.tool.crud.security.AccessContext;
+import pl.lasota.tool.crud.security.Context;
+import pl.lasota.tool.crud.service.security.CrudSecurityDelegator;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
 @RestController
 public class Controler {
 
-    private final CrudService crudService;
+    private final CrudSecurityService crudService;
 
     private final SearchService searchService;
 
@@ -24,51 +28,64 @@ public class Controler {
     private final DeleteService deleteService;
 
 
-    public Controler(CrudService crudService, SearchService searchService, UpdateService updateService, DeleteService deleteService) {
+    public Controler(CrudSecurityService crudService, SearchService searchService, UpdateService updateService, DeleteService deleteService) {
         this.crudService = crudService;
         this.searchService = searchService;
         this.updateService = updateService;
         this.deleteService = deleteService;
     }
 
-    @GetMapping("/{id}")
-    public User get(@PathVariable long id) {
-        return crudService.get(id);
-    }
-
-    @GetMapping("/search")
-    public Page<User> search(@RequestParam MultiValueMap<String, String> allRequestParams) throws Exception {
-        List<Field<?>> parse = new ParserField().parse(allRequestParams);
-        return searchService.find(parse);
-
-    }
-
-    @GetMapping("/update")
-    public List<Long> update(@RequestParam MultiValueMap<String, String> allRequestParams) throws Exception {
-        List<Field<?>> parse = new ParserField().parse(allRequestParams);
-        return updateService.update(parse);
-
-    }
-
-    @GetMapping("/delete")
-    public List<Long> delete(@RequestParam MultiValueMap<String, String> allRequestParams) throws Exception {
-        List<Field<?>> parse = new ParserField().parse(allRequestParams);
-        return deleteService.delete(parse);
-
+    @GetMapping("/get/{id}/{context:.+}")
+    public UserDto get(@PathVariable long id, @PathVariable String context) {
+        Context context1 = new Context();
+        context1.add(new AccessContext(context));
+        return crudService.get(id, context1);
     }
 
 
-    @GetMapping("/delete/{id}")
-    public Long de(@PathVariable long id) {
-        return crudService.delete(id);
+    @GetMapping("/delete/{id}/{context:.+}")
+    public Long de(@PathVariable long id, @PathVariable String context) {
+        Context context1 = new Context();
+        context1.add(new AccessContext(context));
+        return crudService.delete(id, context1);
     }
 
-
-    @GetMapping("/add/{name}")
-    public User get(@PathVariable String name) {
-        User user = new User();
+    @GetMapping("/add/{name:.+}")
+    public UserDto add(@PathVariable String name) {
+        UserDto user = new UserDto();
+        LinkedList<String> strings = new LinkedList<>();
+        strings.add("adam");
+        strings.add("patryk");
+        strings.add("michal");
+        user.setList(strings);
         user.setName(name);
-        user.setPassword(UUID.randomUUID().toString());
-        return crudService.save(user);
+        Context context = new Context();
+        short s = 4;
+        context.add(new AccessContext("adam.lasota", s));
+
+        s = 2;
+        context.add(new AccessContext("group", s));
+
+        return crudService.save(user, context);
+    }
+
+
+    @GetMapping("/update/{id}/{name:.+}/{context:.+}")
+    public UserDto update(@PathVariable long id, @PathVariable String name, @PathVariable String context) {
+        UserDto user = new UserDto();
+        user.setName(name);
+        LinkedList<String> strings = new LinkedList<>();
+        strings.add("adam");
+        strings.add("patryk");
+        strings.add("karol");
+        strings.add("wojtek");
+        user.setList(strings);
+
+        user.setId(id);
+
+        Context context1 = new Context();
+        context1.add(new AccessContext(context));
+
+        return crudService.update(user, context1);
     }
 }

@@ -1,8 +1,11 @@
 package pl.lasota.tool.crud.common;
 
+import lombok.ToString;
+
 import javax.persistence.*;
 
 @MappedSuperclass
+@ToString(callSuper = true)
 public abstract class EntityBase {
 
     @Id
