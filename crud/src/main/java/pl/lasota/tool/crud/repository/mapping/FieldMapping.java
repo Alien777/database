@@ -66,7 +66,7 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
     }
 
     @Override
-    public void map(SetField field, Map<Path<Object>, Object> criteriaUpdate, Root<MODEL> modelRoot) {
+    public void map(SetField field, Map<Path, Object> criteriaUpdate, Root<MODEL> modelRoot) {
         try {
             create(field, criteriaUpdate, modelRoot);
         } catch (ParseException e) {
@@ -74,12 +74,12 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
         }
     }
 
-    private void create(SetField field, Map<Path<Object>, Object> criteriaUpdate, Root<MODEL> root) throws ParseException {
+    private void create(SetField field, Map<Path, Object> criteriaUpdate, Root<MODEL> root) throws ParseException {
         String[] split = field.getName().split("\\.");
-        Path<Object> objectPath = root.get(split[0]);
+        Path objectPath = root;
 
-        for (int i = 1; i < split.length; i++) {
-            objectPath = objectPath.get(split[i]);
+        for (String s : split) {
+            objectPath = objectPath.get(s);
         }
 
         Object o = convertClass(objectPath.getJavaType().getTypeName(), field.getValue());
@@ -95,7 +95,7 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
         Path<Short> shortPath = root.get(split[0]);
         Path<Integer> intPath = root.get(split[0]);
         Path<Long> longPath = root.get(split[0]);
-        for (int i = 1; i < split.length; i++) {
+        for (int i = 0; i < split.length; i++) {
             doublePath = doublePath.get(split[i]);
             floatPath = floatPath.get(split[i]);
             shortPath = shortPath.get(split[i]);

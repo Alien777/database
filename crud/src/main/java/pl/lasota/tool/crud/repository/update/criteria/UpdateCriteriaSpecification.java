@@ -20,7 +20,7 @@ public class UpdateCriteriaSpecification<MODEL extends EntityBase> extends Searc
 
     @Override
     public Predicate toPredicate(Root<MODEL> root, CriteriaUpdate<MODEL> criteriaUpdate, CriteriaBuilder criteriaBuilder) {
-        Map<Path<Object>, Object> stringStringMap = new HashMap<>();
+        Map<Path, Object> stringStringMap = new HashMap<>();
 
         distributeFieldFactory.set(stringStringMap, root);
 
