@@ -19,7 +19,7 @@ public class DeleteCriteriaSpecification<MODEL extends EntityBase> extends Searc
 
     @Override
     public Predicate toPredicate(Root<MODEL> root, CriteriaBuilder criteriaBuilder) {
-        Map<Path, Object> stringStringMap = new HashMap<>();
+        Map<String, Object> stringStringMap = new HashMap<>();
 
         distributeFieldFactory.set(stringStringMap, root);
 

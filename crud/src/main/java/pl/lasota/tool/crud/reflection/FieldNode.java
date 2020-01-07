@@ -5,9 +5,11 @@ import lombok.Data;
 import lombok.ToString;
 
 import java.lang.reflect.Field;
+import java.util.Objects;
 
 
 @AllArgsConstructor
+@ToString(callSuper = true)
 public class FieldNode {
 
     private final FieldNode next;
@@ -33,5 +35,19 @@ public class FieldNode {
 
     public boolean isContains() {
         return contains;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FieldNode fieldNode = (FieldNode) o;
+        return Objects.equals(next, fieldNode.next) &&
+                Objects.equals(field, fieldNode.field);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(next, field);
     }
 }

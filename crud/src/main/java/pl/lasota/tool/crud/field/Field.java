@@ -2,7 +2,7 @@ package pl.lasota.tool.crud.field;
 
 import lombok.ToString;
 
-@ToString
+@ToString(callSuper = true)
 public class Field<VALUE> {
     private final VALUE value;
 

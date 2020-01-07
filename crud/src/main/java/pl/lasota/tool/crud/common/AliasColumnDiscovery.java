@@ -22,11 +22,9 @@ public final class AliasColumnDiscovery<MODEL> {
             AliasColumn annotation = fieldNode.getField().getAnnotation(AliasColumn.class);
             map.put(pathWithFile.getFirst(), annotation.names());
         });
-        map.forEach((s, s1) -> System.out.println(s+" "+s1[0]));
     }
 
     public String discover(String alias) {
-        System.out.println(alias);
         return alias;
     }
 }

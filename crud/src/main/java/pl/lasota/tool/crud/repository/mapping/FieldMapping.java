@@ -25,7 +25,7 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
 
     @Override
     public void map(CriteriaField<?> field, List<Predicate> predicates, Root<MODEL> root, CriteriaBuilder cb) {
-
+        System.out.println(field.getName()+" "+field.getValue());
         if (field instanceof RangeStringField) {
             try {
                 create((RangeStringField) field, predicates, root, cb);
@@ -66,7 +66,7 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
     }
 
     @Override
-    public void map(SetField field, Map<Path, Object> criteriaUpdate, Root<MODEL> modelRoot) {
+    public void map(SetField field, Map<String, Object> criteriaUpdate, Root<MODEL> modelRoot) {
         try {
             create(field, criteriaUpdate, modelRoot);
         } catch (ParseException e) {
@@ -74,16 +74,13 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
         }
     }
 
-    private void create(SetField field, Map<Path, Object> criteriaUpdate, Root<MODEL> root) throws ParseException {
-        String[] split = field.getName().split("\\.");
-        Path objectPath = root;
+    private void create(SetField field, Map<String, Object> criteriaUpdate, Root<MODEL> root) throws ParseException {
+        System.out.println(field.getName()+" "+field.getValue());
+        Path<Object> objectPath = root.get(field.getName());
 
-        for (String s : split) {
-            objectPath = objectPath.get(s);
-        }
 
         Object o = convertClass(objectPath.getJavaType().getTypeName(), field.getValue());
-        criteriaUpdate.put(objectPath, o);
+        criteriaUpdate.put(field.getName(), o);
     }
 
     private void create(RangeStringField field, List<Predicate> predicates, Root<MODEL> root, CriteriaBuilder cb) throws ParseException {

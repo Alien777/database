@@ -15,10 +15,10 @@ public class SetDistribute<MODEL> implements Processable {
 
     private final SetMapping<MODEL> setMapping;
     private final Root<MODEL> root;
-    private final Map<Path, Object> stringObjectMap;
+    private final Map<String, Object> stringObjectMap;
 
 
-    public SetDistribute(SetMapping<MODEL> setMapping, Root<MODEL> root, Map<Path, Object> stringObjectMap) {
+    public SetDistribute(SetMapping<MODEL> setMapping, Root<MODEL> root, Map<String, Object> stringObjectMap) {
         this.setMapping = setMapping;
         this.root = root;
         this.stringObjectMap = stringObjectMap;

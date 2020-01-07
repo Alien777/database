@@ -13,11 +13,10 @@ public final class UtilsReflection {
 
     public static void findAllFieldsContains(Class<?> baseClass, Class<? extends Annotation> annotationClass,
                                              Consumer<FieldNode> mapper) {
-        HashSet<FieldNode> rawStructure = new HashSet<>();
-        Queue<Field> fields = new ArrayDeque<>();
 
-        fields.addAll(Arrays.asList(baseClass.getDeclaredFields()));
-        rawStructure.addAll(fields.stream().map(f -> new FieldNode(null, f)).collect(Collectors.toList()));
+        Queue<Field> fields = new ArrayDeque<>(Arrays.asList(baseClass.getDeclaredFields()));
+        HashSet<FieldNode> rawStructure = fields.stream().map(f ->
+                new FieldNode(null, f)).collect(Collectors.toCollection(HashSet::new));
 
         while (!fields.isEmpty()) {
             Field currentField = fields.poll();
