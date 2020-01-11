@@ -6,15 +6,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pl.lasota.tool.crud.field.Field;
-import pl.lasota.tool.crud.parser.ParserField;
-import pl.lasota.tool.crud.security.AccessContext;
-import pl.lasota.tool.crud.security.Context;
-import pl.lasota.tool.crud.service.security.CrudSecurityDelegator;
+import pl.lasota.tool.orm.parser.ParserField;
+import pl.lasota.tool.orm.security.AccessContext;
+import pl.lasota.tool.orm.security.Context;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 public class Controler {

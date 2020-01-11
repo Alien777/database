@@ -1,17 +1,13 @@
 package pl.lasota.user;
 
 import org.springframework.stereotype.Service;
-import pl.lasota.tool.crud.repository.update.UpdateRepository;
-import pl.lasota.tool.crud.service.base.BaseUpdateService;
-import pl.lasota.tool.crud.service.base.DynamicUpdateService;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
+import pl.lasota.tool.orm.repository.update.UpdateRepository;
+import pl.lasota.tool.orm.service.base.BaseUpdateService;
 
 @Service
-public class UpdateService extends DynamicUpdateService<User> {
+public class UpdateService extends BaseUpdateService<User> {
 
-    public UpdateService(EntityManager entityManagerFactory) {
-        super(entityManagerFactory, User.class);
+    public UpdateService(UpdateRepository<User> userUpdateRepository) {
+        super(userUpdateRepository, User.class);
     }
 }

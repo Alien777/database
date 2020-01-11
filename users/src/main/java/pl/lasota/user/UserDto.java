@@ -2,9 +2,8 @@ package pl.lasota.user;
 
 
 import lombok.Data;
-import pl.lasota.tool.crud.common.Access;
-import pl.lasota.tool.crud.mapping.CopyByReference;
-import pl.lasota.tool.crud.security.UpdatingSecurity;
+import pl.lasota.tool.orm.common.Access;
+import pl.lasota.tool.orm.security.UpdatingSecurity;
 
 import java.util.List;
 import java.util.Set;
