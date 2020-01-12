@@ -42,78 +42,46 @@ public final class UtilsReflection {
 
     }
 
-    public static Class<?> typeOfFields(Class<?> baseField, String path) {
-        String[] paths = path.split("\\.");
-        return typeOfFields(baseField, paths, paths.length);
-    }
 
     public static Class<?> typeOfFields(Class<?> baseField, String[] path, int level) {
-        List<Class<?>> objects = new ArrayList<>();
-        objects.add(baseField);
-        return typeOfFields(objects, path, level);
-    }
-
-    public static Class<?> typeOfFields(List<Class<?>> baseFields, String[] path, int level) {
 
         Field main = null;
-        int index = 0;
         Queue<Field> fields = new ArrayDeque<>();
-        for (Class<?> baseField : baseFields) {
-            fields.addAll(Arrays.asList(baseField.getDeclaredFields()));
-        }
+        fields.addAll(Arrays.asList(baseField.getDeclaredFields()));
+        fields.addAll(findAllFieldFromSuper(baseField));
+        for (int j = 0; j <= level; j++) {
 
-        for (String s : path) {
-            index++;
+            String fieldName = path[j];
             while (!fields.isEmpty()) {
                 Field currentField = fields.poll();
-                if (currentField.getName().equals(s)) {
+                if (currentField.getName().equals(fieldName)) {
                     main = currentField;
                     break;
                 }
-
             }
+            System.out.println(j+" "+fieldName+" "+main);
             if (main == null) {
                 break;
             }
-
-            if (level == index) {
+            if (j == level) {
                 break;
             }
-
             fields = new ArrayDeque<>();
-
-            if (main.getGenericType() instanceof ParameterizedType) {
-                ParameterizedType type = (ParameterizedType) main.getGenericType();
-                if (type.getActualTypeArguments() != null && type.getActualTypeArguments().length > 0) {
-                    Class<?> stringListClass = (Class<?>) type.getActualTypeArguments()[0];
-                    fields.addAll(Arrays.asList(stringListClass.getDeclaredFields()));
-                }
-            }
             fields.addAll(Arrays.asList(main.getType().getDeclaredFields()));
-            fields.addAll(findAllFieldFromSuper(main));
-
-            main = null;
+            fields.addAll(findAllFieldFromSuper(main.getType()));
+            Class<?> aClass = genericClass(main);
+            if (aClass != null) {
+                fields.addAll(Arrays.asList(aClass.getDeclaredFields()));
+                fields.addAll(findAllFieldFromSuper(aClass));
+            }
 
         }
-
+        System.out.println("*************************");
         if (main != null) {
             return main.getType();
         } else {
             return null;
         }
-    }
-
-    private static List<Field> findAllFieldFromSuper(Field root) {
-        List<Field> fields = new LinkedList<>();
-
-        Class<?> superclass = root.getType().getSuperclass();
-
-        while (superclass != null) {
-            fields.addAll(Arrays.asList(superclass.getDeclaredFields()));
-
-            superclass = superclass.getSuperclass();
-        }
-        return fields;
     }
 
     public static String getPath(FieldNode fieldNodes) {
@@ -142,6 +110,26 @@ public final class UtilsReflection {
             temp = temp.getNext();
         }
         return Pair.of(sb.toString(), fieldNodes.getField());
+    }
+
+    private static List<Field> findAllFieldFromSuper(Class<?> root) {
+        List<Field> fields = new LinkedList<>();
+        Class<?> superclass = root.getSuperclass();
+        while (superclass != null) {
+            fields.addAll(Arrays.asList(superclass.getDeclaredFields()));
+            superclass = superclass.getSuperclass();
+        }
+        return fields;
+    }
+
+    private static Class<?> genericClass(Field root) {
+        if (root.getGenericType() instanceof ParameterizedType) {
+            ParameterizedType type = (ParameterizedType) root.getGenericType();
+            if (type.getActualTypeArguments() != null && type.getActualTypeArguments().length > 0) {
+                return (Class<?>) type.getActualTypeArguments()[0];
+            }
+        }
+        return null;
     }
 
 }

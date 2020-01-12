@@ -22,15 +22,11 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
 
     private final static Pattern NUMBER_PATTERN = Pattern.compile("-?\\d+([.|,]\\d+)?");
     private final AliasColumnDiscovery<MODEL> aliasColumnDiscovery;
-    private final  LinkedList<Class<?>> classesToSearch;
+    private Class<MODEL> model;
+
     public FieldMapping(Class<MODEL> model) {
         aliasColumnDiscovery = new AliasColumnDiscovery<>(model);
-
-        classesToSearch = new LinkedList<>();
-        classesToSearch.add(model);
-        classesToSearch.add(EntitySecurity.class);
-        classesToSearch.add(EntityBase.class);
-
+        this.model = model;
     }
 
     @Override
@@ -84,7 +80,6 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
         String[] split = field.getName().split("\\.");
         Path<Object> objectPath = generatePath(split, root);
 
-
         Object o = convertClass(objectPath.getJavaType().getTypeName(), field.getValue());
         criteriaUpdate.put(objectPath, o);
     }
@@ -109,31 +104,36 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
             Number first = convertStringToNumber(range.getMinimum());
             Number second = convertStringToNumber(range.getMaximum());
             if (isNumeric(range.getMinimum()) && isNumeric(range.getMaximum())) {
-                if (doublePath.getJavaType().getName().equals("java.lang.Double")) {
+                if (doublePath.getJavaType().getName().equals("java.lang.Double")
+                        || floatPath.getJavaType().getName().equals("double")) {
                     predicate = cb.between(
                             doublePath,
                             first.doubleValue(),
                             second.doubleValue());
                 }
-                if (intPath.getJavaType().getName().equals("java.lang.Integer")) {
+                if (intPath.getJavaType().getName().equals("java.lang.Integer")
+                        || floatPath.getJavaType().getName().equals("int")) {
                     predicate = cb.between(
                             intPath,
                             first.intValue(),
                             second.intValue());
                 }
-                if (longPath.getJavaType().getName().equals("java.lang.Long")) {
+                if (longPath.getJavaType().getName().equals("java.lang.Long")
+                        || floatPath.getJavaType().getName().equals("long")) {
                     predicate = cb.between(
                             longPath,
                             first.longValue(),
                             second.longValue());
                 }
-                if (shortPath.getJavaType().getName().equals("java.lang.Short")) {
+                if (shortPath.getJavaType().getName().equals("java.lang.Short") ||
+                        floatPath.getJavaType().getName().equals("short")) {
                     predicate = cb.between(
                             shortPath,
                             first.shortValue(),
                             second.shortValue());
                 }
-                if (floatPath.getJavaType().getName().equals("java.lang.Float")) {
+                if (floatPath.getJavaType().getName().equals("java.lang.Float") ||
+                        floatPath.getJavaType().getName().equals("float")) {
                     predicate = cb.between(
                             floatPath,
                             first.floatValue(),
@@ -155,21 +155,16 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
     private <T> Path<T> generatePath(final String[] path, final Root<MODEL> root) {
         Path<T> main;
 
-        Class<?> aClass = UtilsReflection.typeOfFields(classesToSearch, path, 1);
-        if (aClass != null && aClass.getTypeName().equals("java.util.List")
-                || aClass.getTypeName().equals("java.util.Set")
-                || aClass.getTypeName().equals("java.util.Map")) {
+        Class<?> aClass = UtilsReflection.typeOfFields(model, path, 0);
+        if (aClass != null && isCollectionClass(aClass.getTypeName())) {
             main = root.join(path[0]);
         } else {
             main = root.get(path[0]);
         }
 
         for (int i = 1; i < path.length; i++) {
-            Class<?> aClass1 = UtilsReflection.typeOfFields(classesToSearch, path, i + 1);
-            if (aClass1 != null && aClass1.getTypeName().equals("java.util.List")
-                    || aClass1.getTypeName().equals("java.util.Set")
-                    || aClass1.getTypeName().equals("java.util.Map")) {
-
+            Class<?> aClass1 = UtilsReflection.typeOfFields(model, path, i);
+            if (aClass1 != null && isCollectionClass(aClass1.getTypeName())) {
                 main = ((Root<?>) (main)).join(path[i]);
             } else {
                 main = main.get(path[i]);
@@ -196,12 +191,10 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
             case LIKE:
                 if (stringPath.getJavaType().getName().equals("java.lang.String"))
                     predicate = cb.like(stringPath, "%" + field.getValue() + "%");
-
                 break;
             case LIKE_P:
                 if (stringPath.getJavaType().getName().equals("java.lang.String"))
                     predicate = cb.like(stringPath, field.getValue() + "%");
-
                 break;
             case LIKE_L:
                 if (stringPath.getJavaType().getName().equals("java.lang.String"))
@@ -256,8 +249,26 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
                 || nameClass.equals("java.lang.Integer")
                 || nameClass.equals("java.lang.Long")
                 || nameClass.equals("java.lang.Short")
-                || nameClass.equals("java.lang.Float");
+                || nameClass.equals("java.lang.Float")
+                || nameClass.equals("int")
+                || nameClass.equals("long")
+                || nameClass.equals("byte")
+                || nameClass.equals("float")
+                || nameClass.equals("short")
+                || nameClass.equals("double");
     }
+
+    private boolean isCollectionClass(String nameClass) {
+
+        return nameClass.equals("java.util.List")
+                || nameClass.equals("java.util.ArrayList")
+                || nameClass.equals("java.util.LinkedList")
+                || nameClass.equals("java.util.Set")
+                || nameClass.equals("java.util.HashSet")
+                || nameClass.equals("java.util.LinkedHashSet")
+                || nameClass.equals("java.util.EnumSet");
+    }
+
 
     private Number convertStringToNumber(String value) throws ParseException {
         return NumberFormat.getInstance().parse(value.replace(".", ","));
