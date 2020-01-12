@@ -1,21 +1,31 @@
 package pl.lasota.tool.orm.common;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
 public class Access {
 
+    public static final String SEPARATOR = "_;_";
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id",unique=true, nullable = false)
+    @Column(name = "id", unique = true, nullable = false)
     private long id;
 
     @Column
+
     private String name;
 
     @Column
+
     private short rud;
+
+    @Column
+
+    private String value;
 
     public Access() {
     }
@@ -23,6 +33,7 @@ public class Access {
     public Access(String name, short rud) {
         this.rud = rud;
         this.name = name;
+        value = name + SEPARATOR + rud;
     }
 
     public short getRud() {
@@ -47,6 +58,14 @@ public class Access {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 
     @Override

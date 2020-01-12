@@ -19,7 +19,6 @@ import java.util.List;
 public class User extends EntitySecurity {
 
     @Column
-    @AliasColumn(names = "login")
     public String name;
 
     @OneToOne(cascade = CascadeType.ALL)

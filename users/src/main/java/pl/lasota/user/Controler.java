@@ -19,7 +19,7 @@ public class Controler {
 
     private final CrudSecurityService crudService;
 
-    private final SearchService searchService;
+    private final SecuredSearchService searchService;
 
     private final UpdateService updateService;
 
@@ -28,7 +28,7 @@ public class Controler {
     @Autowired
     private FullSearchService fullSearchService;
 
-    public Controler(CrudSecurityService crudService, SearchService searchService, UpdateService updateService, DeleteService deleteService) {
+    public Controler(CrudSecurityService crudService, SecuredSearchService searchService, UpdateService updateService, DeleteService deleteService) {
         this.crudService = crudService;
         this.searchService = searchService;
         this.updateService = updateService;
@@ -36,17 +36,21 @@ public class Controler {
     }
 
     @GetMapping("/searchf")
-    public Page<User> searchF(@RequestParam MultiValueMap<String,String> stringStringMultiValueMap) throws Exception {
+    public Page<User> searchF(@RequestParam MultiValueMap<String, String> stringStringMultiValueMap) throws Exception {
         return fullSearchService.find(new ParserField().parse(stringStringMultiValueMap));
     }
 
-    @GetMapping("/search")
-    public Page<User> search(@RequestParam MultiValueMap<String,String> stringStringMultiValueMap) throws Exception {
-        return searchService.find(new ParserField().parse(stringStringMultiValueMap));
+    @GetMapping("/search/{context:.+}")
+    public Page<UserDto> search(@RequestParam MultiValueMap<String, String> stringStringMultiValueMap, @PathVariable String context) throws Exception {
+        Context context1 = new Context();
+        context1.add(new AccessContext(context));
+        return searchService.find(new ParserField().parse(stringStringMultiValueMap), context1);
     }
 
     @GetMapping("/update")
-    public List<Long> update(@RequestParam MultiValueMap<String,String> stringStringMultiValueMap) throws Exception {
+    public List<Long> update(@RequestParam MultiValueMap<String, String> stringStringMultiValueMap) throws Exception {
+
+
         return updateService.update(new ParserField().parse(stringStringMultiValueMap));
     }
 
@@ -66,7 +70,7 @@ public class Controler {
     }
 
     @GetMapping("/add/{name:.+}/{ulica:.+}")
-    public UserDto add(@PathVariable String name,@PathVariable String ulica) {
+    public UserDto add(@PathVariable String name, @PathVariable String ulica) {
         UserDto user = new UserDto();
         LinkedList<String> strings = new LinkedList<>();
         strings.add("adam");

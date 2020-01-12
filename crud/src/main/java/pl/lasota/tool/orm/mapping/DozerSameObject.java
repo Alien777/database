@@ -23,8 +23,7 @@ public final class DozerSameObject<S_D> {
         List<String> copyByrReferences = new LinkedList<>();
 
         UtilsReflection.findAllFieldsContains(sourceClass, CopyByReference.class, fieldNode -> copyByrReferences.add(UtilsReflection.getPath(fieldNode)));
-
-
+        
         List<BeanMappingBuilder> configs = new LinkedList<>();
         BeanMappingBuilder beanMappingBuilder = new BeanMappingBuilder() {
             protected void configure() {

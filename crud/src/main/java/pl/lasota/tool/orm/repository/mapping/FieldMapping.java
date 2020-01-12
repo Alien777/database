@@ -41,13 +41,39 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
 
         if (field instanceof StringField) {
             try {
-                create((StringField) field, predicates, root, cb);
+                Predicate predicate = create((StringField) field, root, cb);
+                if (predicate != null) {
+                    predicates.add(predicate);
+                }
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
 
+        if (field instanceof StringFields) {
+            try {
+                create((StringFields) field, predicates, root, cb);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
 
+    }
+
+    private void create(StringFields field, List<Predicate> predicates, Root<MODEL> root, CriteriaBuilder cb) throws ParseException {
+            //todo-1 not working this function
+        List<Predicate> predOr = new LinkedList<>();
+        for (String value : field.getValue()) {
+
+            Predicate predicate = create(
+                    new StringField(field.getName(), value, field.getCriteriaType(), field.condition()),
+                    root, cb);
+            predOr.add(predicate);
+
+        }
+        Predicate[] toArray = predOr.toArray(new Predicate[0]);
+
+        predicates.add(cb.or(toArray));
     }
 
     @Override
@@ -173,7 +199,7 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
         return main;
     }
 
-    private void create(StringField field, List<Predicate> predicates, Root<MODEL> root, CriteriaBuilder cb) throws ParseException {
+    private Predicate create(StringField field, Root<MODEL> root, CriteriaBuilder cb) throws ParseException {
         Predicate predicate = null;
         String[] split = field.getName().split("\\.");
 
@@ -217,9 +243,8 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
                     predicate = cb.lt(numberPath, convertStringToNumber(field.getValue()));
                 break;
         }
-        if (predicate != null) {
-            predicates.add(predicate);
-        }
+
+        return predicate;
     }
 
 

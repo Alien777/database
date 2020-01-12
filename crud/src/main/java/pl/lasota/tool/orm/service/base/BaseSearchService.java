@@ -33,7 +33,6 @@ public class BaseSearchService<READING, MODEL extends EntityBase> implements Sea
     }
 
     @Override
-
     public Page<READING> find(List<Field<?>> source, Pageable pageable) {
         Page<MODEL> models = repository.find(providerSpecification(source), pageable);
         return mapping.mapper(models);
@@ -41,7 +40,6 @@ public class BaseSearchService<READING, MODEL extends EntityBase> implements Sea
 
     @Override
     public SpecificationQuery<MODEL> providerSpecification(List<Field<?>> fields) {
-
         return new SearchCriteriaSpecification<>(new DistributeCriteriaFactory<>(filter(fields), map, map, map));
     }
 }
