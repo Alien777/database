@@ -1,6 +1,6 @@
 package pl.lasota.tool.orm.repository.mapping;
 
-import pl.lasota.tool.orm.repository.field.CriteriaField;
+import pl.lasota.tool.orm.field.CriteriaField;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;

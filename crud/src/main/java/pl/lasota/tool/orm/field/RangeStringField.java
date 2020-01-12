@@ -1,7 +1,4 @@
-package pl.lasota.tool.orm.repository.field;
-
-import pl.lasota.tool.orm.common.Condition;
-import pl.lasota.tool.orm.common.CriteriaType;
+package pl.lasota.tool.orm.field;
 
 public final class RangeStringField extends CriteriaField<Range<String>> {
 

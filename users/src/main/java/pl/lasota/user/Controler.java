@@ -1,5 +1,6 @@
 package pl.lasota.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,12 +25,19 @@ public class Controler {
 
     private final DeleteService deleteService;
 
+    @Autowired
+    private FullSearchService fullSearchService;
 
     public Controler(CrudSecurityService crudService, SearchService searchService, UpdateService updateService, DeleteService deleteService) {
         this.crudService = crudService;
         this.searchService = searchService;
         this.updateService = updateService;
         this.deleteService = deleteService;
+    }
+
+    @GetMapping("/searchf")
+    public Page<User> searchF(@RequestParam MultiValueMap<String,String> stringStringMultiValueMap) throws Exception {
+        return fullSearchService.find(new ParserField().parse(stringStringMultiValueMap));
     }
 
     @GetMapping("/search")

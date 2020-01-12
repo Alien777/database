@@ -22,12 +22,15 @@ public class BaseFullTextSearchService<READING, MODEL extends EntityBase> implem
 
     private final FullTextSearchRepository<MODEL> repository;
     private final Mapping<Page<MODEL>, Page<READING>> mapping;
+    private final MustMapping mustMapping = new MustMapping();
+    private final NotMustMapping notMustMapping = new NotMustMapping();
+    private final ShouldMapping shouldMapping = new ShouldMapping();
+    private final SortMapping sortMapping = new SortMapping();
 
     public BaseFullTextSearchService(FullTextSearchRepository<MODEL> repository, Mapping<Page<MODEL>, Page<READING>> mapping) {
         this.repository = repository;
         this.mapping = mapping;
     }
-
 
     @Override
     public Page<READING> find(List<Field<?>> source, Pageable pageable) {
@@ -38,11 +41,6 @@ public class BaseFullTextSearchService<READING, MODEL extends EntityBase> implem
 
     @Override
     public SpecificationFullText providerSpecification(List<Field<?>> fields) {
-        MustMapping mustMapping = new MustMapping();
-        NotMustMapping notMustMapping = new NotMustMapping();
-        ShouldMapping shouldMapping = new ShouldMapping();
-        SortMapping sortMapping = new SortMapping();
-
         return new SearchSpecificationFullText(new DistributeFullTextFactory(filter(fields), mustMapping, notMustMapping,
                 shouldMapping, sortMapping));
     }

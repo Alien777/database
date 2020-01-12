@@ -1,4 +1,4 @@
-package pl.lasota.tool.orm.repository.field;
+package pl.lasota.tool.orm.field;
 
 public final class Range<T> {
    private T minimum;

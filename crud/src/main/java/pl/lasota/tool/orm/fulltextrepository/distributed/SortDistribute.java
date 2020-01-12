@@ -2,10 +2,10 @@ package pl.lasota.tool.orm.fulltextrepository.distributed;
 
 import org.apache.lucene.search.Sort;
 import org.hibernate.search.query.dsl.sort.SortContext;
-import pl.lasota.tool.orm.common.CriteriaType;
+import pl.lasota.tool.orm.field.CriteriaField;
+import pl.lasota.tool.orm.field.CriteriaType;
 import pl.lasota.tool.orm.common.Processable;
 import pl.lasota.tool.orm.fulltextrepository.mapping.SortFieldFullText;
-import pl.lasota.tool.orm.repository.field.CriteriaField;
 
 import java.util.List;
 import java.util.Objects;

@@ -47,7 +47,7 @@ public class SimpleSearchRepository<MODEL extends EntityBase> implements SearchR
         cq.select(qb.count(cq.from(modelClass)));
         cq.where(predicate);
 
-        return new PageImpl<>(resultList, pageable, em.createQuery(cq).getSingleResult());
+        return new PageImpl<>(resultList, pageable, 1);
     }
 
     @Override

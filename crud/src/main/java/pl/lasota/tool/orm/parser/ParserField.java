@@ -1,8 +1,8 @@
 package pl.lasota.tool.orm.parser;
 
 import org.springframework.util.MultiValueMap;
-import pl.lasota.tool.orm.common.Condition;
-import pl.lasota.tool.orm.common.CriteriaType;
+import pl.lasota.tool.orm.field.Condition;
+import pl.lasota.tool.orm.field.CriteriaType;
 import pl.lasota.tool.orm.common.Sort;
 import pl.lasota.tool.orm.field.*;
 

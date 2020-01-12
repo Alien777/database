@@ -1,9 +1,9 @@
 package pl.lasota.tool.orm.repository.distributed;
 
-import pl.lasota.tool.orm.common.CriteriaType;
+import pl.lasota.tool.orm.field.CriteriaType;
 import pl.lasota.tool.orm.common.Processable;
-import pl.lasota.tool.orm.repository.field.CriteriaField;
-import pl.lasota.tool.orm.repository.field.SortField;
+import pl.lasota.tool.orm.field.CriteriaField;
+import pl.lasota.tool.orm.field.SortField;
 import pl.lasota.tool.orm.repository.mapping.SortMapping;
 
 import javax.persistence.criteria.CriteriaBuilder;

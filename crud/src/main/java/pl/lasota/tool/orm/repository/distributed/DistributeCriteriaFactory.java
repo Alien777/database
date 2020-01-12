@@ -1,6 +1,6 @@
 package pl.lasota.tool.orm.repository.distributed;
 
-import pl.lasota.tool.orm.repository.field.CriteriaField;
+import pl.lasota.tool.orm.field.CriteriaField;
 import pl.lasota.tool.orm.repository.mapping.SortMapping;
 import pl.lasota.tool.orm.repository.mapping.PredicatesMapping;
 import pl.lasota.tool.orm.repository.mapping.SetMapping;
@@ -27,7 +27,7 @@ public class DistributeCriteriaFactory<MODEL> {
 
     }
 
-    public DistributeCriteriaFactory<MODEL> set(Map<String, Object> criteriaUpdate, Root<MODEL> modelRoot) {
+    public DistributeCriteriaFactory<MODEL> set(Map<Path<Object>, Object> criteriaUpdate, Root<MODEL> modelRoot) {
         new SetDistribute<>(modelSetMapping, modelRoot, criteriaUpdate).process(fields);
         return this;
     }

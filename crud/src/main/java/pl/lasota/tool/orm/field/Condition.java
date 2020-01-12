@@ -1,10 +1,10 @@
-package pl.lasota.tool.orm.common;
+package pl.lasota.tool.orm.field;
 
 import java.util.Arrays;
 import java.util.Optional;
 
 public enum Condition {
-    LT, LE, EQUALS, GT, GE, BETWEEN, LIKE_L, LIKE_P, LIKE, SORT, SET;
+    LT, LE, EQUALS, GT, GE, BETWEEN, LIKE_L, LIKE_P, LIKE, SORT, SET, SIMPLE, KEYWORD, PHRASE;
 
     public static Condition find(String[] pre) {
         Optional<Condition> first = Arrays.stream(Condition.values())

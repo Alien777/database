@@ -1,6 +1,6 @@
 package pl.lasota.tool.orm.repository.mapping;
 
-import pl.lasota.tool.orm.repository.field.SortField;
+import pl.lasota.tool.orm.field.SortField;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Order;

@@ -2,13 +2,17 @@ package pl.lasota.tool.orm.repository.mapping;
 
 
 import pl.lasota.tool.orm.common.AliasColumnDiscovery;
+import pl.lasota.tool.orm.common.EntityBase;
+import pl.lasota.tool.orm.common.EntitySecurity;
+import pl.lasota.tool.orm.field.*;
 import pl.lasota.tool.orm.common.Sort;
-import pl.lasota.tool.orm.common.Condition;
+import pl.lasota.tool.orm.reflection.UtilsReflection;
 import pl.lasota.tool.orm.repository.field.*;
 
 import javax.persistence.criteria.*;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -18,14 +22,19 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
 
     private final static Pattern NUMBER_PATTERN = Pattern.compile("-?\\d+([.|,]\\d+)?");
     private final AliasColumnDiscovery<MODEL> aliasColumnDiscovery;
+    private final  LinkedList<Class<?>> classesToSearch;
+    public FieldMapping(Class<MODEL> model) {
+        aliasColumnDiscovery = new AliasColumnDiscovery<>(model);
 
-    public FieldMapping(Class<MODEL> bindableJavaType) {
-        aliasColumnDiscovery = new AliasColumnDiscovery<>(bindableJavaType);
+        classesToSearch = new LinkedList<>();
+        classesToSearch.add(model);
+        classesToSearch.add(EntitySecurity.class);
+        classesToSearch.add(EntityBase.class);
+
     }
 
     @Override
     public void map(CriteriaField<?> field, List<Predicate> predicates, Root<MODEL> root, CriteriaBuilder cb) {
-        System.out.println(field.getName()+" "+field.getValue());
         if (field instanceof RangeStringField) {
             try {
                 create((RangeStringField) field, predicates, root, cb);
@@ -49,11 +58,7 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
     public void map(SortField field, List<Order> orders, Root<MODEL> root, CriteriaBuilder cb) {
 
         String[] split = field.getName().split("\\.");
-        Path<Object> objectPath = root.get(split[0]);
-
-        for (int i = 1; i < split.length; i++) {
-            objectPath = objectPath.get(split[i]);
-        }
+        Path<Object> objectPath = generatePath(split, root);
 
         Order order;
         if (field.getValue() == Sort.ASC) {
@@ -66,7 +71,7 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
     }
 
     @Override
-    public void map(SetField field, Map<String, Object> criteriaUpdate, Root<MODEL> modelRoot) {
+    public void map(SetField field, Map<Path<Object>, Object> criteriaUpdate, Root<MODEL> modelRoot) {
         try {
             create(field, criteriaUpdate, modelRoot);
         } catch (ParseException e) {
@@ -74,31 +79,25 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
         }
     }
 
-    private void create(SetField field, Map<String, Object> criteriaUpdate, Root<MODEL> root) throws ParseException {
-        System.out.println(field.getName()+" "+field.getValue());
-        Path<Object> objectPath = root.get(field.getName());
+    private void create(SetField field, Map<Path<Object>, Object> criteriaUpdate, Root<MODEL> root) throws ParseException {
+
+        String[] split = field.getName().split("\\.");
+        Path<Object> objectPath = generatePath(split, root);
 
 
         Object o = convertClass(objectPath.getJavaType().getTypeName(), field.getValue());
-        criteriaUpdate.put(field.getName(), o);
+        criteriaUpdate.put(objectPath, o);
     }
 
     private void create(RangeStringField field, List<Predicate> predicates, Root<MODEL> root, CriteriaBuilder cb) throws ParseException {
         Predicate predicate = null;
 
         String[] split = field.getName().split("\\.");
-        Path<Double> doublePath = root.get(split[0]);
-        Path<Float> floatPath = root.get(split[0]);
-        Path<Short> shortPath = root.get(split[0]);
-        Path<Integer> intPath = root.get(split[0]);
-        Path<Long> longPath = root.get(split[0]);
-        for (int i = 0; i < split.length; i++) {
-            doublePath = doublePath.get(split[i]);
-            floatPath = floatPath.get(split[i]);
-            shortPath = shortPath.get(split[i]);
-            intPath = intPath.get(split[i]);
-            longPath = longPath.get(split[i]);
-        }
+        Path<Double> doublePath = generatePath(split, root);
+        Path<Float> floatPath = generatePath(split, root);
+        Path<Short> shortPath = generatePath(split, root);
+        Path<Integer> intPath = generatePath(split, root);
+        Path<Long> longPath = generatePath(split, root);
 
 
         if (field.condition() == Condition.BETWEEN) {
@@ -153,17 +152,39 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
     }
 
 
+    private <T> Path<T> generatePath(final String[] path, final Root<MODEL> root) {
+        Path<T> main;
+
+        Class<?> aClass = UtilsReflection.typeOfFields(classesToSearch, path, 1);
+        if (aClass != null && aClass.getTypeName().equals("java.util.List")
+                || aClass.getTypeName().equals("java.util.Set")
+                || aClass.getTypeName().equals("java.util.Map")) {
+            main = root.join(path[0]);
+        } else {
+            main = root.get(path[0]);
+        }
+
+        for (int i = 1; i < path.length; i++) {
+            Class<?> aClass1 = UtilsReflection.typeOfFields(classesToSearch, path, i + 1);
+            if (aClass1 != null && aClass1.getTypeName().equals("java.util.List")
+                    || aClass1.getTypeName().equals("java.util.Set")
+                    || aClass1.getTypeName().equals("java.util.Map")) {
+
+                main = ((Root<?>) (main)).join(path[i]);
+            } else {
+                main = main.get(path[i]);
+            }
+        }
+        return main;
+    }
+
     private void create(StringField field, List<Predicate> predicates, Root<MODEL> root, CriteriaBuilder cb) throws ParseException {
         Predicate predicate = null;
         String[] split = field.getName().split("\\.");
-        Path<Object> objectPath = root.get(split[0]);
-        Path<String> stringPath = root.get(split[0]);
-        Path<Number> numberPath = root.get(split[0]);
-        for (int i = 1; i < split.length; i++) {
-            stringPath = stringPath.get(split[i]);
-            objectPath = objectPath.get(split[i]);
-            numberPath = numberPath.get(split[i]);
-        }
+
+        Path<Object> objectPath = generatePath(split, root);
+        Path<String> stringPath = generatePath(split, root);
+        Path<Number> numberPath = generatePath(split, root);
 
         switch (field.condition()) {
             case EQUALS:
@@ -177,12 +198,12 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
                     predicate = cb.like(stringPath, "%" + field.getValue() + "%");
 
                 break;
-            case LIKE_L:
+            case LIKE_P:
                 if (stringPath.getJavaType().getName().equals("java.lang.String"))
                     predicate = cb.like(stringPath, field.getValue() + "%");
 
                 break;
-            case LIKE_P:
+            case LIKE_L:
                 if (stringPath.getJavaType().getName().equals("java.lang.String"))
                     predicate = cb.like(stringPath, "%" + field.getValue());
                 break;
@@ -201,6 +222,7 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
             case LT:
                 if (isNumeric(field.getValue()) && isFromNumberClass(numberPath.getJavaType().getName()))
                     predicate = cb.lt(numberPath, convertStringToNumber(field.getValue()));
+                break;
         }
         if (predicate != null) {
             predicates.add(predicate);

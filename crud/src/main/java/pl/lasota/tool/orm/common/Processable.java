@@ -1,6 +1,6 @@
 package pl.lasota.tool.orm.common;
 
-import pl.lasota.tool.orm.repository.field.CriteriaField;
+import pl.lasota.tool.orm.field.CriteriaField;
 
 import java.util.List;
 

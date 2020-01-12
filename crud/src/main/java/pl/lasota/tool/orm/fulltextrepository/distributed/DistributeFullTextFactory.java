@@ -4,9 +4,9 @@ import org.apache.lucene.search.Sort;
 import org.hibernate.search.query.dsl.BooleanJunction;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.hibernate.search.query.dsl.sort.SortContext;
+import pl.lasota.tool.orm.field.CriteriaField;
 import pl.lasota.tool.orm.fulltextrepository.mapping.MappingFieldFullText;
 import pl.lasota.tool.orm.fulltextrepository.mapping.SortFieldFullText;
-import pl.lasota.tool.orm.repository.field.CriteriaField;
 
 import java.util.List;
 

@@ -1,9 +1,10 @@
-package pl.lasota.tool.orm.repository.field;
+package pl.lasota.tool.orm.field;
 
 import lombok.ToString;
+import pl.lasota.tool.orm.field.CriteriaField;
 import pl.lasota.tool.orm.common.Sort;
-import pl.lasota.tool.orm.common.Condition;
-import pl.lasota.tool.orm.common.CriteriaType;
+import pl.lasota.tool.orm.field.Condition;
+import pl.lasota.tool.orm.field.CriteriaType;
 @ToString(callSuper = true)
 public final class SortField extends CriteriaField<Sort> {
     public SortField(String name, Sort value) {

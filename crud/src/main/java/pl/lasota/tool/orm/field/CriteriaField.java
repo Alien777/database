@@ -1,10 +1,7 @@
-package pl.lasota.tool.orm.repository.field;
+package pl.lasota.tool.orm.field;
 
 
 import lombok.ToString;
-import pl.lasota.tool.orm.field.NamedField;
-import pl.lasota.tool.orm.common.Condition;
-import pl.lasota.tool.orm.common.CriteriaType;
 
 @ToString(callSuper = true)
 public abstract class CriteriaField<VALUE> extends NamedField<VALUE> {
