@@ -7,8 +7,8 @@ import pl.lasota.tool.orm.common.EntityBase;
 import pl.lasota.tool.orm.field.Field;
 import pl.lasota.tool.orm.mapping.Mapping;
 import pl.lasota.tool.orm.repository.Specification;
-import pl.lasota.tool.orm.repository.distributed.DistributeCriteriaFactory;
-import pl.lasota.tool.orm.repository.mapping.FieldMapping;
+import pl.lasota.tool.orm.repository.DistributeCriteriaFactory;
+import pl.lasota.tool.orm.repository.CriteriaFieldMapping;
 import pl.lasota.tool.orm.repository.search.SearchRepository;
 import pl.lasota.tool.orm.repository.search.SpecificationQuery;
 import pl.lasota.tool.orm.repository.search.criteria.SearchCriteriaSpecification;
@@ -23,13 +23,13 @@ public class BaseSearchService<READING, MODEL extends EntityBase> implements Sea
 
     private final SearchRepository<MODEL> repository;
     private final Mapping<Page<MODEL>, Page<READING>> mapping;
-    private final FieldMapping<MODEL> map;
+    private final CriteriaFieldMapping<MODEL> map;
 
     public BaseSearchService(SearchRepository<MODEL> repository, Mapping<Page<MODEL>, Page<READING>> mapping, Class<MODEL> modelClass) {
         this.repository = repository;
         repository.modelClass(modelClass);
         this.mapping = mapping;
-        map = new FieldMapping<>(modelClass);
+        map = new CriteriaFieldMapping<>(modelClass);
     }
 
     @Override
@@ -40,6 +40,6 @@ public class BaseSearchService<READING, MODEL extends EntityBase> implements Sea
 
     @Override
     public SpecificationQuery<MODEL> providerSpecification(List<Field<?>> fields) {
-        return new SearchCriteriaSpecification<>(new DistributeCriteriaFactory<>(filter(fields), map, map, map));
+        return new SearchCriteriaSpecification<>(new DistributeCriteriaFactory<>(filter(fields), map));
     }
 }

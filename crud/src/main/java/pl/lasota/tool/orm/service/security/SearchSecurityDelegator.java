@@ -21,7 +21,15 @@ import java.util.stream.Stream;
 
 public class SearchSecurityDelegator<READING, MODEL extends EntitySecurity> {
 
+    private static final String FIELD_SECURED = "accesses.value";
     private final SearchService<READING> searchService;
+
+    private final List<Integer> canRead = new LinkedList<>() {{
+        add(4);
+        add(5);
+        add(6);
+        add(7);
+    }};
 
     public SearchSecurityDelegator(BaseSearchService<READING, MODEL> searchService) {
         this.searchService = searchService;
@@ -36,13 +44,6 @@ public class SearchSecurityDelegator<READING, MODEL extends EntitySecurity> {
         return searchService.find(source);
     }
 
-    List<Integer> canRead = new LinkedList<>() {{
-        add(4);
-        add(5);
-        add(6);
-        add(7);
-    }};
-
     private List<Field<?>> createFieldsSecured(Context context) {
         Set<AccessContext> secureds = context.getSecured();
 
@@ -51,11 +52,11 @@ public class SearchSecurityDelegator<READING, MODEL extends EntitySecurity> {
             return stringStream.collect(Collectors.toList());
         }).collect(Collectors.toList()).stream().flatMap(Collection::stream).toArray(String[]::new);
 
-        StringFields or = StringFields.shouldBeOneOfThem("accesses.value", Operator.EQUALS, strings);
-        StringFields or1 = StringFields.shouldBeOneOfThem("accesses.value", Operator.KEYWORD, strings);
+        StringFields forCriteria = StringFields.shouldBeOneOfThem(FIELD_SECURED, Operator.EQUALS, strings);
+        StringFields forFullText = StringFields.shouldBeOneOfThem(FIELD_SECURED, Operator.KEYWORD, strings);
         LinkedList<Field<?>> fields = new LinkedList<>();
-        fields.add(or);
-        fields.add(or1);
+        fields.add(forCriteria);
+        fields.add(forFullText);
         return fields;
     }
 }

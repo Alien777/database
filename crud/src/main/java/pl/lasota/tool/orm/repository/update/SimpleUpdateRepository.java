@@ -30,6 +30,7 @@ public class SimpleUpdateRepository<MODEL extends EntityBase> implements UpdateR
         Root<MODEL> roo1t = query.from(modelClass);
         Predicate queryPredicate = specification.toPredicate(roo1t, query, cb);
         query.where(queryPredicate);
+        query.distinct(true);
         List<Long> collect = em.createQuery(query).getResultList().stream().map(EntityBase::getId).collect(Collectors.toList());
 
         CriteriaUpdate<MODEL> update = cb.createCriteriaUpdate(modelClass);

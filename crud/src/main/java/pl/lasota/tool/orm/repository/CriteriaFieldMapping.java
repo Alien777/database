@@ -1,43 +1,64 @@
-package pl.lasota.tool.orm.repository.mapping;
+package pl.lasota.tool.orm.repository;
 
 
-import pl.lasota.tool.orm.common.AliasColumnDiscovery;
-import pl.lasota.tool.orm.field.*;
+import org.springframework.data.util.Pair;
 import pl.lasota.tool.orm.common.Sort;
+import pl.lasota.tool.orm.field.*;
 import pl.lasota.tool.orm.reflection.UtilsReflection;
-import pl.lasota.tool.orm.repository.field.*;
+import pl.lasota.tool.orm.field.SetField;
 
 import javax.persistence.criteria.*;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
-public final class FieldMapping<MODEL> implements SortMapping<MODEL>, PredicatesMapping<MODEL>,
-        SetMapping<MODEL> {
+public final class CriteriaFieldMapping<MODEL> {
 
     private final static Pattern NUMBER_PATTERN = Pattern.compile("-?\\d+([.|,]\\d+)?");
-    private final AliasColumnDiscovery<MODEL> aliasColumnDiscovery;
-    private Class<MODEL> model;
+    private static final String DOT_REGEX_SPLIT = "\\.";
+    private static final String JAVA_LANG_STRING = "java.lang.String";
+    private final Class<MODEL> model;
 
-    public FieldMapping(Class<MODEL> model) {
-        aliasColumnDiscovery = new AliasColumnDiscovery<>(model);
+    public CriteriaFieldMapping(Class<MODEL> model) {
         this.model = model;
     }
 
-    @Override
-    public void map(CriteriaField<?> field, List<Predicate> predicates, Root<MODEL> root, CriteriaBuilder cb) {
+    public Order map(SortField field, Root<MODEL> root, CriteriaBuilder cb) {
+
+        String[] split = field.getName().split("\\.");
+        Path<Object> objectPath = generatePath(split, root);
+
+        Order order;
+        if (field.getValue() == Sort.ASC) {
+            order = cb.asc(objectPath);
+        } else {
+            order = cb.desc(objectPath);
+        }
+        return order;
+    }
+
+    public Pair<Path<Object>, Object> map(SetField field, Root<MODEL> modelRoot) {
+        try {
+            return create(field, modelRoot);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<Predicate> map(CriteriaField<?> field, Root<MODEL> root, CriteriaBuilder cb) {
+
+        List<Predicate> predicates = new LinkedList<>();
+
         if (field instanceof RangeStringField) {
             try {
                 create((RangeStringField) field, predicates, root, cb);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-        }
-
-        if (field instanceof StringField) {
+        } else if (field instanceof StringField) {
             try {
                 Predicate predicate = create((StringField) field, root, cb);
                 if (predicate != null) {
@@ -46,9 +67,7 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-        }
-
-        if (field instanceof StringFields) {
+        } else if (field instanceof StringFields) {
             try {
                 create((StringFields) field, predicates, root, cb);
             } catch (ParseException e) {
@@ -56,6 +75,7 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
             }
         }
 
+        return predicates;
     }
 
     private void create(StringFields field, List<Predicate> predicates, Root<MODEL> root, CriteriaBuilder cb) throws ParseException {
@@ -74,38 +94,13 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
             predicates.add(cb.or(toArray));
     }
 
-    @Override
-    public void map(SortField field, List<Order> orders, Root<MODEL> root, CriteriaBuilder cb) {
+    private Pair<Path<Object>, Object> create(SetField field, Root<MODEL> root) throws ParseException {
 
-        String[] split = field.getName().split("\\.");
-        Path<Object> objectPath = generatePath(split, root);
-
-        Order order;
-        if (field.getValue() == Sort.ASC) {
-            order = cb.asc(objectPath);
-        } else {
-            order = cb.desc(objectPath);
-        }
-        orders.add(order);
-
-    }
-
-    @Override
-    public void map(SetField field, Map<Path<Object>, Object> criteriaUpdate, Root<MODEL> modelRoot) {
-        try {
-            create(field, criteriaUpdate, modelRoot);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void create(SetField field, Map<Path<Object>, Object> criteriaUpdate, Root<MODEL> root) throws ParseException {
-
-        String[] split = field.getName().split("\\.");
+        String[] split = field.getName().split(DOT_REGEX_SPLIT);
         Path<Object> objectPath = generatePath(split, root);
 
         Object o = convertClass(objectPath.getJavaType().getTypeName(), field.getValue());
-        criteriaUpdate.put(objectPath, o);
+        return Pair.of(objectPath, o);
     }
 
     private void create(RangeStringField field, List<Predicate> predicates, Root<MODEL> root, CriteriaBuilder cb) throws ParseException {
@@ -166,11 +161,6 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
         }
     }
 
-    private String mapAlias(String name) {
-        return aliasColumnDiscovery.discover(name);
-    }
-
-
     private <T> Path<T> generatePath(final String[] path, final Root<MODEL> root) {
         Path<T> main;
 
@@ -206,15 +196,15 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
                 }
                 break;
             case LIKE:
-                if (objectPath.getJavaType().getName().equals("java.lang.String"))
+                if (objectPath.getJavaType().getName().equals(JAVA_LANG_STRING))
                     predicate = cb.like(objectPath, "%" + field.getValue() + "%");
                 break;
             case LIKE_P:
-                if (objectPath.getJavaType().getName().equals("java.lang.String"))
+                if (objectPath.getJavaType().getName().equals(JAVA_LANG_STRING))
                     predicate = cb.like(objectPath, field.getValue() + "%");
                 break;
             case LIKE_L:
-                if (objectPath.getJavaType().getName().equals("java.lang.String"))
+                if (objectPath.getJavaType().getName().equals(JAVA_LANG_STRING))
                     predicate = cb.like(objectPath, "%" + field.getValue());
                 break;
             case GE:

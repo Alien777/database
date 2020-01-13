@@ -1,4 +1,4 @@
-package pl.lasota.tool.orm.repository.field;
+package pl.lasota.tool.orm.field;
 
 import lombok.ToString;
 import pl.lasota.tool.orm.field.Operator;

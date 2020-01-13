@@ -1,7 +1,7 @@
 package pl.lasota.tool.orm.repository.update.criteria;
 
 import pl.lasota.tool.orm.common.EntityBase;
-import pl.lasota.tool.orm.repository.distributed.DistributeCriteriaFactory;
+import pl.lasota.tool.orm.repository.DistributeCriteriaFactory;
 
 import pl.lasota.tool.orm.repository.search.criteria.SearchCriteriaSpecification;
 import pl.lasota.tool.orm.repository.update.SpecificationUpdate;

@@ -3,11 +3,11 @@ package pl.lasota.tool.orm.service.listener;
 import pl.lasota.tool.orm.field.Field;
 import pl.lasota.tool.orm.common.EntityBase;
 import pl.lasota.tool.orm.repository.Specification;
-import pl.lasota.tool.orm.repository.mapping.FieldMapping;
+import pl.lasota.tool.orm.repository.CriteriaFieldMapping;
 import pl.lasota.tool.orm.repository.delete.DeleteRepository;
 import pl.lasota.tool.orm.repository.delete.SpecificationDelete;
 import pl.lasota.tool.orm.repository.delete.criteria.DeleteCriteriaSpecification;
-import pl.lasota.tool.orm.repository.distributed.DistributeCriteriaFactory;
+import pl.lasota.tool.orm.repository.DistributeCriteriaFactory;
 import pl.lasota.tool.orm.service.DeleteService;
 import pl.lasota.tool.orm.service.SpecificationProvider;
 
@@ -19,11 +19,11 @@ public class ListenerDeleteService<MODEL extends EntityBase> implements DeleteSe
     private final DeleteRepository<MODEL> repository;
 
     private final List<ChangeListener<List<Long>>> changeListeners = new LinkedList<>();
-    private final FieldMapping<MODEL> map;
+    private final CriteriaFieldMapping<MODEL> map;
 
     public ListenerDeleteService(DeleteRepository<MODEL> repository, Class<MODEL> modelClass) {
         this.repository = repository;
-        map = new FieldMapping<>(modelClass);
+        map = new CriteriaFieldMapping<>(modelClass);
         repository.modelClass(modelClass);
     }
 
@@ -38,7 +38,7 @@ public class ListenerDeleteService<MODEL extends EntityBase> implements DeleteSe
     @Override
     public SpecificationDelete<MODEL> providerSpecification(List<Field<?>> fields) {
 
-        return new DeleteCriteriaSpecification<>(new DistributeCriteriaFactory<>(filter(fields), map, map, map));
+        return new DeleteCriteriaSpecification<>(new DistributeCriteriaFactory<>(filter(fields), map));
     }
 
     @Override
