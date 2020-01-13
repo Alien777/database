@@ -1,6 +1,6 @@
 package pl.lasota.tool.orm.repository.distributed;
 
-import pl.lasota.tool.orm.field.CriteriaType;
+import pl.lasota.tool.orm.field.Selector;
 import pl.lasota.tool.orm.common.Processable;
 import pl.lasota.tool.orm.field.CriteriaField;
 import pl.lasota.tool.orm.field.SortField;
@@ -31,7 +31,7 @@ public class SortDistribute<MODEL> implements Processable {
         fields.stream()
                 .filter(field -> field instanceof SortField)
                 .map(field -> (SortField) field)
-                .filter(field -> field.getCriteriaType() == CriteriaType.SORT)
+                .filter(field -> field.getSelector() == Selector.SORT)
                 .forEach(field -> mapperFields.map(field, orders, root, criteriaBuilder));
 
     }

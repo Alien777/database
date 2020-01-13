@@ -2,7 +2,7 @@ package pl.lasota.tool.orm.fulltextrepository.distributed;
 
 import org.hibernate.search.query.dsl.BooleanJunction;
 import org.hibernate.search.query.dsl.QueryBuilder;
-import pl.lasota.tool.orm.field.CriteriaType;
+import pl.lasota.tool.orm.field.Selector;
 import pl.lasota.tool.orm.common.Processable;
 import pl.lasota.tool.orm.fulltextrepository.mapping.MappingFieldFullText;
 import pl.lasota.tool.orm.field.CriteriaField;
@@ -30,7 +30,7 @@ public class ShouldDistribute implements Processable {
         fields.stream()
                 .filter(Objects::nonNull)
                 .map(field -> (CriteriaField<?>) field)
-                .filter(field -> field.getCriteriaType() == CriteriaType.SHOULD)
+                .filter(field -> field.getSelector() == Selector.SHOULD)
                 .forEach(field -> mappingFieldFullText.map(field, queryBuilder, booleanJunction));
     }
 }

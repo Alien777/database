@@ -1,8 +1,8 @@
 package pl.lasota.tool.orm.parser;
 
 import org.springframework.util.MultiValueMap;
-import pl.lasota.tool.orm.field.Condition;
-import pl.lasota.tool.orm.field.CriteriaType;
+import pl.lasota.tool.orm.field.Operator;
+import pl.lasota.tool.orm.field.Selector;
 import pl.lasota.tool.orm.common.Sort;
 import pl.lasota.tool.orm.field.*;
 
@@ -29,10 +29,10 @@ public class ParserField implements Parser<MultiValueMap<String, String>, List<F
                 value.stream().map(s -> s.split(";")).forEach(secondRaw -> {
                     String valueField = secondRaw[0];
                     String[] withoutValue = Arrays.copyOfRange(secondRaw, 1, secondRaw.length);
-                    CriteriaType criteriaTypeField = CriteriaType.find(withoutValue);
+                    Selector selectorField = Selector.find(withoutValue);
 
 
-                    if (criteriaTypeField==CriteriaType.SET) {
+                    if (selectorField == Selector.SET) {
                         fields.add(new SetField(nameField,valueField));
                     }else
                     if (nameField.equals(PAGE)) {
@@ -42,17 +42,17 @@ public class ParserField implements Parser<MultiValueMap<String, String>, List<F
                         try {
                             String[] values = valueField.split(BETWEEN_SEPARATOR);
                             Range<String> numberRange = new Range<>(values[0].trim(), values[1].trim());
-                            fields.add(new RangeStringField(nameField, numberRange, criteriaTypeField));
+                            fields.add(new RangeStringField(nameField, numberRange, selectorField));
                         } catch (Exception ex) {
                             throw new RuntimeException(ex);
                         }
                     } else {
-                        Condition conditionField = Condition.find(withoutValue);
-                        if (Condition.SORT == conditionField) {
+                        Operator operatorField = Operator.find(withoutValue);
+                        if (Operator.SORT == operatorField) {
                             fields.add(new SortField(nameField, Sort.find(secondRaw)));
                         } else {
                             try {
-                                fields.add(new StringField(nameField, valueField, criteriaTypeField, conditionField));
+                                fields.add(new StringField(nameField, valueField, selectorField, operatorField));
                             } catch (Exception ex) {
                                 throw new RuntimeException(ex);
                             }

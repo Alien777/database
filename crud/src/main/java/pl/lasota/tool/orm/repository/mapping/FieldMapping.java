@@ -2,8 +2,6 @@ package pl.lasota.tool.orm.repository.mapping;
 
 
 import pl.lasota.tool.orm.common.AliasColumnDiscovery;
-import pl.lasota.tool.orm.common.EntityBase;
-import pl.lasota.tool.orm.common.EntitySecurity;
 import pl.lasota.tool.orm.field.*;
 import pl.lasota.tool.orm.common.Sort;
 import pl.lasota.tool.orm.reflection.UtilsReflection;
@@ -61,19 +59,19 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
     }
 
     private void create(StringFields field, List<Predicate> predicates, Root<MODEL> root, CriteriaBuilder cb) throws ParseException {
-            //todo-1 not working this function
+
         List<Predicate> predOr = new LinkedList<>();
         for (String value : field.getValue()) {
-
             Predicate predicate = create(
-                    new StringField(field.getName(), value, field.getCriteriaType(), field.condition()),
+                    new StringField(field.getName(), value, field.getSelector(), field.condition()),
                     root, cb);
-            predOr.add(predicate);
-
+            if (predicate != null) {
+                predOr.add(predicate);
+            }
         }
         Predicate[] toArray = predOr.toArray(new Predicate[0]);
-
-        predicates.add(cb.or(toArray));
+        if (toArray.length >= 1)
+            predicates.add(cb.or(toArray));
     }
 
     @Override
@@ -114,14 +112,9 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
         Predicate predicate = null;
 
         String[] split = field.getName().split("\\.");
-        Path<Double> doublePath = generatePath(split, root);
-        Path<Float> floatPath = generatePath(split, root);
-        Path<Short> shortPath = generatePath(split, root);
-        Path<Integer> intPath = generatePath(split, root);
-        Path<Long> longPath = generatePath(split, root);
+        Path objectPath = generatePath(split, root);
 
-
-        if (field.condition() == Condition.BETWEEN) {
+        if (field.condition() == Operator.BETWEEN) {
             Range<String> range = field.getValue();
             if (!isNumeric(range.getMinimum()) && !isNumeric(range.getMaximum())) {
                 return;
@@ -130,38 +123,38 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
             Number first = convertStringToNumber(range.getMinimum());
             Number second = convertStringToNumber(range.getMaximum());
             if (isNumeric(range.getMinimum()) && isNumeric(range.getMaximum())) {
-                if (doublePath.getJavaType().getName().equals("java.lang.Double")
-                        || floatPath.getJavaType().getName().equals("double")) {
+                if (objectPath.getJavaType().getName().equals("java.lang.Double")
+                        || objectPath.getJavaType().getName().equals("double")) {
                     predicate = cb.between(
-                            doublePath,
+                            objectPath,
                             first.doubleValue(),
                             second.doubleValue());
                 }
-                if (intPath.getJavaType().getName().equals("java.lang.Integer")
-                        || floatPath.getJavaType().getName().equals("int")) {
+                if (objectPath.getJavaType().getName().equals("java.lang.Integer")
+                        || objectPath.getJavaType().getName().equals("int")) {
                     predicate = cb.between(
-                            intPath,
+                            objectPath,
                             first.intValue(),
                             second.intValue());
                 }
-                if (longPath.getJavaType().getName().equals("java.lang.Long")
-                        || floatPath.getJavaType().getName().equals("long")) {
+                if (objectPath.getJavaType().getName().equals("java.lang.Long")
+                        || objectPath.getJavaType().getName().equals("long")) {
                     predicate = cb.between(
-                            longPath,
+                            objectPath,
                             first.longValue(),
                             second.longValue());
                 }
-                if (shortPath.getJavaType().getName().equals("java.lang.Short") ||
-                        floatPath.getJavaType().getName().equals("short")) {
+                if (objectPath.getJavaType().getName().equals("java.lang.Short") ||
+                        objectPath.getJavaType().getName().equals("short")) {
                     predicate = cb.between(
-                            shortPath,
+                            objectPath,
                             first.shortValue(),
                             second.shortValue());
                 }
-                if (floatPath.getJavaType().getName().equals("java.lang.Float") ||
-                        floatPath.getJavaType().getName().equals("float")) {
+                if (objectPath.getJavaType().getName().equals("java.lang.Float") ||
+                        objectPath.getJavaType().getName().equals("float")) {
                     predicate = cb.between(
-                            floatPath,
+                            objectPath,
                             first.floatValue(),
                             second.floatValue());
                 }
@@ -203,9 +196,7 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
         Predicate predicate = null;
         String[] split = field.getName().split("\\.");
 
-        Path<Object> objectPath = generatePath(split, root);
-        Path<String> stringPath = generatePath(split, root);
-        Path<Number> numberPath = generatePath(split, root);
+        Path objectPath = generatePath(split, root);
 
         switch (field.condition()) {
             case EQUALS:
@@ -215,32 +206,32 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
                 }
                 break;
             case LIKE:
-                if (stringPath.getJavaType().getName().equals("java.lang.String"))
-                    predicate = cb.like(stringPath, "%" + field.getValue() + "%");
+                if (objectPath.getJavaType().getName().equals("java.lang.String"))
+                    predicate = cb.like(objectPath, "%" + field.getValue() + "%");
                 break;
             case LIKE_P:
-                if (stringPath.getJavaType().getName().equals("java.lang.String"))
-                    predicate = cb.like(stringPath, field.getValue() + "%");
+                if (objectPath.getJavaType().getName().equals("java.lang.String"))
+                    predicate = cb.like(objectPath, field.getValue() + "%");
                 break;
             case LIKE_L:
-                if (stringPath.getJavaType().getName().equals("java.lang.String"))
-                    predicate = cb.like(stringPath, "%" + field.getValue());
+                if (objectPath.getJavaType().getName().equals("java.lang.String"))
+                    predicate = cb.like(objectPath, "%" + field.getValue());
                 break;
             case GE:
-                if (isNumeric(field.getValue()) && isFromNumberClass(numberPath.getJavaType().getName()))
-                    predicate = cb.ge(numberPath, convertStringToNumber(field.getValue()));
+                if (isNumeric(field.getValue()) && isFromNumberClass(objectPath.getJavaType().getName()))
+                    predicate = cb.ge(objectPath, convertStringToNumber(field.getValue()));
                 break;
             case GT:
-                if (isNumeric(field.getValue()) && isFromNumberClass(numberPath.getJavaType().getName()))
-                    predicate = cb.gt(numberPath, convertStringToNumber(field.getValue()));
+                if (isNumeric(field.getValue()) && isFromNumberClass(objectPath.getJavaType().getName()))
+                    predicate = cb.gt(objectPath, convertStringToNumber(field.getValue()));
                 break;
             case LE:
-                if (isNumeric(field.getValue()) && isFromNumberClass(numberPath.getJavaType().getName()))
-                    predicate = cb.le(numberPath, convertStringToNumber(field.getValue()));
+                if (isNumeric(field.getValue()) && isFromNumberClass(objectPath.getJavaType().getName()))
+                    predicate = cb.le(objectPath, convertStringToNumber(field.getValue()));
                 break;
             case LT:
-                if (isNumeric(field.getValue()) && isFromNumberClass(numberPath.getJavaType().getName()))
-                    predicate = cb.lt(numberPath, convertStringToNumber(field.getValue()));
+                if (isNumeric(field.getValue()) && isFromNumberClass(objectPath.getJavaType().getName()))
+                    predicate = cb.lt(objectPath, convertStringToNumber(field.getValue()));
                 break;
         }
 
@@ -293,7 +284,6 @@ public final class FieldMapping<MODEL> implements SortMapping<MODEL>, Predicates
                 || nameClass.equals("java.util.LinkedHashSet")
                 || nameClass.equals("java.util.EnumSet");
     }
-
 
     private Number convertStringToNumber(String value) throws ParseException {
         return NumberFormat.getInstance().parse(value.replace(".", ","));

@@ -1,6 +1,6 @@
 package pl.lasota.tool.orm.repository.distributed;
 
-import pl.lasota.tool.orm.field.CriteriaType;
+import pl.lasota.tool.orm.field.Selector;
 import pl.lasota.tool.orm.common.Processable;
 import pl.lasota.tool.orm.field.CriteriaField;
 import pl.lasota.tool.orm.repository.field.SetField;
@@ -29,7 +29,7 @@ public class SetDistribute<MODEL> implements Processable {
         fields.stream()
                 .filter(field -> field instanceof SetField)
                 .map(field -> (SetField) field)
-                .filter(field -> field.getCriteriaType() == CriteriaType.SET)
+                .filter(field -> field.getSelector() == Selector.SET)
                 .forEach(field -> setMapping.map(field, stringObjectMap, root));
 
     }

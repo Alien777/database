@@ -1,6 +1,6 @@
 package pl.lasota.tool.orm.repository.distributed;
 
-import pl.lasota.tool.orm.field.CriteriaType;
+import pl.lasota.tool.orm.field.Selector;
 import pl.lasota.tool.orm.common.Processable;
 import pl.lasota.tool.orm.field.CriteriaField;
 import pl.lasota.tool.orm.repository.mapping.PredicatesMapping;
@@ -31,7 +31,7 @@ public class AndDistribute<MODEL> implements Processable {
         fields.stream()
                 .filter(Objects::nonNull)
                 .map(field -> (CriteriaField<?>) field)
-                .filter(field -> field.getCriteriaType() == CriteriaType.AND)
+                .filter(field -> field.getSelector() == Selector.AND)
                 .forEach(field -> mapperFields.map(field, predicates, root, criteriaBuilder));
 
     }

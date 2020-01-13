@@ -35,18 +35,24 @@ public class SimpleSearchRepository<MODEL extends EntityBase> implements SearchR
         Root<MODEL> root = query.from(modelClass);
 
         Predicate predicate = specification.toPredicate(root, query, cb);
+
         query.where(predicate);
+        query.distinct(true);
         List<MODEL> resultList = em.createQuery(query)
                 .setMaxResults(pageable.getPageSize())
                 .setFirstResult(pageable.getPageSize() * pageable.getPageNumber())
                 .getResultList();
 
-
-        CriteriaBuilder qb = em.getCriteriaBuilder();
-        CriteriaQuery<Long> cq = qb.createQuery(Long.class);
-        cq.select(qb.count(cq.from(modelClass)));
-        cq.where(predicate);
-
+        //todo not working count available
+//        CriteriaQuery<MODEL> query1 = cb.createQuery(modelClass);
+//        Root<MODEL> root1 = query1.from(modelClass);
+//        Predicate predicate1 = specification.toPredicate(root1, query1, cb);
+//        CriteriaBuilder qb = em.getCriteriaBuilder();
+//        CriteriaQuery<Long> cq = qb.createQuery(Long.class);
+//        cq.select(qb.count(cq.from(modelClass)));
+//        cq.where(predicate1);
+//        query1.distinct(true);
+//        Long singleResult = em.createQuery(cq).getSingleResult();
         return new PageImpl<>(resultList, pageable, 1);
     }
 
