@@ -18,16 +18,6 @@ public class UserDto implements UpdatingSecurity {
     public Set<Access> accesses;
 
 
-    public List<String> list;
-
-    public List<String> getList() {
-        return list;
-    }
-
-    public void setList(List<String> list) {
-        this.list = list;
-    }
-
     @Override
     public Long getId() {
         return id;

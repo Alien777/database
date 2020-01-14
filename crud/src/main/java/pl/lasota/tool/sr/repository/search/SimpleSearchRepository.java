@@ -1,6 +1,8 @@
 package pl.lasota.tool.sr.repository.search;
 
 
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,7 @@ import java.util.List;
 
 @Transactional(readOnly = true)
 @Repository
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class SimpleSearchRepository<MODEL extends EntityBase> implements SearchRepository<MODEL> {
 
     private final EntityManager em;

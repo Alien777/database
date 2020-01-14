@@ -5,14 +5,15 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import pl.lasota.tool.sr.mapping.CopyByReference;
+import pl.lasota.tool.sr.security.Access;
 import pl.lasota.tool.sr.security.EntitySecurity;
 import pl.lasota.tool.sr.security.UpdatingSecurity;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "\"Car\"")
 @Data
 @Entity
 @ToString(callSuper = true)

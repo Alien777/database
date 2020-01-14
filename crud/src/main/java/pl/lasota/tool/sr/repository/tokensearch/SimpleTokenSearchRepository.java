@@ -6,6 +6,8 @@ import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.query.dsl.BooleanJunction;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.hibernate.search.query.dsl.sort.SortContext;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +21,7 @@ import java.util.List;
 
 @Transactional(readOnly = true)
 @Repository
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class SimpleTokenSearchRepository<MODEL extends EntityBase> implements TokenSearchRepository<MODEL> {
 
     private final FullTextEntityManager fullTextEntityManager;

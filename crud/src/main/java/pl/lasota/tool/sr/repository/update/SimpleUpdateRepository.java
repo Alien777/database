@@ -1,5 +1,7 @@
 package pl.lasota.tool.sr.repository.update;
 
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.sr.repository.EntityBase;
@@ -13,6 +15,7 @@ import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @Repository
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class SimpleUpdateRepository<MODEL extends EntityBase> implements UpdateRepository<MODEL> {
 
     private final EntityManager em;

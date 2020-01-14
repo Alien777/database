@@ -17,60 +17,37 @@ import java.util.List;
 @RestController
 public class Controler {
 
-    private final CrudSecurityService crudService;
+    private final CrudSecurityServiceUser crudSecurityServiceUser;
 
-    private final SecuredSearchService searchService;
+    private final SearchServiceCar searchServiceCar;
 
-    private final UpdateService updateService;
+    private final SearchServiceUser searchServiceUser;
 
-    private final CrudSecurityServiceCar deleteService;
-
-    @Autowired
-    private FullSearchService fullSearchService;
-
-    public Controler(CrudSecurityService crudService, SecuredSearchService searchService, UpdateService updateService, CrudSecurityServiceCar deleteService) {
-        this.crudService = crudService;
-        this.searchService = searchService;
-        this.updateService = updateService;
-        this.deleteService = deleteService;
-    }
-
-    @GetMapping("/searchf")
-    public Page<User> searchF(@RequestParam MultiValueMap<String, String> stringStringMultiValueMap) throws Exception {
-        return fullSearchService.find(new ParserField().parse(stringStringMultiValueMap));
-    }
-
-    @GetMapping("/search/{context:.+}")
-    public Page<UserDto> search(@RequestParam MultiValueMap<String, String> stringStringMultiValueMap, @PathVariable String context) throws Exception {
-        Context context1 = new Context();
-        context1.add(new AccessContext(context));
-        return searchService.find(new ParserField().parse(stringStringMultiValueMap), context1);
-    }
-
-    @GetMapping("/update")
-    public List<Long> update(@RequestParam MultiValueMap<String, String> stringStringMultiValueMap) throws Exception {
+    private final CrudSecurityServiceCar crudSecurityServiceCar;
 
 
-        return updateService.update(new ParserField().parse(stringStringMultiValueMap));
-    }
-
-    @GetMapping("/get/{id}/{context:.+}")
-    public UserDto get(@PathVariable long id, @PathVariable String context) {
-        Context context1 = new Context();
-        context1.add(new AccessContext(context));
-        return crudService.get(id, context1);
+    public Controler(CrudSecurityServiceUser crudSecurityServiceUser, SearchServiceCar searchServiceCar, SearchServiceUser searchServiceUser, CrudSecurityServiceCar crudSecurityServiceCar) {
+        this.crudSecurityServiceUser = crudSecurityServiceUser;
+        this.searchServiceCar = searchServiceCar;
+        this.searchServiceUser = searchServiceUser;
+        this.crudSecurityServiceCar = crudSecurityServiceCar;
     }
 
 
-    @GetMapping("/delete/{id}/{context:.+}")
-    public Long de(@PathVariable long id, @PathVariable String context) {
-        Context context1 = new Context();
-        context1.add(new AccessContext(context));
-        return crudService.delete(id, context1);
+    @GetMapping("/user/search")
+    public Page<UserDto> searchUser(@RequestParam MultiValueMap<String, String> stringStringMultiValueMap) throws Exception {
+        return searchServiceUser.find(new ParserField().parse(stringStringMultiValueMap));
+    }
+
+    @GetMapping("/car/search")
+    public Page<Car> searchCar(@RequestParam MultiValueMap<String, String> stringStringMultiValueMap) throws Exception {
+        return searchServiceCar.find(new ParserField().parse(stringStringMultiValueMap));
     }
 
 
-    @GetMapping("/car")
+
+
+    @GetMapping("/car/add")
     public Car car() {
 
         Context context = new Context();
@@ -81,18 +58,15 @@ public class Controler {
         context.add(new AccessContext("groupcar", s));
         Car car = new Car();
         car.setColor("roz");
-        return deleteService.save(car,context);
+        return crudSecurityServiceCar.save(car,context);
     }
 
 
-    @GetMapping("/add/{name:.+}/{ulica:.+}")
+    @GetMapping("/user/add/{name:.+}/{ulica:.+}")
     public UserDto add(@PathVariable String name, @PathVariable String ulica) {
         UserDto user = new UserDto();
-        LinkedList<String> strings = new LinkedList<>();
-        strings.add("adam");
-        strings.add("patryk");
-        strings.add("michal");
-        user.setList(strings);
+
+
         user.setName(name);
         Address address = new Address();
         address.setStreet(ulica);
@@ -104,27 +78,6 @@ public class Controler {
         s = 2;
         context.add(new AccessContext("group", s));
 
-        return crudService.save(user, context);
-    }
-
-
-    @GetMapping("/update/{id}/{name:.+}/{context:.+}")
-    public UserDto update(@PathVariable long id, @PathVariable String name, @PathVariable String context) {
-        UserDto user = new UserDto();
-        user.setName(name);
-        LinkedList<String> strings = new LinkedList<>();
-        strings.add("adam");
-        strings.add("mietek");
-        strings.add("kurwa");
-        strings.add("kurwa2");
-        strings.add("kurwa3");
-        user.setList(strings);
-
-        user.setId(id);
-
-        Context context1 = new Context();
-        context1.add(new AccessContext(context));
-
-        return crudService.update(user, context1);
+        return crudSecurityServiceUser.save(user, context);
     }
 }

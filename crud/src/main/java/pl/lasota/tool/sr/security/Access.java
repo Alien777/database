@@ -8,7 +8,7 @@ import java.util.Objects;
 @Entity
 public class Access {
 
-    public static final String SEPARATOR = "_;_";
+    public static final String SEPARATOR = "___";
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

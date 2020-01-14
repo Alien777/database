@@ -7,9 +7,9 @@ import pl.lasota.tool.sr.service.base.BaseCrudService;
 import pl.lasota.tool.sr.service.security.CrudSecurityDelegator;
 
 @Service
-public class CrudSecurityService extends CrudSecurityDelegator<UserDto, UserDto, UserDto, User> {
+public class CrudSecurityServiceUser extends CrudSecurityDelegator<UserDto, UserDto, UserDto, User> {
 
-    public CrudSecurityService(CrudRepository<User> repository) {
+    public CrudSecurityServiceUser(CrudRepository<User> repository) {
         super(new BaseCrudService<>(repository,
                 new DozerMapper<>(User.class),
                 new DozerMapper<>(User.class),

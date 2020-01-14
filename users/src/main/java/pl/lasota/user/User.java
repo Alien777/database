@@ -5,13 +5,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import pl.lasota.tool.sr.security.EntitySecurity;
-import pl.lasota.tool.sr.mapping.CopyByReference;
 
 import javax.persistence.*;
-import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "\"User\"")
+@Table(name = "\"user\"")
 @Data
 @Entity
 @ToString(callSuper = true)
@@ -23,8 +21,4 @@ public class User extends EntitySecurity {
     @OneToOne(cascade = CascadeType.ALL)
     public Address address;
 
-    @ElementCollection
-    @CopyByReference
-    @JoinColumn(name = "list_id")
-    public List<String> list;
 }
