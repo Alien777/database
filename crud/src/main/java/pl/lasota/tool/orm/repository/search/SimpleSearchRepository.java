@@ -30,7 +30,6 @@ public class SimpleSearchRepository<MODEL extends EntityBase> implements SearchR
     @Override
     public Page<MODEL> find(SpecificationQuery<MODEL> specification, Pageable pageable) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
-
         CriteriaQuery<MODEL> query = cb.createQuery(modelClass);
         Root<MODEL> root = query.from(modelClass);
 

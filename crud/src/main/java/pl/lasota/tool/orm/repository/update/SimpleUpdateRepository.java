@@ -6,6 +6,8 @@ import pl.lasota.tool.orm.common.EntityBase;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +33,12 @@ public class SimpleUpdateRepository<MODEL extends EntityBase> implements UpdateR
         Predicate queryPredicate = specification.toPredicate(roo1t, cb);
         query.where(queryPredicate);
         query.distinct(true);
-        List<Long> collect = em.createQuery(query).getResultList().stream().map(EntityBase::getId).collect(Collectors.toList());
+
+        List<Long> collect = em.createQuery(query)
+                .getResultList()
+                .stream()
+                .map(EntityBase::getId)
+                .collect(Collectors.toList());
 
         CriteriaUpdate<MODEL> update = cb.createCriteriaUpdate(modelClass);
         Root<MODEL> root = update.from(modelClass);
