@@ -4,9 +4,8 @@ package pl.lasota.user;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import pl.lasota.tool.orm.common.AliasColumn;
-import pl.lasota.tool.orm.common.EntitySecurity;
-import pl.lasota.tool.orm.mapping.CopyByReference;
+import pl.lasota.tool.sr.security.EntitySecurity;
+import pl.lasota.tool.sr.mapping.CopyByReference;
 
 import javax.persistence.*;
 import java.util.List;

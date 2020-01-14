@@ -1,15 +1,13 @@
 package pl.lasota.user;
 
 import org.springframework.stereotype.Service;
-import pl.lasota.tool.orm.fulltextrepository.FullTextSearchRepository;
-import pl.lasota.tool.orm.mapping.DozerPageMapping;
-import pl.lasota.tool.orm.repository.search.SearchRepository;
-import pl.lasota.tool.orm.service.base.BaseFullTextSearchService;
-import pl.lasota.tool.orm.service.base.BaseSearchService;
+import pl.lasota.tool.sr.repository.tokensearch.TokenSearchRepository;
+import pl.lasota.tool.sr.mapping.DozerPageMapping;
+import pl.lasota.tool.sr.service.base.BaseFullTextSearchService;
 
 @Service
 public class FullSearchService extends BaseFullTextSearchService<User, User> {
-    public FullSearchService(FullTextSearchRepository<User> repository) {
+    public FullSearchService(TokenSearchRepository<User> repository) {
         super(repository, new DozerPageMapping<>(User.class));
     }
 }

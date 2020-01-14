@@ -1,9 +1,9 @@
 package pl.lasota.user;
 
 import org.springframework.stereotype.Service;
-import pl.lasota.tool.orm.mapping.DozerMapper;
-import pl.lasota.tool.orm.repository.crud.CrudRepository;
-import pl.lasota.tool.orm.service.base.BaseCrudService;
+import pl.lasota.tool.sr.mapping.DozerMapper;
+import pl.lasota.tool.sr.repository.crud.CrudRepository;
+import pl.lasota.tool.sr.service.base.BaseCrudService;
 
 @Service
 public class CrudService extends BaseCrudService<User, User, UserDto, User> {

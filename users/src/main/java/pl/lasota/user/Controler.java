@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pl.lasota.tool.orm.parser.ParserField;
-import pl.lasota.tool.orm.security.AccessContext;
-import pl.lasota.tool.orm.security.Context;
+import pl.lasota.tool.sr.parser.ParserField;
+import pl.lasota.tool.sr.security.AccessContext;
+import pl.lasota.tool.sr.security.Context;
 
 import java.util.LinkedList;
 import java.util.List;

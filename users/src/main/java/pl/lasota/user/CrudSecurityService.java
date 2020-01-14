@@ -1,10 +1,10 @@
 package pl.lasota.user;
 
 import org.springframework.stereotype.Service;
-import pl.lasota.tool.orm.mapping.DozerMapper;
-import pl.lasota.tool.orm.repository.crud.CrudRepository;
-import pl.lasota.tool.orm.service.base.BaseCrudService;
-import pl.lasota.tool.orm.service.security.CrudSecurityDelegator;
+import pl.lasota.tool.sr.mapping.DozerMapper;
+import pl.lasota.tool.sr.repository.crud.CrudRepository;
+import pl.lasota.tool.sr.service.base.BaseCrudService;
+import pl.lasota.tool.sr.service.security.CrudSecurityDelegator;
 
 @Service
 public class CrudSecurityService extends CrudSecurityDelegator<UserDto, UserDto, UserDto, User> {
