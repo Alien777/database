@@ -6,9 +6,9 @@ import pl.lasota.tool.sr.repository.search.SearchRepository;
 import pl.lasota.tool.sr.service.base.BaseSearchService;
 
 @Service
-public class SearchService extends BaseSearchService<User, User> {
-    public SearchService(SearchRepository<User> repository) {
-        super(repository, new DozerPageMapping<>(User.class), User.class);
+public class SearchService extends BaseSearchService<Car, Car> {
+    public SearchService(SearchRepository<Car> repository) {
+        super(repository, new DozerPageMapping<>(Car.class), Car.class);
 
     }
 }

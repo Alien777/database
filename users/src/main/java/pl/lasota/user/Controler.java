@@ -23,12 +23,12 @@ public class Controler {
 
     private final UpdateService updateService;
 
-    private final DeleteService deleteService;
+    private final CrudSecurityServiceCar deleteService;
 
     @Autowired
     private FullSearchService fullSearchService;
 
-    public Controler(CrudSecurityService crudService, SecuredSearchService searchService, UpdateService updateService, DeleteService deleteService) {
+    public Controler(CrudSecurityService crudService, SecuredSearchService searchService, UpdateService updateService, CrudSecurityServiceCar deleteService) {
         this.crudService = crudService;
         this.searchService = searchService;
         this.updateService = updateService;
@@ -68,6 +68,22 @@ public class Controler {
         context1.add(new AccessContext(context));
         return crudService.delete(id, context1);
     }
+
+
+    @GetMapping("/car")
+    public Car car() {
+
+        Context context = new Context();
+        short s = 4;
+        context.add(new AccessContext("adam.lasotacar", s));
+
+        s = 2;
+        context.add(new AccessContext("groupcar", s));
+        Car car = new Car();
+        car.setColor("roz");
+        return deleteService.save(car,context);
+    }
+
 
     @GetMapping("/add/{name:.+}/{ulica:.+}")
     public UserDto add(@PathVariable String name, @PathVariable String ulica) {

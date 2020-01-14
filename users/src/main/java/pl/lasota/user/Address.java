@@ -17,8 +17,5 @@ import javax.persistence.Table;
 public class Address extends EntityBase {
 
     @Column
-    @CopyByReference
     private String street;
-
-
 }

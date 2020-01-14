@@ -1,6 +1,8 @@
 package pl.lasota.tool.sr.security;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
@@ -13,13 +15,13 @@ public class Access {
     @Column(name = "id", unique = true, nullable = false)
     private long id;
 
-    @Column
+    @Column(nullable = false)
     private String name;
 
-    @Column
+    @Column(nullable = false)
     private short rud;
 
-    @Column
+    @Column(nullable = false)
     private String value;
 
     public Access() {

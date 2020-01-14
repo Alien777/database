@@ -25,5 +25,6 @@ public class User extends EntitySecurity {
 
     @ElementCollection
     @CopyByReference
+    @JoinColumn(name = "list_id")
     public List<String> list;
 }

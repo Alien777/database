@@ -1,20 +1,16 @@
 package pl.lasota.tool.sr.security;
 
-
-import lombok.ToString;
 import pl.lasota.tool.sr.repository.EntityBase;
 
-import javax.persistence.CascadeType;
-import javax.persistence.FetchType;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.Set;
 
-@MappedSuperclass
-@ToString(callSuper = true)
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class EntitySecurity extends EntityBase {
 
     @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    @JoinColumn(name = "entity_id")
     private Set<Access> accesses;
 
     public EntitySecurity() {

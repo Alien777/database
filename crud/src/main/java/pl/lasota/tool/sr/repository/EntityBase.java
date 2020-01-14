@@ -10,9 +10,8 @@ public abstract class EntityBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id",unique=true, nullable = false)
+    @Column(name = "id", unique = true, nullable = false)
     private Long id;
-
 
     public EntityBase() {
     }
