@@ -15,9 +15,11 @@ public class CrudSecurityDelegator<CREATING extends ObjectSecurity,
         MODEL extends EntitySecurity> {
 
     private final BaseCrudService<CREATING, READING, UPDATING, MODEL> crudService;
+    private final ProvidingRules providingRules;
 
-    public CrudSecurityDelegator(BaseCrudService<CREATING, READING, UPDATING, MODEL> crudService) {
+    public CrudSecurityDelegator(BaseCrudService<CREATING, READING, UPDATING, MODEL> crudService, ProvidingRules providingRules) {
         this.crudService = crudService;
+        this.providingRules = providingRules;
     }
 
     @Transactional
@@ -63,7 +65,7 @@ public class CrudSecurityDelegator<CREATING extends ObjectSecurity,
             for (AccessContext secured : secureds) {
                 if (access.getName().equals(secured.getName())) {
                     short rud = access.getRud();
-                    if (rud == 4 || rud == 6 || rud == 5 || rud == 7) {
+                    if (providingRules.forCanRead().contains(rud)) {
                         return true;
                     }
                 }
@@ -80,7 +82,7 @@ public class CrudSecurityDelegator<CREATING extends ObjectSecurity,
             for (AccessContext secured : secureds) {
                 if (access.getName().equals(secured.getName())) {
                     short rud = access.getRud();
-                    if (rud == 1 || rud == 3 || rud == 5 || rud == 7) {
+                    if (providingRules.forCanDelete().contains(rud)) {
                         return true;
                     }
                 }
@@ -96,7 +98,7 @@ public class CrudSecurityDelegator<CREATING extends ObjectSecurity,
             for (AccessContext secured : secureds) {
                 if (access.getName().equals(secured.getName())) {
                     short rud = access.getRud();
-                    if (rud == 2 || rud == 3 || rud == 6 || rud == 7) {
+                    if (providingRules.forCanUpdate().contains(rud)) {
                         return true;
                     }
                 }

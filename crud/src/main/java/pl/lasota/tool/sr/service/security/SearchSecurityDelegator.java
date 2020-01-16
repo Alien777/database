@@ -23,20 +23,16 @@ public class SearchSecurityDelegator<READING, MODEL extends EntitySecurity> {
 
     private static final String FIELD_SECURED = "accesses.value";
     private final SearchService<READING> searchService;
+    private ProvidingRules providingRules;
 
-    private final List<Integer> canRead = new LinkedList<>() {{
-        add(4);
-        add(5);
-        add(6);
-        add(7);
-    }};
-
-    public SearchSecurityDelegator(BaseSearchService<READING, MODEL> searchService) {
+    public SearchSecurityDelegator(BaseSearchService<READING, MODEL> searchService, ProvidingRules providingRules) {
         this.searchService = searchService;
+        this.providingRules = providingRules;
     }
 
-    public SearchSecurityDelegator(BaseFullTextSearchService<READING, MODEL> searchService) {
+    public SearchSecurityDelegator(BaseFullTextSearchService<READING, MODEL> searchService, ProvidingRules providingRules) {
         this.searchService = searchService;
+        this.providingRules = providingRules;
     }
 
     public Page<READING> find(List<Field<?>> source, Context context) {
@@ -45,10 +41,9 @@ public class SearchSecurityDelegator<READING, MODEL extends EntitySecurity> {
     }
 
     private List<Field<?>> createFieldsSecured(Context context) {
-        Set<AccessContext> secureds = context.getSecured();
-
-        String[] strings = secureds.stream().map(s -> {
-            Stream<String> stringStream = canRead.stream().map(r -> s.getName() + Access.SEPARATOR + r);
+        String[] strings = context.getSecured().stream().map(s -> {
+            Stream<String> stringStream = providingRules.forCanRead().stream()
+                    .map(r -> s.getName() + Access.SEPARATOR + r);
             return stringStream.collect(Collectors.toList());
         }).collect(Collectors.toList()).stream().flatMap(Collection::stream).toArray(String[]::new);
 

@@ -13,7 +13,7 @@ public class CrudSecurityServiceUser extends CrudSecurityDelegator<UserDto, User
         super(new BaseCrudService<>(repository,
                 new DozerMapper<>(User.class),
                 new DozerMapper<>(User.class),
-                new DozerMapper<>(UserDto.class), User.class));
+                new DozerMapper<>(UserDto.class), User.class), providingRules);
         repository.modelClass(User.class);
     }
 }

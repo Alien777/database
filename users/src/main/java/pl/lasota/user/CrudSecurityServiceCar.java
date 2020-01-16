@@ -13,7 +13,7 @@ public class CrudSecurityServiceCar extends CrudSecurityDelegator<Car, Car, Car,
         super(new BaseCrudService<>(repository,
                 new DozerMapper<>(Car.class),
                 new DozerMapper<>(Car.class),
-                new DozerMapper<>(Car.class), Car.class));
+                new DozerMapper<>(Car.class), Car.class), providingRules);
         repository.modelClass(Car.class);
     }
 }
