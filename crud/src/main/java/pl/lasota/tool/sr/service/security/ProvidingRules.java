@@ -5,7 +5,6 @@ import pl.lasota.tool.sr.security.AccessContext;
 
 public interface ProvidingRules {
 
-
     ImmutableSet<Short> forCanRead();
 
     ImmutableSet<Short> forCanUpdate();

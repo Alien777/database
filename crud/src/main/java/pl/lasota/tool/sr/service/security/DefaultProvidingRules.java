@@ -1,11 +1,13 @@
 package pl.lasota.tool.sr.service.security;
 
 import com.google.common.collect.ImmutableSet;
+import org.springframework.stereotype.Component;
 import pl.lasota.tool.sr.security.AccessContext;
 
 import java.util.LinkedList;
 import java.util.List;
 
+@Component
 public class DefaultProvidingRules implements ProvidingRules {
 
     private final ImmutableSet<Short> read = ImmutableSet.<Short>builder().add((short) 4).add((short) 5).add((short) 6).add((short) 7).build();
