@@ -23,16 +23,19 @@ public class SearchSecurityDelegator<READING, MODEL extends EntitySecurity> {
 
     private static final String FIELD_SECURED = "accesses.value";
     private final SearchService<READING> searchService;
-    private ProvidingRules providingRules;
+    private final Operator operator;
+    private final ProvidingRules providingRules;
 
     public SearchSecurityDelegator(BaseSearchService<READING, MODEL> searchService, ProvidingRules providingRules) {
         this.searchService = searchService;
         this.providingRules = providingRules;
+        operator = Operator.EQUALS;
     }
 
     public SearchSecurityDelegator(BaseFullTextSearchService<READING, MODEL> searchService, ProvidingRules providingRules) {
         this.searchService = searchService;
         this.providingRules = providingRules;
+        operator = Operator.KEYWORD;
     }
 
     public Page<READING> find(List<Field<?>> source, Context context) {
@@ -47,11 +50,9 @@ public class SearchSecurityDelegator<READING, MODEL extends EntitySecurity> {
             return stringStream.collect(Collectors.toList());
         }).collect(Collectors.toList()).stream().flatMap(Collection::stream).toArray(String[]::new);
 
-        StringFields forCriteria = StringFields.shouldBeOneOfThem(FIELD_SECURED, Operator.EQUALS, strings);
-        StringFields forFullText = StringFields.shouldBeOneOfThem(FIELD_SECURED, Operator.KEYWORD, strings);
+        StringFields securedField = StringFields.shouldBeOneOfThem(FIELD_SECURED, operator, strings);
         LinkedList<Field<?>> fields = new LinkedList<>();
-        fields.add(forCriteria);
-        fields.add(forFullText);
+        fields.add(securedField);
         return fields;
     }
 }

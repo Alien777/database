@@ -14,13 +14,11 @@ import pl.lasota.tool.sr.service.base.BaseCrudService;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class CrudSecurityDelegatorTest {
 
 
