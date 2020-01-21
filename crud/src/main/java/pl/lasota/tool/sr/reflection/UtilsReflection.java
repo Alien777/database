@@ -56,7 +56,7 @@ public final class UtilsReflection {
                     break;
                 }
             }
-            System.out.println(j+" "+fieldName+" "+main);
+
             if (main == null) {
                 break;
             }
@@ -73,7 +73,6 @@ public final class UtilsReflection {
             }
 
         }
-        System.out.println("*************************");
         if (main != null) {
             return main.getType();
         } else {

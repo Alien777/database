@@ -16,6 +16,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.lang.reflect.Method;
 import java.util.List;
 
 @Transactional(readOnly = true)
@@ -31,8 +32,10 @@ public class SimpleSearchRepository<MODEL extends EntityBase> implements SearchR
         this.em = em;
     }
 
+
     @Override
     public Page<MODEL> find(SpecificationQuery<MODEL> specification, Pageable pageable) {
+
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<MODEL> query = cb.createQuery(modelClass);
         Root<MODEL> root = query.from(modelClass);

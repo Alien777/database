@@ -1,5 +1,8 @@
 package pl.lasota.tool.sr.security;
 
+import lombok.ToString;
+
+@ToString(callSuper = true)
 public class AccessContext {
 
     private String name;

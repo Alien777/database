@@ -1,11 +1,14 @@
 package pl.lasota.tool.sr.security;
 
+import lombok.ToString;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
+@ToString(callSuper = true)
 public class Access {
 
     public static final String SEPARATOR = "___";

@@ -1,9 +1,7 @@
-package security;
+package pl.lasota.tool.sr.service.security;
 
 import org.junit.Test;
 import pl.lasota.tool.sr.security.AccessContext;
-import pl.lasota.tool.sr.service.security.Accessible;
-import pl.lasota.tool.sr.service.security.DefaultProvidingRules;
 
 
 public class DefaultProvidingRulesTest {
@@ -26,7 +24,6 @@ public class DefaultProvidingRulesTest {
         test = defaultProvidingRules.create(accessible -> accessible.delete().update()
                 .one().one().one().one().one().one().one(), "test");
 
-        System.out.println(test.getRud());
         assert test.getRud() == 511 && test.getName().equals("test");
 
     }

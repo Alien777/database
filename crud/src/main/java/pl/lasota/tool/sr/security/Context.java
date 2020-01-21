@@ -1,8 +1,11 @@
 package pl.lasota.tool.sr.security;
 
+import lombok.ToString;
+
 import java.util.HashSet;
 import java.util.Set;
 
+@ToString(callSuper = true)
 public class Context {
 
     private Set<AccessContext> secured = new HashSet<>();
