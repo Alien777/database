@@ -41,6 +41,21 @@ public final class DozerSameObject<S_D> {
             configs.add(reference);
 
         });
+
+        List<String> notMapping = new LinkedList<>();
+
+        UtilsReflection.findAllFieldsContains(sourceClass, NotMapping.class, fieldNode -> notMapping.add(UtilsReflection.getPath(fieldNode)));
+
+        notMapping.forEach(s -> {
+            BeanMappingBuilder reference = new BeanMappingBuilder() {
+                protected void configure() {
+                    mapping(sourceClass, sourceClass).
+                            .fields(s, s, FieldsMappingOptions.no());
+                }
+            };
+            configs.add(reference);
+
+        });
         mapper = DozerBeanMapperBuilder.create().withMappingBuilders(configs).build();
     }
 

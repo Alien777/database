@@ -60,7 +60,7 @@ public class BaseCrudService<CREATING, READING, UPDATING extends Updating, MODEL
     public READING update(UPDATING updating) {
         if (updating == null
                 || updating.getId() == null
-                || updating.getId() < 0) {
+                || updating.getId() <= 0) {
             return null;
         }
         MODEL inDatabase = repository.get(updating.getId());

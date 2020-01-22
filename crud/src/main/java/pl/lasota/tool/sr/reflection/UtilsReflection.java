@@ -15,6 +15,12 @@ public final class UtilsReflection {
                                              Consumer<FieldNode> mapper) {
 
         Queue<Field> fields = new ArrayDeque<>(Arrays.asList(baseClass.getDeclaredFields()));
+
+        if (baseClass.getSuperclass() != null) {
+            List<Field> fields1 = Arrays.asList(baseClass.getSuperclass().getDeclaredFields());
+            fields.addAll(fields1);
+        }
+
         HashSet<FieldNode> rawStructure = fields.stream().map(f ->
                 new FieldNode(null, f)).collect(Collectors.toCollection(HashSet::new));
 
