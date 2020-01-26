@@ -1,6 +1,5 @@
 package pl.lasota.tool.sr.service.base;
 
-import org.assertj.core.error.ShouldBeAfterYear;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,9 +11,6 @@ import pl.lasota.tool.sr.helper.Entit;
 import pl.lasota.tool.sr.mapping.DozerMapper;
 import pl.lasota.tool.sr.repository.crud.SimpleCrudRepository;
 import pl.lasota.tool.sr.security.Access;
-import pl.lasota.tool.sr.security.AccessContext;
-import pl.lasota.tool.sr.security.Context;
-import pl.lasota.tool.sr.service.security.DefaultProvidingRules;
 
 import java.util.HashSet;
 
@@ -165,10 +161,12 @@ public class BaseCrudServiceTest {
         baseCrudService.update(toUpdating);
 
         Mockito.verify(dozerMapper).mapper(argument.capture());
-        System.out.println(argument.getValue());
         assertThat(argument.getValue())
-                .isInstanceOfSatisfying(Entit.class, a -> assertThat(a.getColor()).isEqualTo("red"));
-
-
+                .isInstanceOfSatisfying(Entit.class, a -> {
+                    assertThat(a.getAccesses()).hasSize(1).element(0)
+                            .isInstanceOfSatisfying(Access.class, b ->
+                                    assertThat(b.getValue()).isEqualTo("adamek___1"));
+                    assertThat(a.getColor()).isEqualTo("red");
+                });
     }
 }

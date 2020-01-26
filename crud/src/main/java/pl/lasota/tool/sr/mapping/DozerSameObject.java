@@ -2,6 +2,7 @@ package pl.lasota.tool.sr.mapping;
 
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import com.github.dozermapper.core.Mapper;
+import com.github.dozermapper.core.classmap.MappingDirection;
 import com.github.dozermapper.core.loader.api.BeanMappingBuilder;
 import com.github.dozermapper.core.loader.api.FieldsMappingOptions;
 import com.github.dozermapper.core.loader.api.TypeMappingOptions;
@@ -19,11 +20,10 @@ public final class DozerSameObject<S_D> {
 
 
     public DozerSameObject(Class<S_D> sourceClass) {
-
         List<String> copyByrReferences = new LinkedList<>();
 
         UtilsReflection.findAllFieldsContains(sourceClass, CopyByReference.class, fieldNode -> copyByrReferences.add(UtilsReflection.getPath(fieldNode)));
-        
+
         List<BeanMappingBuilder> configs = new LinkedList<>();
         BeanMappingBuilder beanMappingBuilder = new BeanMappingBuilder() {
             protected void configure() {
@@ -34,23 +34,22 @@ public final class DozerSameObject<S_D> {
         copyByrReferences.forEach(s -> {
             BeanMappingBuilder reference = new BeanMappingBuilder() {
                 protected void configure() {
-                    mapping(sourceClass, sourceClass, TypeMappingOptions.mapNull(false))
+                    mapping(sourceClass, sourceClass, TypeMappingOptions.mapNull(false), TypeMappingOptions.mapEmptyString(true))
                             .fields(s, s, FieldsMappingOptions.copyByReference());
                 }
             };
             configs.add(reference);
-
         });
 
         List<String> notMapping = new LinkedList<>();
 
         UtilsReflection.findAllFieldsContains(sourceClass, NotMapping.class, fieldNode -> notMapping.add(UtilsReflection.getPath(fieldNode)));
-
         notMapping.forEach(s -> {
             BeanMappingBuilder reference = new BeanMappingBuilder() {
                 protected void configure() {
-                    mapping(sourceClass, sourceClass).
-                            .fields(s, s, FieldsMappingOptions.no());
+
+                    mapping(sourceClass, sourceClass, TypeMappingOptions.mapNull(false), TypeMappingOptions.mapEmptyString(true))
+                            .exclude(s);
                 }
             };
             configs.add(reference);
