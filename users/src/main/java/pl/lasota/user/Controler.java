@@ -2,16 +2,24 @@ package pl.lasota.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import pl.lasota.tool.sr.dynamicrepository.ColumnSignature;
+import pl.lasota.tool.sr.dynamicrepository.ExecutorQuery;
+import pl.lasota.tool.sr.dynamicrepository.TableSignature;
+import pl.lasota.tool.sr.dynamicrepository.constrains.Id;
+import pl.lasota.tool.sr.dynamicrepository.datatype.Integer;
 import pl.lasota.tool.sr.parser.ParserField;
 import pl.lasota.tool.sr.security.AccessContext;
 import pl.lasota.tool.sr.security.Context;
 import pl.lasota.tool.sr.service.security.SearchSecurityDelegator;
 
+import javax.persistence.EntityManager;
+import java.security.Signature;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -46,17 +54,17 @@ public class Controler {
     }
 
     @GetMapping("/car/search/{context:.+}")
-    public Page<Car> searchCar(@PathVariable String context,@RequestParam MultiValueMap<String, String> stringStringMultiValueMap) throws Exception {
+    public Page<Car> searchCar(@PathVariable String context, @RequestParam MultiValueMap<String, String> stringStringMultiValueMap) throws Exception {
         Context contextC = new Context();
         contextC.add(new AccessContext(context));
-        return searchSecurityDelegatorCar.find(new ParserField().parse(stringStringMultiValueMap),contextC);
+        return searchSecurityDelegatorCar.find(new ParserField().parse(stringStringMultiValueMap), contextC);
     }
 
     @GetMapping("/user/search/{context:.+}")
     public Page<UserDto> searchUserSelf(@PathVariable String context, @RequestParam MultiValueMap<String, String> stringStringMultiValueMap) throws Exception {
         Context contextC = new Context();
         contextC.add(new AccessContext(context));
-        return searchSecurityDelegatorUser.find(new ParserField().parse(stringStringMultiValueMap),contextC);
+        return searchSecurityDelegatorUser.find(new ParserField().parse(stringStringMultiValueMap), contextC);
     }
 
     @GetMapping("/car/search")
@@ -97,5 +105,16 @@ public class Controler {
         context.add(new AccessContext("group", s));
 
         return crudSecurityServiceUser.save(user, context);
+    }
+
+    @Autowired
+    EntityManager entityManager;
+
+    @GetMapping("/execute")
+    @Transactional
+    public void execute() {
+        ColumnSignature id = new ColumnSignature("id", new Id(), new Integer());
+        TableSignature nowa_tabela = new TableSignature("nowa_tabela", id).create();
+        new ExecutorQuery(entityManager).builder(nowa_tabela);
     }
 }
