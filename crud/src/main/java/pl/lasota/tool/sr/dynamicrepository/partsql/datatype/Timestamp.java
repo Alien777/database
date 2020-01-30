@@ -1,8 +1,8 @@
-package pl.lasota.tool.sr.dynamicrepository.datatype;
+package pl.lasota.tool.sr.dynamicrepository.partsql.datatype;
 
 public class Timestamp implements Datatype {
     @Override
-    public String build() {
+    public String connect() {
         return "TIMESTAMP";
     }
 }

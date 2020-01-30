@@ -8,20 +8,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pl.lasota.tool.sr.dynamicrepository.ColumnSignature;
+import pl.lasota.tool.sr.dynamicrepository.partsql.column.Column;
 import pl.lasota.tool.sr.dynamicrepository.ExecutorQuery;
-import pl.lasota.tool.sr.dynamicrepository.TableSignature;
-import pl.lasota.tool.sr.dynamicrepository.constrains.Id;
-import pl.lasota.tool.sr.dynamicrepository.datatype.Integer;
+import pl.lasota.tool.sr.dynamicrepository.partsql.constrains.NotNull;
+import pl.lasota.tool.sr.dynamicrepository.partsql.constrains.PrimaryKey;
+import pl.lasota.tool.sr.dynamicrepository.partsql.constrains.Unique;
+import pl.lasota.tool.sr.dynamicrepository.partsql.datatype.Integer;
+import pl.lasota.tool.sr.dynamicrepository.partsql.datatype.Serial;
+import pl.lasota.tool.sr.dynamicrepository.signaturesql.AddColumnSignature;
+import pl.lasota.tool.sr.dynamicrepository.signaturesql.CreateTableSignature;
 import pl.lasota.tool.sr.parser.ParserField;
 import pl.lasota.tool.sr.security.AccessContext;
 import pl.lasota.tool.sr.security.Context;
-import pl.lasota.tool.sr.service.security.SearchSecurityDelegator;
 
 import javax.persistence.EntityManager;
-import java.security.Signature;
-import java.util.LinkedList;
-import java.util.List;
 
 @RestController
 public class Controler {
@@ -113,8 +113,9 @@ public class Controler {
     @GetMapping("/execute")
     @Transactional
     public void execute() {
-        ColumnSignature id = new ColumnSignature("id", new Id(), new Integer());
-        TableSignature nowa_tabela = new TableSignature("nowa_tabela", id).create();
-        new ExecutorQuery(entityManager).builder(nowa_tabela);
+        Column id = new Column("nowa_kolumna", new Integer(), new NotNull());
+
+        AddColumnSignature addColumnSignature = new AddColumnSignature("nowa_tabela", id);
+        new ExecutorQuery(entityManager).builder(addColumnSignature);
     }
 }

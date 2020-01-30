@@ -20,7 +20,8 @@ public class CommonSpecification<MODEL extends EntityBase> implements Specificat
         List<Predicate> predicateAndList = new LinkedList<>();
         List<Predicate> predicateOrList = new LinkedList<>();
 
-        distributeCriteriaFactory.and(predicateAndList, root, criteriaBuilder).or(predicateOrList, root, criteriaBuilder);
+        distributeCriteriaFactory.and(predicateAndList, root, criteriaBuilder)
+                .or(predicateOrList, root, criteriaBuilder);
 
         return toPredicate(predicateAndList, predicateOrList, criteriaBuilder);
     }

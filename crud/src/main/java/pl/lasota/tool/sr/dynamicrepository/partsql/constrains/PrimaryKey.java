@@ -1,9 +1,9 @@
-package pl.lasota.tool.sr.dynamicrepository.constrains;
+package pl.lasota.tool.sr.dynamicrepository.partsql.constrains;
 
 public class PrimaryKey implements Constrain {
 
     @Override
-    public String build() {
+    public String connect() {
         return "PRIMARY KEY";
     }
 }
