@@ -7,7 +7,7 @@ import pl.lasota.tool.sr.repository.EntityBase;
 import pl.lasota.tool.sr.field.Field;
 import pl.lasota.tool.sr.mapping.Mapping;
 import pl.lasota.tool.sr.repository.Specification;
-import pl.lasota.tool.sr.repository.DistributeCriteriaFactory;
+import pl.lasota.tool.sr.field.DistributeForField;
 import pl.lasota.tool.sr.repository.CriteriaFieldMapping;
 import pl.lasota.tool.sr.repository.search.SearchRepository;
 import pl.lasota.tool.sr.repository.search.specification.SpecificationQuery;
@@ -40,6 +40,6 @@ public class BaseSearchService<READING, MODEL extends EntityBase> implements Sea
 
     @Override
     public SpecificationQuery<MODEL> providerSpecification(List<Field<?>> fields) {
-        return new SearchCriteriaSpecification<>(new DistributeCriteriaFactory<>(filter(fields), map));
+        return new SearchCriteriaSpecification<>(new DistributeForField(filter(fields)), map);
     }
 }

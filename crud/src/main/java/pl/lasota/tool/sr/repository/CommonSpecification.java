@@ -1,5 +1,7 @@
 package pl.lasota.tool.sr.repository;
 
+import pl.lasota.tool.sr.field.DistributeForField;
+
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -8,10 +10,12 @@ import java.util.List;
 
 public class CommonSpecification<MODEL extends EntityBase> implements Specification<MODEL> {
 
-    private final DistributeCriteriaFactory<MODEL> distributeCriteriaFactory;
+    protected final DistributeForCriteria distributeField;
+    protected final CriteriaFieldMapping<MODEL> fieldMapping;
 
-    public CommonSpecification(DistributeCriteriaFactory<MODEL> distributeCriteriaFactory) {
-        this.distributeCriteriaFactory = distributeCriteriaFactory;
+    public CommonSpecification(DistributeForCriteria distributeField, CriteriaFieldMapping<MODEL> fieldMapping) {
+        this.distributeField = distributeField;
+        this.fieldMapping = fieldMapping;
     }
 
     @Override
@@ -20,8 +24,8 @@ public class CommonSpecification<MODEL extends EntityBase> implements Specificat
         List<Predicate> predicateAndList = new LinkedList<>();
         List<Predicate> predicateOrList = new LinkedList<>();
 
-        distributeCriteriaFactory.and(predicateAndList, root, criteriaBuilder)
-                .or(predicateOrList, root, criteriaBuilder);
+        distributeField.and().forEach(field -> predicateAndList.addAll(fieldMapping.map(field, root, criteriaBuilder)));
+        distributeField.or().forEach(field -> predicateOrList.addAll(fieldMapping.map(field, root, criteriaBuilder)));
 
         return toPredicate(predicateAndList, predicateOrList, criteriaBuilder);
     }

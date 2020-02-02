@@ -2,9 +2,9 @@ package pl.lasota.tool.sr.service.base;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import pl.lasota.tool.sr.field.DistributeForField;
 import pl.lasota.tool.sr.field.Field;
 import pl.lasota.tool.sr.mapping.Mapping;
-import pl.lasota.tool.sr.repository.DistributeTokenFactory;
 import pl.lasota.tool.sr.repository.EntityBase;
 import pl.lasota.tool.sr.repository.TokenFieldMapping;
 import pl.lasota.tool.sr.repository.tokensearch.TokenSearchRepository;
@@ -19,7 +19,6 @@ public class BaseFullTextSearchService<READING, MODEL extends EntityBase> implem
 
     private final TokenSearchRepository<MODEL> repository;
     private final Mapping<Page<MODEL>, Page<READING>> mapping;
-
     private final TokenFieldMapping tokenFieldMapping = new TokenFieldMapping();
 
 
@@ -37,6 +36,6 @@ public class BaseFullTextSearchService<READING, MODEL extends EntityBase> implem
 
     @Override
     public SpecificationSearchToken providerSpecification(List<Field<?>> fields) {
-        return new SearchSpecificationSearch(new DistributeTokenFactory(filter(fields), tokenFieldMapping));
+        return new SearchSpecificationSearch(new DistributeForField(filter(fields)), tokenFieldMapping);
     }
 }

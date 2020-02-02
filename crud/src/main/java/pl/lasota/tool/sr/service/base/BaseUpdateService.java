@@ -4,7 +4,7 @@ package pl.lasota.tool.sr.service.base;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.sr.field.Field;
 import pl.lasota.tool.sr.repository.CriteriaFieldMapping;
-import pl.lasota.tool.sr.repository.DistributeCriteriaFactory;
+import pl.lasota.tool.sr.field.DistributeForField;
 import pl.lasota.tool.sr.repository.EntityBase;
 import pl.lasota.tool.sr.repository.Specification;
 import pl.lasota.tool.sr.repository.update.UpdateRepository;
@@ -36,8 +36,6 @@ public class BaseUpdateService<MODEL extends EntityBase> implements UpdateServic
 
     @Override
     public SpecificationUpdate<MODEL> providerSpecification(List<Field<?>> fields) {
-
-        return new UpdateCriteriaSpecification<>(new DistributeCriteriaFactory<>(filter(fields), map));
+        return new UpdateCriteriaSpecification<>(new DistributeForField(filter(fields)), map);
     }
-
 }

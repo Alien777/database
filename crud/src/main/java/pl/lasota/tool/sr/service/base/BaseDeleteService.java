@@ -2,7 +2,7 @@ package pl.lasota.tool.sr.service.base;
 
 import pl.lasota.tool.sr.field.Field;
 import pl.lasota.tool.sr.repository.CriteriaFieldMapping;
-import pl.lasota.tool.sr.repository.DistributeCriteriaFactory;
+import pl.lasota.tool.sr.field.DistributeForField;
 import pl.lasota.tool.sr.repository.EntityBase;
 import pl.lasota.tool.sr.repository.Specification;
 import pl.lasota.tool.sr.repository.delete.DeleteRepository;
@@ -31,8 +31,7 @@ public class BaseDeleteService<MODEL extends EntityBase> implements DeleteServic
 
     @Override
     public SpecificationDelete<MODEL> providerSpecification(List<Field<?>> fields) {
-
-        return new DeleteCriteriaSpecification<>(new DistributeCriteriaFactory<>(filter(fields), map));
+        return new DeleteCriteriaSpecification<>(new DistributeForField(filter(fields)), map);
     }
 
 }
