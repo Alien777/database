@@ -1,12 +1,9 @@
 package pl.lasota.tool.sr.repository.search;
 
 
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.sr.repository.EntityBase;
 import pl.lasota.tool.sr.repository.search.specification.SpecificationQuery;
@@ -16,12 +13,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.lang.reflect.Method;
 import java.util.List;
 
 @Transactional(readOnly = true)
-@Repository
-@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class SimpleSearchRepository<MODEL extends EntityBase> implements SearchRepository<MODEL> {
 
     private final EntityManager em;
@@ -31,7 +25,6 @@ public class SimpleSearchRepository<MODEL extends EntityBase> implements SearchR
     public SimpleSearchRepository(EntityManager em) {
         this.em = em;
     }
-
 
     @Override
     public Page<MODEL> find(SpecificationQuery<MODEL> specification, Pageable pageable) {
@@ -49,17 +42,16 @@ public class SimpleSearchRepository<MODEL extends EntityBase> implements SearchR
                 .setFirstResult(pageable.getPageSize() * pageable.getPageNumber())
                 .getResultList();
 
-        //todo not working count available
-//        CriteriaQuery<MODEL> query1 = cb.createQuery(modelClass);
-//        Root<MODEL> root1 = query1.from(modelClass);
-//        Predicate predicate1 = specification.toPredicate(root1, query1, cb);
-//        CriteriaBuilder qb = em.getCriteriaBuilder();
-//        CriteriaQuery<Long> cq = qb.createQuery(Long.class);
-//        cq.select(qb.count(cq.from(modelClass)));
-//        cq.where(predicate1);
-//        query1.distinct(true);
-//        Long singleResult = em.createQuery(cq).getSingleResult();
-        return new PageImpl<>(resultList, pageable, 1);
+
+        CriteriaBuilder qb1 = em.getCriteriaBuilder();
+        CriteriaQuery<Long> cq1 = qb1.createQuery(Long.class);
+        cq1.select(qb1.count(cq1.from(modelClass)));
+        Predicate predicate1 = specification.toPredicate(root, query, cb);
+        cq1.where(predicate1);
+        cq1.distinct(true);
+        Long singleResult = em.createQuery(cq1).getSingleResult();
+
+        return new PageImpl<>(resultList, pageable, singleResult);
     }
 
     @Override

@@ -189,6 +189,9 @@ public final class CriteriaFieldMapping<MODEL> {
         Path objectPath = generatePath(split, root);
 
         switch (field.condition()) {
+            case ALL:
+                predicate = cb.equal(cb.literal(1), 1);
+                break;
             case EQUALS:
                 Object o = convertClass(objectPath.getJavaType().getTypeName(), field.getValue());
                 if (o != null) {

@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public enum Operator {
-    LT, LE, EQUALS, GT, GE, BETWEEN, LIKE_L, LIKE_P, LIKE, SORT, SET, SIMPLE, KEYWORD, PHRASE;
+    LT, LE, EQUALS, GT, GE, BETWEEN, LIKE_L, LIKE_P, LIKE, SORT, SET, SIMPLE, KEYWORD, PHRASE,ALL;
 
     public static Operator find(String[] pre) {
         Optional<Operator> first = Arrays.stream(Operator.values())

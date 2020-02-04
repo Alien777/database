@@ -1,8 +1,5 @@
 package pl.lasota.tool.sr.repository.crud;
 
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.sr.repository.EntityBase;
@@ -10,8 +7,6 @@ import pl.lasota.tool.sr.repository.EntityBase;
 import javax.persistence.EntityManager;
 
 @Transactional(readOnly = true)
-@Repository
-@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class SimpleCrudRepository<MODEL extends EntityBase> implements CrudRepository<MODEL> {
     private final EntityManager em;
     private Class<MODEL> modelClass;

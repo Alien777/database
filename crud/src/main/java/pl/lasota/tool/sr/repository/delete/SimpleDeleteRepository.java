@@ -1,8 +1,5 @@
 package pl.lasota.tool.sr.repository.delete;
 
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.sr.repository.EntityBase;
 import pl.lasota.tool.sr.repository.delete.specification.SpecificationDelete;
@@ -14,8 +11,6 @@ import java.util.stream.Collectors;
 
 
 @Transactional(readOnly = true)
-@Repository
-@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class SimpleDeleteRepository<MODEL extends EntityBase> implements DeleteRepository<MODEL> {
 
     private final EntityManager em;

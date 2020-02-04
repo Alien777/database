@@ -26,7 +26,10 @@ public final class UtilsReflection {
 
         while (!fields.isEmpty()) {
             Field currentField = fields.poll();
-            Field[] childFields = currentField.getType().getDeclaredFields();
+            Field[] childFields = new Field[0];
+            if (!currentField.toString().contains("java.lang") && !currentField.toString().contains("java.util")) {
+                childFields = currentField.getType().getDeclaredFields();
+            }
 
             Optional<FieldNode> findNode = rawStructure.stream().filter(n -> n.getField().equals(currentField)).findFirst();
 
@@ -100,19 +103,6 @@ public final class UtilsReflection {
         return sb.toString();
     }
 
-    public static Pair<String, Field> getPathWithFile(FieldNode fieldNodes) {
-
-        StringBuilder sb = new StringBuilder();
-        FieldNode temp = fieldNodes;
-        while (temp != null) {
-            sb.insert(0, temp.getField().getName());
-            if (temp.getNext() != null) {
-                sb.insert(0, ".");
-            }
-            temp = temp.getNext();
-        }
-        return Pair.of(sb.toString(), fieldNodes.getField());
-    }
 
     private static List<Field> findAllFieldFromSuper(Class<?> root) {
         List<Field> fields = new LinkedList<>();
