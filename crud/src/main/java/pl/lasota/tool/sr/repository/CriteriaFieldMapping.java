@@ -67,6 +67,15 @@ public final class CriteriaFieldMapping<MODEL> {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+        } else if (field instanceof AllOneEqualOne) {
+            try {
+                Predicate predicate = create((AllOneEqualOne) field, cb);
+                if (predicate != null) {
+                    predicates.add(predicate);
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         } else if (field instanceof StringFields) {
             try {
                 create((StringFields) field, predicates, root, cb);
@@ -180,6 +189,14 @@ public final class CriteriaFieldMapping<MODEL> {
             }
         }
         return main;
+    }
+
+    private Predicate create(AllOneEqualOne field, CriteriaBuilder cb) throws ParseException {
+
+        if (field.condition() == Operator.ALL) {
+            return cb.equal(cb.literal(1), 1);
+        }
+        return null;
     }
 
     private Predicate create(StringField field, Root<MODEL> root, CriteriaBuilder cb) throws ParseException {
