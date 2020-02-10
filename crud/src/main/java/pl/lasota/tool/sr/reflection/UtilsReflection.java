@@ -1,7 +1,5 @@
 package pl.lasota.tool.sr.reflection;
 
-import org.springframework.data.util.Pair;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -27,7 +25,9 @@ public final class UtilsReflection {
         while (!fields.isEmpty()) {
             Field currentField = fields.poll();
             Field[] childFields = new Field[0];
-            if (!currentField.toString().contains("java.lang") && !currentField.toString().contains("java.util")) {
+            if (!currentField.toString().contains("java.lang")
+                    && !currentField.toString().contains("java.util")
+                    && currentField.getClass().isEnum()) {
                 childFields = currentField.getType().getDeclaredFields();
             }
 
