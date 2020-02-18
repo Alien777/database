@@ -14,7 +14,6 @@ public class ExecutorQuery {
 
     public void builder(CreatableSql CreatableSql) {
         String build = CreatableSql.create();
-        System.out.println(build);
         entityManager.createNativeQuery(build).executeUpdate();
     }
 

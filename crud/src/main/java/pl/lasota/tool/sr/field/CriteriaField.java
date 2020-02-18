@@ -3,9 +3,14 @@ package pl.lasota.tool.sr.field;
 
 import lombok.ToString;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Consumer;
+
 @ToString(callSuper = true)
 public abstract class CriteriaField<VALUE> extends NamedField<VALUE> {
     private final Selector selector;
+    private final List<Normalizer> normalizers = new LinkedList<>();
 
     public CriteriaField(String name, VALUE value, Selector selector) {
         super(name, value);
@@ -23,6 +28,14 @@ public abstract class CriteriaField<VALUE> extends NamedField<VALUE> {
 
     public Selector getSelector() {
         return selector;
+    }
+
+    public void add(Normalizer normalizer) {
+        normalizers.add(normalizer);
+    }
+
+    public List<Normalizer> normalizedValue() {
+        return normalizers;
     }
 
     abstract public Operator condition();

@@ -84,89 +84,89 @@ public class BaseCrudServiceTest {
 
     @Test
     public void update() {
-//        Entit entit = new Entit();
-//        entit.setId(0L);
-//        Entit updated = baseCrudService.update(entit);
-//        assertThat(updated).isNull();
-//
-//        entit = new Entit();
-//        entit.setId(-1L);
-//        updated = baseCrudService.update(entit);
-//        assertThat(updated).isNull();
-//
-//        entit = new Entit();
-//        updated = baseCrudService.update(entit);
-//        assertThat(updated).isNull();
-//
-//
-//        //////////////////////
-//        Entit getUpdate = new Entit();
-//        getUpdate.setId(1L);
-//        getUpdate.setColor("red");
-//        Mockito.when(crudRepository.get(1L)).thenReturn(getUpdate);
-//
-//        Entit toUpdating = new Entit();
-//        toUpdating.setId(1L);
-//        toUpdating.setColor("blue");
-//
-//        Mockito.when(updateToModel.mapper(Mockito.any())).thenReturn(toUpdating);
-//
-//
-//        baseCrudService = new BaseCrudService<>(crudRepository, dozerMapper, updateToModel, dozerMapper, Entit.class);
-//        ArgumentCaptor<Entit> argument = ArgumentCaptor.forClass(Entit.class);
-//        baseCrudService.update(toUpdating);
-//
-//        Mockito.verify(dozerMapper).mapper(argument.capture());
-//
-//        assertThat(argument.getValue())
-//                .isInstanceOfSatisfying(Entit.class, a -> assertThat(a.getColor()).isEqualTo("blue"));
-//
-//        Mockito.reset(dozerMapper, crudRepository, updateToModel);
-////////////////////////////
-//        getUpdate = new Entit();
-//        getUpdate.setId(1L);
-//        getUpdate.setColor("red");
-//        HashSet<Access> accesses = new HashSet<>();
-//
-//        Access access = new Access();
-//        access.setName("adamek");
-//        access.setValue("adamek___1");
-//        access.setRud((short) 1);
-//        access.setId(2L);
-//        accesses.add(access);
-//        getUpdate.setAccesses(accesses);
-//
-//
-//        Mockito.when(crudRepository.get(1L)).thenReturn(getUpdate);
-//
-//        toUpdating = new Entit();
-//        toUpdating.setId(1L);
-//        toUpdating.setColor(null);
-//
-//        accesses = new HashSet<>();
-//        access = new Access();
-//        access.setName("adam");
-//        access.setValue("adam___1");
-//        access.setRud((short) 1);
-//        access.setId(2L);
-//        accesses.add(access);
-//
-//        toUpdating.setAccesses(accesses);
-//
-//        Mockito.when(updateToModel.mapper(Mockito.any())).thenReturn(toUpdating);
-//
-//        baseCrudService = new BaseCrudService<>(crudRepository, dozerMapper, updateToModel, dozerMapper, Entit.class);
-//        argument = ArgumentCaptor.forClass(Entit.class);
-//
-//        baseCrudService.update(toUpdating);
-//
-//        Mockito.verify(dozerMapper).mapper(argument.capture());
-//        assertThat(argument.getValue())
-//                .isInstanceOfSatisfying(Entit.class, a -> {
-//                    assertThat(a.getAccesses()).hasSize(1).element(0)
-//                            .isInstanceOfSatisfying(Access.class, b ->
-//                                    assertThat(b.getValue()).isEqualTo("adamek___1"));
-//                    assertThat(a.getColor()).isEqualTo("red");
-//                });
+        Entit entit = new Entit();
+        entit.setId(0L);
+        Entit updated = baseCrudService.update(entit);
+        assertThat(updated).isNull();
+
+        entit = new Entit();
+        entit.setId(-1L);
+        updated = baseCrudService.update(entit);
+        assertThat(updated).isNull();
+
+        entit = new Entit();
+        updated = baseCrudService.update(entit);
+        assertThat(updated).isNull();
+
+
+        //////////////////////
+        Entit getUpdate = new Entit();
+        getUpdate.setId(1L);
+        getUpdate.setColor("red");
+        Mockito.when(crudRepository.get(1L)).thenReturn(getUpdate);
+
+        Entit toUpdating = new Entit();
+        toUpdating.setId(1L);
+        toUpdating.setColor("blue");
+
+        Mockito.when(updateToModel.mapper(Mockito.any())).thenReturn(toUpdating);
+
+
+        baseCrudService = new BaseCrudService<>(crudRepository, dozerMapper, updateToModel, dozerMapper, Entit.class);
+        ArgumentCaptor<Entit> argument = ArgumentCaptor.forClass(Entit.class);
+        baseCrudService.update(toUpdating);
+
+        Mockito.verify(dozerMapper).mapper(argument.capture());
+
+        assertThat(argument.getValue())
+                .isInstanceOfSatisfying(Entit.class, a -> assertThat(a.getColor()).isEqualTo("blue"));
+
+        Mockito.reset(dozerMapper, crudRepository, updateToModel);
+//////////////////////////
+        getUpdate = new Entit();
+        getUpdate.setId(1L);
+        getUpdate.setColor("red");
+        HashSet<Access> accesses = new HashSet<>();
+
+        Access access = new Access();
+        access.setName("adamek");
+        access.setValue("adamek___1");
+        access.setRud((short) 1);
+        access.setId(2L);
+        accesses.add(access);
+        getUpdate.setAccesses(accesses);
+
+
+        Mockito.when(crudRepository.get(1L)).thenReturn(getUpdate);
+
+        toUpdating = new Entit();
+        toUpdating.setId(1L);
+        toUpdating.setColor(null);
+
+        accesses = new HashSet<>();
+        access = new Access();
+        access.setName("adam");
+        access.setValue("adam___1");
+        access.setRud((short) 1);
+        access.setId(2L);
+        accesses.add(access);
+
+        toUpdating.setAccesses(accesses);
+
+        Mockito.when(updateToModel.mapper(Mockito.any())).thenReturn(toUpdating);
+
+        baseCrudService = new BaseCrudService<>(crudRepository, dozerMapper, updateToModel, dozerMapper, Entit.class);
+        argument = ArgumentCaptor.forClass(Entit.class);
+
+        baseCrudService.update(toUpdating);
+
+        Mockito.verify(dozerMapper).mapper(argument.capture());
+        assertThat(argument.getValue())
+                .isInstanceOfSatisfying(Entit.class, a -> {
+                    assertThat(a.getAccesses()).hasSize(1).element(0)
+                            .isInstanceOfSatisfying(Access.class, b ->
+                                    assertThat(b.getValue()).isEqualTo("adamek___1"));
+                    assertThat(a.getColor()).isEqualTo("red");
+                });
     }
 }

@@ -170,6 +170,30 @@ public final class CriteriaFieldMapping<MODEL> {
         }
     }
 
+    private Expression<String> normalized(Path<String> path, CriteriaField<?> criteriaField, CriteriaBuilder criteriaBuilder) {
+
+        List<Normalizer> normalizers = criteriaField.normalizedValue();
+        if (normalizers == null || normalizers.size() == 0) {
+            return path;
+        }
+        Expression<String> lower = path;
+        for (int i = 0; i < normalizers.size(); i++) {
+
+            Normalizer normalizer = normalizers.get(i);
+            if (Normalizer.LOWER_CASE == normalizer) {
+                lower = criteriaBuilder.lower(lower);
+            } else {
+                lower = criteriaBuilder.lower(lower);
+            }
+            if (Normalizer.ASCII == normalizer) {
+                lower = criteriaBuilder.function("unaccent", String.class, lower);
+            }
+        }
+
+        return lower;
+    }
+
+
     private <T> Path<T> generatePath(final String[] path, final Root<MODEL> root) {
         Path<T> main;
 
@@ -212,20 +236,20 @@ public final class CriteriaFieldMapping<MODEL> {
             case EQUALS:
                 Object o = convertClass(objectPath.getJavaType().getTypeName(), field.getValue());
                 if (o != null) {
-                    predicate = cb.equal(objectPath, o);
+                    predicate = cb.equal(normalized(objectPath, field, cb), o);
                 }
                 break;
             case LIKE:
                 if (objectPath.getJavaType().getName().equals(JAVA_LANG_STRING))
-                    predicate = cb.like(objectPath, "%" + field.getValue() + "%");
+                    predicate = cb.like(normalized(objectPath, field, cb), "%" + field.getValue() + "%");
                 break;
             case LIKE_P:
                 if (objectPath.getJavaType().getName().equals(JAVA_LANG_STRING))
-                    predicate = cb.like(objectPath, field.getValue() + "%");
+                    predicate = cb.like(normalized(objectPath, field, cb), field.getValue() + "%");
                 break;
             case LIKE_L:
                 if (objectPath.getJavaType().getName().equals(JAVA_LANG_STRING))
-                    predicate = cb.like(objectPath, "%" + field.getValue());
+                    predicate = cb.like(normalized(objectPath, field, cb), "%" + field.getValue());
                 break;
             case GE:
                 if (isNumeric(field.getValue()) && isFromNumberClass(objectPath.getJavaType().getName()))
