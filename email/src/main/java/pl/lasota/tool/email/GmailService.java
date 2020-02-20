@@ -12,6 +12,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.Base64;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.gmail.GmailScopes;
+import com.google.api.services.gmail.model.Message;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public final class GmailService implements MailService {
+public class GmailService implements MailService {
 
     private final String applicationName;
     private final String tokenPath;
@@ -52,6 +53,7 @@ public final class GmailService implements MailService {
 
         netHttpTransport = GoogleNetHttpTransport.newTrustedTransport();
         credential = getCredentials(netHttpTransport);
+
     }
 
     @Override
@@ -61,7 +63,7 @@ public final class GmailService implements MailService {
                 .setApplicationName(applicationName)
                 .build();
 
-        com.google.api.services.gmail.model.Message message = createMessageWithEmail(mimeMessage);
+        Message message = createMessageWithEmail(mimeMessage);
         com.google.api.services.gmail.Gmail.Users.Messages.Send send = service.users().messages().send(mail, message);
         send.execute();
         return send.getLastStatusCode();
@@ -76,7 +78,7 @@ public final class GmailService implements MailService {
 
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
                 HTTP_TRANSPORT, jsonFactory, clientSecrets, lists)
-                .setDataStoreFactory(new FileDataStoreFactory(new File(tokenPath)))
+                .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(tokenPath)))
                 .setAccessType(accessType)
                 .build();
 
@@ -84,13 +86,13 @@ public final class GmailService implements MailService {
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize(userId);
     }
 
-    private com.google.api.services.gmail.model.Message createMessageWithEmail(MimeMessage emailContent) throws IOException, MessagingException {
+    private Message createMessageWithEmail(MimeMessage emailContent) throws IOException, MessagingException {
         String encodedEmail;
         try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
             emailContent.writeTo(buffer);
             byte[] bytes = buffer.toByteArray();
             encodedEmail = Base64.encodeBase64URLSafeString(bytes);
         }
-        return new com.google.api.services.gmail.model.Message().setRaw(encodedEmail);
+        return new Message().setRaw(encodedEmail);
     }
 }
