@@ -15,14 +15,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class UpdateSecurityDelegator<MODEL extends EntitySecurity> {
+public class UpdateSecurityService<MODEL extends EntitySecurity> {
 
     private static final String FIELD_SECURED = "accesses.value";
     private final UpdateService searchService;
     private final ProvidingRules providingRules;
 
 
-    public UpdateSecurityDelegator(BaseUpdateService<MODEL> searchService, ProvidingRules providingRules) {
+    public UpdateSecurityService(BaseUpdateService<MODEL> searchService, ProvidingRules providingRules) {
         this.searchService = searchService;
         this.providingRules = providingRules;
     }

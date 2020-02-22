@@ -85,23 +85,21 @@ public class BaseCrudServiceTest {
     @Test
     public void update() {
         Entit entit = new Entit();
-        entit.setId(0L);
-        Entit updated = baseCrudService.update(entit);
+
+        Entit updated = baseCrudService.update(0L, entit);
         assertThat(updated).isNull();
 
         entit = new Entit();
-        entit.setId(-1L);
-        updated = baseCrudService.update(entit);
+        updated = baseCrudService.update(-1L, entit);
         assertThat(updated).isNull();
 
         entit = new Entit();
-        updated = baseCrudService.update(entit);
+        updated = baseCrudService.update(null, entit);
         assertThat(updated).isNull();
 
 
         //////////////////////
         Entit getUpdate = new Entit();
-        getUpdate.setId(1L);
         getUpdate.setColor("red");
         Mockito.when(crudRepository.get(1L)).thenReturn(getUpdate);
 
@@ -114,7 +112,7 @@ public class BaseCrudServiceTest {
 
         baseCrudService = new BaseCrudService<>(crudRepository, dozerMapper, updateToModel, dozerMapper, Entit.class);
         ArgumentCaptor<Entit> argument = ArgumentCaptor.forClass(Entit.class);
-        baseCrudService.update(toUpdating);
+        baseCrudService.update(1L, toUpdating);
 
         Mockito.verify(dozerMapper).mapper(argument.capture());
 
@@ -140,7 +138,6 @@ public class BaseCrudServiceTest {
         Mockito.when(crudRepository.get(1L)).thenReturn(getUpdate);
 
         toUpdating = new Entit();
-        toUpdating.setId(1L);
         toUpdating.setColor(null);
 
         accesses = new HashSet<>();
@@ -158,7 +155,7 @@ public class BaseCrudServiceTest {
         baseCrudService = new BaseCrudService<>(crudRepository, dozerMapper, updateToModel, dozerMapper, Entit.class);
         argument = ArgumentCaptor.forClass(Entit.class);
 
-        baseCrudService.update(toUpdating);
+        baseCrudService.update(1L, toUpdating);
 
         Mockito.verify(dozerMapper).mapper(argument.capture());
         assertThat(argument.getValue())

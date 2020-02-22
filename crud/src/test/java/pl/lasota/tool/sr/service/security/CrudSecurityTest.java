@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import pl.lasota.tool.sr.helper.Entit;
+import pl.lasota.tool.sr.mapping.DozerMapper;
 import pl.lasota.tool.sr.security.Access;
 import pl.lasota.tool.sr.security.AccessContext;
 import pl.lasota.tool.sr.security.Context;
@@ -19,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
-public class CrudSecurityDelegatorTest {
+public class CrudSecurityTest {
 
 
     private static final String COLOR = "red";
@@ -29,12 +30,15 @@ public class CrudSecurityDelegatorTest {
 
     private ProvidingRules providingRules;
 
-    private CrudSecurityDelegator<Entit, Entit, Entit, Entit> crudSecurityDelegator;
+    private CrudSecurityService<Entit, Entit, Entit, Entit> crudSecurityService;
+
+    private DozerMapper<Entit, Entit> mapper;
 
     @Before
     public void init() {
         providingRules = new DefaultProvidingRules();
-        crudSecurityDelegator = new CrudSecurityDelegator<>(baseCrudService, providingRules);
+        mapper = new DozerMapper<>(Entit.class);
+        crudSecurityService = new CrudSecurityService<>(baseCrudService, mapper, providingRules);
     }
 
     @Test
@@ -47,7 +51,7 @@ public class CrudSecurityDelegatorTest {
         Context context = new Context();
         context.add(providingRules.create(a -> a.read().update().delete(), "admin"));
 
-        crudSecurityDelegator.save(toSave, context);
+        crudSecurityService.save(toSave, context);
 
         assertThat(toSave).matches(e -> e.getColor().equals(COLOR) &&
                 e.getAccesses()
@@ -57,37 +61,37 @@ public class CrudSecurityDelegatorTest {
 
     @Test
     public void get() {
-        when(baseCrudService.get(Mockito.anyLong())).thenReturn(create(Accessible::read, "admin", 1L));
+        when(baseCrudService.get(Mockito.anyLong())).thenReturn(create(Accessible::read, "admin"));
         Context context = new Context();
         context.add(providingRules.create("admin"));
 
-        Entit entit = crudSecurityDelegator.get(1L, context);
+        Entit entit = crudSecurityService.get(1L, context);
         assertThat(entit).matches(e -> e.getColor().equals(COLOR) &&
                 e.getAccesses()
                         .stream()
                         .anyMatch(a -> a.getValue().equals("admin___4")));
 
 
-        when(baseCrudService.get(Mockito.anyLong())).thenReturn(create(Accessible::read, "admin", 1L));
+        when(baseCrudService.get(Mockito.anyLong())).thenReturn(create(Accessible::read, "admin"));
         context = new Context();
         context.add(providingRules.create("adamek"));
 
-        entit = crudSecurityDelegator.get(1L, context);
+        entit = crudSecurityService.get(1L, context);
         assertThat(entit).isNull();
 
 
-        when(baseCrudService.get(Mockito.anyLong())).thenReturn(create(Accessible::delete, "admin", 1L));
+        when(baseCrudService.get(Mockito.anyLong())).thenReturn(create(Accessible::delete, "admin"));
         context = new Context();
         context.add(providingRules.create("admin"));
 
-        entit = crudSecurityDelegator.get(1L, context);
+        entit = crudSecurityService.get(1L, context);
         assertThat(entit).isNull();
 
-        when(baseCrudService.get(Mockito.anyLong())).thenReturn(create(Accessible::update, "admin", 1L));
+        when(baseCrudService.get(Mockito.anyLong())).thenReturn(create(Accessible::update, "admin"));
         context = new Context();
         context.add(providingRules.create("admin"));
 
-        entit = crudSecurityDelegator.get(1L, context);
+        entit = crudSecurityService.get(1L, context);
         assertThat(entit).isNull();
 
     }
@@ -95,42 +99,42 @@ public class CrudSecurityDelegatorTest {
     @Test
     public void delete() {
         when(baseCrudService.delete(Mockito.anyLong())).thenReturn(1L);
-        when(baseCrudService.get(Mockito.anyLong())).thenReturn(create(Accessible::delete, "admin", 1L));
+        when(baseCrudService.get(Mockito.anyLong())).thenReturn(create(Accessible::delete, "admin"));
 
         Context context = new Context();
         context.add(providingRules.create("admin"));
 
-        Long id = crudSecurityDelegator.delete(1L, context);
+        Long id = crudSecurityService.delete(1L, context);
         assertThat(id).isEqualTo(1L);
 
 
         when(baseCrudService.delete(Mockito.anyLong())).thenReturn(1L);
-        when(baseCrudService.get(Mockito.anyLong())).thenReturn(create(Accessible::update, "admin", 1L));
+        when(baseCrudService.get(Mockito.anyLong())).thenReturn(create(Accessible::update, "admin"));
 
         context = new Context();
         context.add(providingRules.create("admin"));
 
-        id = crudSecurityDelegator.delete(1L, context);
+        id = crudSecurityService.delete(1L, context);
         assertThat(id).isNull();
 
 
         when(baseCrudService.delete(Mockito.anyLong())).thenReturn(1L);
-        when(baseCrudService.get(Mockito.anyLong())).thenReturn(create(Accessible::read, "admin", 1L));
+        when(baseCrudService.get(Mockito.anyLong())).thenReturn(create(Accessible::read, "admin"));
 
         context = new Context();
         context.add(providingRules.create("admin"));
 
-        id = crudSecurityDelegator.delete(1L, context);
+        id = crudSecurityService.delete(1L, context);
         assertThat(id).isNull();
 
 
         when(baseCrudService.delete(Mockito.anyLong())).thenReturn(1L);
-        when(baseCrudService.get(Mockito.anyLong())).thenReturn(create(a -> a.update().read().one(), "admin", 1L));
+        when(baseCrudService.get(Mockito.anyLong())).thenReturn(create(a -> a.update().read().one(), "admin"));
 
         context = new Context();
         context.add(providingRules.create("admin"));
 
-        id = crudSecurityDelegator.delete(1L, context);
+        id = crudSecurityService.delete(1L, context);
         assertThat(id).isNull();
 
     }
@@ -138,33 +142,32 @@ public class CrudSecurityDelegatorTest {
     @Test
     public void update() {
 
-        Entit entit = create(Accessible::update, "admin", 1L);
-        when(baseCrudService.update(entit)).thenReturn(entit);
+        Entit entit = create(Accessible::update, "admin");
+        when(baseCrudService.update(1L, entit)).thenReturn(entit);
         when(baseCrudService.get(Mockito.anyLong())).thenReturn(entit);
 
         Context context = new Context();
         context.add(providingRules.create("admin"));
 
-        Entit update = crudSecurityDelegator.update(entit, context);
+        Entit update = crudSecurityService.update(1L, entit, context);
         assertThat(update).isNotNull();
 
 
-        entit = create(Accessible::delete, "admin", 1L);
-        when(baseCrudService.update(entit)).thenReturn(entit);
+        entit = create(Accessible::delete, "admin");
+        when(baseCrudService.update(1L, entit)).thenReturn(entit);
         when(baseCrudService.get(Mockito.anyLong())).thenReturn(entit);
 
         context = new Context();
         context.add(providingRules.create("admin"));
 
-        update = crudSecurityDelegator.update(entit, context);
+        update = crudSecurityService.update(1L, entit, context);
         assertThat(update).isNull();
 
     }
 
 
-    private Entit create(ConfigurationAccessible configurationAccessible, String name, Long id) {
+    private Entit create(ConfigurationAccessible configurationAccessible, String name) {
         Entit inDatabase = new Entit();
-        inDatabase.setId(id);
         inDatabase.setColor(COLOR);
 
 

@@ -11,38 +11,37 @@ import pl.lasota.tool.sr.field.Selector;
 import pl.lasota.tool.sr.field.StringFields;
 import pl.lasota.tool.sr.helper.Entit;
 import pl.lasota.tool.sr.security.Context;
-import pl.lasota.tool.sr.service.base.BaseUpdateService;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import pl.lasota.tool.sr.service.base.BaseSearchService;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @RunWith(MockitoJUnitRunner.Silent.class)
-public class UpdateSecurityDelegatorTest {
+public class SearchSecurityServiceTest {
 
     @Mock
-    private BaseUpdateService<Entit> baseUpdateService;
+    private BaseSearchService<Entit, Entit> baseSearchService;
 
     private ProvidingRules providingRules;
 
-    private UpdateSecurityDelegator<Entit> updateSecurityDelegator;
+    private SearchSecurityService<Entit, Entit> searchSecurityService;
 
     @Before
     public void init() {
         providingRules = new DefaultProvidingRules();
-        updateSecurityDelegator = new UpdateSecurityDelegator<>(baseUpdateService, providingRules);
+        searchSecurityService = new SearchSecurityService<>(baseSearchService, providingRules);
     }
 
-
     @Test
-    public void update() {
-
+    public void find() {
         Context context = new Context();
-        context.add(providingRules.create( "admin"));
+        context.add(providingRules.create("admin"));
 
         List<Field<?>> fields = new LinkedList<>();
-        updateSecurityDelegator.update(fields, context);
+        searchSecurityService.find(fields, context);
         assertThat(fields)
                 .hasSize(1)
                 .element(0)
@@ -58,7 +57,7 @@ public class UpdateSecurityDelegatorTest {
         context.add(providingRules.create( null));
 
         fields = new LinkedList<>();
-        updateSecurityDelegator.update(fields, context);
+        searchSecurityService.find(fields, context);
         assertThat(fields)
                 .hasSize(1)
                 .element(0)

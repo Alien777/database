@@ -8,5 +8,5 @@ public interface CrudService<CREATING, READING, UPDATING> {
 
     Long delete(Long id);
 
-    READING update(UPDATING updating);
+    READING update(Long id, UPDATING updating);
 }

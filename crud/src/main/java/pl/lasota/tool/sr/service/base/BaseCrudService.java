@@ -5,11 +5,10 @@ import pl.lasota.tool.sr.mapping.DozerSameObject;
 import pl.lasota.tool.sr.mapping.Mapping;
 import pl.lasota.tool.sr.repository.EntityBase;
 import pl.lasota.tool.sr.repository.crud.CrudRepository;
-import pl.lasota.tool.sr.security.Updating;
 import pl.lasota.tool.sr.service.CrudService;
 
 @Transactional(readOnly = true)
-public class BaseCrudService<CREATING, READING, UPDATING extends Updating, MODEL extends EntityBase>
+public class BaseCrudService<CREATING, READING, UPDATING, MODEL extends EntityBase>
         implements CrudService<CREATING, READING, UPDATING> {
 
     private final CrudRepository<MODEL> repository;
@@ -57,13 +56,13 @@ public class BaseCrudService<CREATING, READING, UPDATING extends Updating, MODEL
 
     @Override
     @Transactional
-    public READING update(UPDATING updating) {
+    public READING update(Long id, UPDATING updating) {
         if (updating == null
-                || updating.getId() == null
-                || updating.getId() <= 0) {
+                || id == null
+                || id <= 0) {
             return null;
         }
-        MODEL inDatabase = repository.get(updating.getId());
+        MODEL inDatabase = repository.get(id);
         MODEL inUpdated = updatingToModel.mapper(updating);
         modelToModel.mapper(inUpdated, inDatabase);
         return modelToReading.mapper(inDatabase);

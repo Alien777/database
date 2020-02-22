@@ -19,20 +19,20 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class SearchSecurityDelegator<READING, MODEL extends EntitySecurity> {
+public class SearchSecurityService<READING, MODEL extends EntitySecurity> {
 
     private static final String FIELD_SECURED = "accesses.value";
     private final SearchService<READING> searchService;
     private final Operator operator;
     private final ProvidingRules providingRules;
 
-    public SearchSecurityDelegator(BaseSearchService<READING, MODEL> searchService, ProvidingRules providingRules) {
+    public SearchSecurityService(BaseSearchService<READING, MODEL> searchService, ProvidingRules providingRules) {
         this.searchService = searchService;
         this.providingRules = providingRules;
         operator = Operator.EQUALS;
     }
 
-    public SearchSecurityDelegator(BaseFullTextSearchService<READING, MODEL> searchService, ProvidingRules providingRules) {
+    public SearchSecurityService(BaseFullTextSearchService<READING, MODEL> searchService, ProvidingRules providingRules) {
         this.searchService = searchService;
         this.providingRules = providingRules;
         operator = Operator.KEYWORD;

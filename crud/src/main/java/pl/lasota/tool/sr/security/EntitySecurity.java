@@ -21,7 +21,7 @@ public abstract class EntitySecurity extends EntityBase {
     @NotUpdating
     @JoinTable(name = "entity_access",
             joinColumns = @JoinColumn(name = "entity_id"),
-            inverseJoinColumns = @JoinColumn(name = "access_id", unique = true)
+            inverseJoinColumns = @JoinColumn(name = "access_id",unique = true)
     )
     private Set<Access> accesses;
 
