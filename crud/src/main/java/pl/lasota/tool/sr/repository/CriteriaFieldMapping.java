@@ -4,8 +4,9 @@ package pl.lasota.tool.sr.repository;
 import org.springframework.data.util.Pair;
 import pl.lasota.tool.sr.field.Sort;
 import pl.lasota.tool.sr.field.*;
-import pl.lasota.tool.sr.reflection.UtilsReflection;
 import pl.lasota.tool.sr.field.SetField;
+import pl.lasota.tool.sr.reflection.FieldClass;
+import pl.lasota.tool.sr.reflection.UtilsReflections;
 
 import javax.persistence.criteria.*;
 import java.text.NumberFormat;
@@ -27,8 +28,8 @@ public final class CriteriaFieldMapping<MODEL> {
 
     public Order map(SortField field, Root<MODEL> root, CriteriaBuilder cb) {
 
-        String[] split = field.getName().split("\\.");
-        Path<Object> objectPath = generatePath(split, root);
+
+        Path<Object> objectPath = generatePath(field.getName(), root);
 
         Order order;
         if (field.getValue() == Sort.ASC) {
@@ -104,9 +105,7 @@ public final class CriteriaFieldMapping<MODEL> {
     }
 
     private Pair<Path<Object>, Object> create(SetField field, Root<MODEL> root) throws ParseException {
-
-        String[] split = field.getName().split(DOT_REGEX_SPLIT);
-        Path<Object> objectPath = generatePath(split, root);
+        Path<Object> objectPath = generatePath(field.getName(), root);
 
         Object o = convertClass(objectPath.getJavaType().getTypeName(), field.getValue());
         return Pair.of(objectPath, o);
@@ -115,8 +114,7 @@ public final class CriteriaFieldMapping<MODEL> {
     private void create(RangeStringField field, List<Predicate> predicates, Root<MODEL> root, CriteriaBuilder cb) throws ParseException {
         Predicate predicate = null;
 
-        String[] split = field.getName().split("\\.");
-        Path objectPath = generatePath(split, root);
+        Path objectPath = generatePath(field.getName(), root);
 
         if (field.condition() == Operator.BETWEEN) {
             Range<String> range = field.getValue();
@@ -194,22 +192,23 @@ public final class CriteriaFieldMapping<MODEL> {
     }
 
 
-    private <T> Path<T> generatePath(final String[] path, final Root<MODEL> root) {
+    private <T> Path<T> generatePath(final String path, final Root<MODEL> root) {
         Path<T> main;
+        List<FieldClass> paths = UtilsReflections.getStructureFieldByPath(model, path);
+        FieldClass fieldClass = paths.get(0);
 
-        Class<?> aClass = UtilsReflection.typeOfFields(model, path, 0);
-        if (aClass != null && isCollectionClass(aClass.getTypeName())) {
-            main = root.join(path[0]);
+        if (fieldClass.getTypeField() != null && isCollectionClass(fieldClass.getTypeField().getTypeName())) {
+            main = root.join(fieldClass.getName());
         } else {
-            main = root.get(path[0]);
+            main = root.get(fieldClass.getName());
         }
 
-        for (int i = 1; i < path.length; i++) {
-            Class<?> aClass1 = UtilsReflection.typeOfFields(model, path, i);
-            if (aClass1 != null && isCollectionClass(aClass1.getTypeName())) {
-                main = ((Root<?>) (main)).join(path[i]);
+        for (int i = 1; i < paths.size(); i++) {
+            FieldClass fieldClass1 = paths.get(i);
+            if (fieldClass1.getTypeField() != null && isCollectionClass(fieldClass1.getTypeField().getTypeName())) {
+                main = ((Root<?>) (main)).join(fieldClass1.getName());
             } else {
-                main = main.get(path[i]);
+                main = main.get(fieldClass1.getName());
             }
         }
         return main;
@@ -225,9 +224,9 @@ public final class CriteriaFieldMapping<MODEL> {
 
     private Predicate create(StringField field, Root<MODEL> root, CriteriaBuilder cb) throws ParseException {
         Predicate predicate = null;
-        String[] split = field.getName().split("\\.");
 
-        Path objectPath = generatePath(split, root);
+
+        Path objectPath = generatePath(field.getName(), root);
 
         switch (field.condition()) {
             case ALL:

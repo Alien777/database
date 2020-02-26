@@ -8,11 +8,15 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import pl.lasota.tool.sr.helper.Entit;
+import pl.lasota.tool.sr.helper.ObjectTest;
+import pl.lasota.tool.sr.helper.TestNotMapping;
 import pl.lasota.tool.sr.mapping.DozerMapper;
+import pl.lasota.tool.sr.mapping.DozerSameObject;
 import pl.lasota.tool.sr.repository.crud.SimpleCrudRepository;
 import pl.lasota.tool.sr.security.Access;
 
 import java.util.HashSet;
+import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -120,50 +124,52 @@ public class BaseCrudServiceTest {
                 .isInstanceOfSatisfying(Entit.class, a -> assertThat(a.getColor()).isEqualTo("blue"));
 
         Mockito.reset(dozerMapper, crudRepository, updateToModel);
-//////////////////////////
-        getUpdate = new Entit();
-        getUpdate.setId(1L);
-        getUpdate.setColor("red");
-        HashSet<Access> accesses = new HashSet<>();
 
-        Access access = new Access();
-        access.setName("adamek");
-        access.setValue("adamek___1");
-        access.setRud((short) 1);
-        access.setId(2L);
-        accesses.add(access);
-        getUpdate.setAccesses(accesses);
+    }
+@Test
+    public void updateTest() {
+
+        Entit toUpdate = new Entit();
+        toUpdate.setColor("NOWY KOLOR");
+        toUpdate.setId(3L);
+        HashSet<Access> toUpdateAccesses = new HashSet<>();
+        toUpdateAccesses.add(new Access("role", (short) 4));
+        toUpdate.setAccesses(toUpdateAccesses);
 
 
-        Mockito.when(crudRepository.get(1L)).thenReturn(getUpdate);
+        Entit toOld = new Entit();
+        toOld.setId(1L);
+        toOld.setColor("STARY  KOLOR");
+        HashSet<Access> toOldAccesses = new HashSet<>();
+        toOldAccesses.add(new Access("stary_role", (short) 5));
+        toUpdate.setAccesses(toOldAccesses);
 
-        toUpdating = new Entit();
-        toUpdating.setColor(null);
 
-        accesses = new HashSet<>();
-        access = new Access();
-        access.setName("adam");
-        access.setValue("adam___1");
-        access.setRud((short) 1);
-        access.setId(2L);
-        accesses.add(access);
+        DozerSameObject<Entit> object = new DozerSameObject<>(Entit.class);
+        object.mapper(toUpdate, toOld);
 
-        toUpdating.setAccesses(accesses);
-
-        Mockito.when(updateToModel.mapper(Mockito.any())).thenReturn(toUpdating);
+        assertThat(toOld.getColor()).isEqualTo("NOWY KOLOR");
+        assertThat(toOld.getId()).isEqualTo(1L);
+        assertThat(toOld.getAccesses())
+                .hasSize(1)
+                .extracting((Function<Access, String>) Access::getValue)
+                .contains("stary_role___5");
 
         baseCrudService = new BaseCrudService<>(crudRepository, dozerMapper, updateToModel, dozerMapper, Entit.class);
-        argument = ArgumentCaptor.forClass(Entit.class);
+        Mockito.when(crudRepository.get(1L)).thenReturn(toOld);
+        Mockito.when(updateToModel.mapper(Mockito.any())).thenReturn(toOld);
 
-        baseCrudService.update(1L, toUpdating);
-
+        ArgumentCaptor<Entit> argument = ArgumentCaptor.forClass(Entit.class);
+        baseCrudService.update(1L, toUpdate);
         Mockito.verify(dozerMapper).mapper(argument.capture());
-        assertThat(argument.getValue())
-                .isInstanceOfSatisfying(Entit.class, a -> {
-                    assertThat(a.getAccesses()).hasSize(1).element(0)
-                            .isInstanceOfSatisfying(Access.class, b ->
-                                    assertThat(b.getValue()).isEqualTo("adamek___1"));
-                    assertThat(a.getColor()).isEqualTo("red");
-                });
+
+
+
+    assertThat(argument.getValue().getColor()).isEqualTo("NOWY KOLOR");
+    assertThat(argument.getValue().getId()).isEqualTo(1L);
+    assertThat(argument.getValue().getAccesses())
+            .hasSize(1)
+            .extracting((Function<Access, String>) Access::getValue)
+            .contains("stary_role___5");
     }
 }

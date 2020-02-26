@@ -2,11 +2,9 @@ package pl.lasota.tool.sr.mapping;
 
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import com.github.dozermapper.core.Mapper;
-import com.github.dozermapper.core.loader.api.BeanMappingBuilder;
-import com.github.dozermapper.core.loader.api.FieldsMappingOptions;
-import com.github.dozermapper.core.loader.api.TypeMappingBuilder;
-import com.github.dozermapper.core.loader.api.TypeMappingOptions;
-import pl.lasota.tool.sr.reflection.UtilsReflection;
+import com.github.dozermapper.core.loader.api.*;
+import pl.lasota.tool.sr.reflection.FieldClass;
+import pl.lasota.tool.sr.reflection.UtilsReflections;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -20,46 +18,45 @@ public final class DozerSameObject<S_D> {
 
 
     public DozerSameObject(Class<S_D> sourceClass) {
-        List<String> copyByrReferences = new LinkedList<>();
-
-        UtilsReflection.findAllFieldsContains(sourceClass, CopyByReference.class, fieldNode -> copyByrReferences.add(UtilsReflection.getPath(fieldNode)));
-
         List<BeanMappingBuilder> configs = new LinkedList<>();
-        BeanMappingBuilder beanMappingBuilder = new BeanMappingBuilder() {
+
+        List<FieldClass> copyByReferences = UtilsReflections.getAllFieldWithAnnotation(sourceClass, CopyByReference.class);
+        List<FieldClass> notUpdate = UtilsReflections.getAllFieldWithAnnotation(sourceClass, NotUpdating.class);
+        List<FieldClass> othersFields = UtilsReflections.getAllFieldWithoutAnnotation(sourceClass, NotUpdating.class, CopyByReference.class);
+
+        System.out.println("******************************");
+        System.out.println(copyByReferences);
+        System.out.println("******************************");
+        System.out.println(notUpdate);
+        System.out.println("******************************");
+        System.out.println(othersFields);
+
+
+        configs.add(new BeanMappingBuilder() {
             protected void configure() {
-                mapping(sourceClass, sourceClass, TypeMappingOptions.mapNull(false), TypeMappingOptions.mapEmptyString(true));
+
+                othersFields.forEach(fieldClass -> {
+                    mapping(fieldClass.getParentClass(), fieldClass.getParentClass(), TypeMappingOptions.mapNull(false), TypeMappingOptions.mapEmptyString(true));
+                });
+                copyByReferences.forEach(fieldClass -> {
+                    mapping(fieldClass.getParentClass(), fieldClass.getParentClass(), TypeMappingOptions.mapNull(false), TypeMappingOptions.mapEmptyString(true))
+                            .fields(fieldClass.getPath(), fieldClass.getPath(), FieldsMappingOptions.copyByReference());
+                });
+                notUpdate.forEach(fieldClass -> {
+                    mapping(fieldClass.getParentClass(), fieldClass.getParentClass(), TypeMappingOptions.mapNull(false), TypeMappingOptions.mapEmptyString(true))
+                            .exclude(fieldClass.getPath());
+                });
             }
-        };
-        configs.add(beanMappingBuilder);
+        });
 
 
-        List<String> copyByReference = new LinkedList<>();
-        UtilsReflection.findAllFieldsContains(sourceClass, CopyByReference.class, fieldNode -> copyByReference.add(UtilsReflection.getPath(fieldNode)));
-        BeanMappingBuilder coptyConfig = new BeanMappingBuilder() {
-            protected void configure() {
-                TypeMappingBuilder mapping = mapping(sourceClass, sourceClass, TypeMappingOptions.mapNull(false),
-                        TypeMappingOptions.mapEmptyString(true));
-                copyByReference.forEach(s -> mapping.fields(s, s, FieldsMappingOptions.copyByReference()));
-            }
-        };
-        configs.add(coptyConfig);
-
-
-        List<String> notMapping = new LinkedList<>();
-        UtilsReflection.findAllFieldsContains(sourceClass, NotUpdating.class, fieldNode -> notMapping.add(UtilsReflection.getPath(fieldNode)));
-        BeanMappingBuilder reference = new BeanMappingBuilder() {
-            protected void configure() {
-                TypeMappingBuilder mapping = mapping(sourceClass, sourceClass, TypeMappingOptions.mapNull(false),
-                        TypeMappingOptions.mapEmptyString(true));
-                notMapping.forEach(mapping::exclude);
-            }
-        };
-        configs.add(reference);
         mapper = DozerBeanMapperBuilder.create().withMappingBuilders(configs).build();
+
     }
 
 
     public void mapper(S_D source, S_D destination) {
         mapper.map(source, destination);
     }
+
 }
