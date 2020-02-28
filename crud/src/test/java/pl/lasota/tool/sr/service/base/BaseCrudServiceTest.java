@@ -14,6 +14,7 @@ import pl.lasota.tool.sr.mapping.DozerMapper;
 import pl.lasota.tool.sr.mapping.DozerSameObject;
 import pl.lasota.tool.sr.repository.crud.SimpleCrudRepository;
 import pl.lasota.tool.sr.security.Access;
+import pl.lasota.tool.sr.service.security.DefaultProvidingRules;
 
 import java.util.HashSet;
 import java.util.function.Function;
@@ -126,22 +127,22 @@ public class BaseCrudServiceTest {
         Mockito.reset(dozerMapper, crudRepository, updateToModel);
 
     }
-@Test
+
+    @Test
     public void updateTest() {
 
         Entit toUpdate = new Entit();
         toUpdate.setColor("NOWY KOLOR");
         toUpdate.setId(3L);
         HashSet<Access> toUpdateAccesses = new HashSet<>();
-        toUpdateAccesses.add(new Access("role", (short) 4));
+        toUpdateAccesses.add(new Access("role", (short) 4, new DefaultProvidingRules().create("stary_role", (short) 4)));
         toUpdate.setAccesses(toUpdateAccesses);
-
 
         Entit toOld = new Entit();
         toOld.setId(1L);
         toOld.setColor("STARY  KOLOR");
         HashSet<Access> toOldAccesses = new HashSet<>();
-        toOldAccesses.add(new Access("stary_role", (short) 5));
+        toOldAccesses.add(new Access("stary_role", (short) 5, new DefaultProvidingRules().create("stary_role", (short) 5)));
         toUpdate.setAccesses(toOldAccesses);
 
 
@@ -152,7 +153,7 @@ public class BaseCrudServiceTest {
         assertThat(toOld.getId()).isEqualTo(1L);
         assertThat(toOld.getAccesses())
                 .hasSize(1)
-                .extracting((Function<Access, String>) Access::getValue)
+                .extracting((Function<Access, String>) Access::getPrivilegeRud)
                 .contains("stary_role___5");
 
         baseCrudService = new BaseCrudService<>(crudRepository, dozerMapper, updateToModel, dozerMapper, Entit.class);
@@ -164,12 +165,11 @@ public class BaseCrudServiceTest {
         Mockito.verify(dozerMapper).mapper(argument.capture());
 
 
-
-    assertThat(argument.getValue().getColor()).isEqualTo("NOWY KOLOR");
-    assertThat(argument.getValue().getId()).isEqualTo(1L);
-    assertThat(argument.getValue().getAccesses())
-            .hasSize(1)
-            .extracting((Function<Access, String>) Access::getValue)
-            .contains("stary_role___5");
+        assertThat(argument.getValue().getColor()).isEqualTo("NOWY KOLOR");
+        assertThat(argument.getValue().getId()).isEqualTo(1L);
+        assertThat(argument.getValue().getAccesses())
+                .hasSize(1)
+                .extracting((Function<Access, String>) Access::getPrivilegeRud)
+                .contains("stary_role___5");
     }
 }

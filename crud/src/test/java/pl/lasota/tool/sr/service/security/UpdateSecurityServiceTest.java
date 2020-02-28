@@ -10,7 +10,7 @@ import pl.lasota.tool.sr.field.Operator;
 import pl.lasota.tool.sr.field.Selector;
 import pl.lasota.tool.sr.field.StringFields;
 import pl.lasota.tool.sr.helper.Entit;
-import pl.lasota.tool.sr.security.Context;
+import pl.lasota.tool.sr.security.EntitySecurity;
 import pl.lasota.tool.sr.service.base.BaseUpdateService;
 
 import java.util.LinkedList;
@@ -36,37 +36,24 @@ public class UpdateSecurityServiceTest {
 
 
     @Test
-    public void update() {
-
-        Context context = new Context();
-        context.add(providingRules.create( "admin"));
+    public void updateIfCorrectPrivilege() {
 
         List<Field<?>> fields = new LinkedList<>();
-        updateSecurityService.update(fields, context);
+        updateSecurityService.update(fields, "admin");
         assertThat(fields)
                 .hasSize(1)
                 .element(0)
                 .isInstanceOfSatisfying(StringFields.class, a -> {
                     assertThat(a.condition()).isEqualByComparingTo(Operator.EQUALS);
-                    assertThat(a.getValue()).containsAnyOf("admin___4", "admin___5", "admin___6", "admin___7");
+                    assertThat(a.getValue()).contains("admin___2", "admin___3", "admin___6", "admin___7");
                     assertThat(a.getSelector()).isEqualByComparingTo(Selector.AND);
-                    assertThat(a.getName()).isEqualTo("accesses.value");
+                    assertThat(a.getName()).isEqualTo(EntitySecurity.FIELD_SECURED);
                 });
+    }
 
-
-        context = new Context();
-        context.add(providingRules.create( null));
-
-        fields = new LinkedList<>();
-        updateSecurityService.update(fields, context);
-        assertThat(fields)
-                .hasSize(1)
-                .element(0)
-                .isInstanceOfSatisfying(StringFields.class, a -> {
-                    assertThat(a.condition()).isEqualByComparingTo(Operator.EQUALS);
-                    assertThat(a.getValue()).containsAnyOf("null___4", "null___5", "null___6", "null___7");
-                    assertThat(a.getSelector()).isEqualByComparingTo(Selector.AND);
-                    assertThat(a.getName()).isEqualTo("accesses.value");
-                });
+    @Test(expected = NullPointerException.class)
+    public void updateIfNotCorrectPrivilege() {
+        List<Field<?>> fields = new LinkedList<>();
+        updateSecurityService.update(fields, null);
     }
 }

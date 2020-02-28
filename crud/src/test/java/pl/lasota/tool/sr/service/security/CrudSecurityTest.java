@@ -9,8 +9,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import pl.lasota.tool.sr.helper.Entit;
 import pl.lasota.tool.sr.mapping.DozerMapper;
 import pl.lasota.tool.sr.security.Access;
-import pl.lasota.tool.sr.security.AccessContext;
-import pl.lasota.tool.sr.security.Context;
 import pl.lasota.tool.sr.service.base.BaseCrudService;
 
 import java.util.HashSet;
@@ -28,157 +26,115 @@ public class CrudSecurityTest {
     @Mock
     private BaseCrudService<Entit, Entit, Entit, Entit> baseCrudService;
 
-    private ProvidingRules providingRules;
+    private ProvidingRules providingRules = new DefaultProvidingRules();
 
     private CrudSecurityService<Entit, Entit, Entit, Entit> crudSecurityService;
 
-    private DozerMapper<Entit, Entit> mapper;
-
     @Before
     public void init() {
-        providingRules = new DefaultProvidingRules();
-        mapper = new DozerMapper<>(Entit.class);
-        crudSecurityService = new CrudSecurityService<>(baseCrudService, mapper, providingRules);
+        crudSecurityService = new CrudSecurityService<>(baseCrudService, new DozerMapper<>(Entit.class), providingRules);
     }
 
     @Test
-    public void save() {
+    public void saveWithPrivilege() {
         when(baseCrudService.save(Mockito.any(Entit.class))).thenReturn(new Entit());
 
         Entit toSave = new Entit();
         toSave.setColor(COLOR);
-
-        Context context = new Context();
-        context.add(providingRules.create(a -> a.read().update().delete(), "admin"));
-
-        crudSecurityService.save(toSave, context);
+        String privilegeToCreate = providingRules.create(accessible -> accessible.delete().read().update(), "admin");
+        crudSecurityService.save(toSave, privilegeToCreate);
 
         assertThat(toSave).matches(e -> e.getColor().equals(COLOR) &&
                 e.getAccesses()
                         .stream()
-                        .anyMatch(access -> access.getValue().equals("admin___7")));
+                        .anyMatch(access -> access.getPrivilege().equals("admin___7")));
     }
 
     @Test
-    public void get() {
-        when(baseCrudService.get(Mockito.anyLong())).thenReturn(create(Accessible::read, "admin"));
-        Context context = new Context();
-        context.add(providingRules.create("admin"));
+    public void getIfDifferentPrivileges() {
 
-        Entit entit = crudSecurityService.get(1L, context);
+        when(baseCrudService.get(Mockito.anyLong())).thenReturn(createEntity(Accessible::read, "admin"));
+
+        Entit entit = crudSecurityService.get(1L, "admin");
+
         assertThat(entit).matches(e -> e.getColor().equals(COLOR) &&
                 e.getAccesses()
                         .stream()
-                        .anyMatch(a -> a.getValue().equals("admin___4")));
+                        .anyMatch(a -> a.getPrivilegeRud().equals("admin___4")));
 
 
-        when(baseCrudService.get(Mockito.anyLong())).thenReturn(create(Accessible::read, "admin"));
-        context = new Context();
-        context.add(providingRules.create("adamek"));
-
-        entit = crudSecurityService.get(1L, context);
+        when(baseCrudService.get(Mockito.anyLong())).thenReturn(createEntity(Accessible::read, "admin"));
+        entit = crudSecurityService.get(1L, "adamek");
         assertThat(entit).isNull();
 
 
-        when(baseCrudService.get(Mockito.anyLong())).thenReturn(create(Accessible::delete, "admin"));
-        context = new Context();
-        context.add(providingRules.create("admin"));
-
-        entit = crudSecurityService.get(1L, context);
+        when(baseCrudService.get(Mockito.anyLong())).thenReturn(createEntity(Accessible::delete, "admin"));
+        entit = crudSecurityService.get(1L, "admin");
         assertThat(entit).isNull();
 
-        when(baseCrudService.get(Mockito.anyLong())).thenReturn(create(Accessible::update, "admin"));
-        context = new Context();
-        context.add(providingRules.create("admin"));
-
-        entit = crudSecurityService.get(1L, context);
+        when(baseCrudService.get(Mockito.anyLong())).thenReturn(createEntity(Accessible::update, "admin"));
+        entit = crudSecurityService.get(1L, "admin");
         assertThat(entit).isNull();
-
     }
 
+    //
     @Test
-    public void delete() {
+    public void deleteIfDifferentPrivileges() {
         when(baseCrudService.delete(Mockito.anyLong())).thenReturn(1L);
-        when(baseCrudService.get(Mockito.anyLong())).thenReturn(create(Accessible::delete, "admin"));
+        when(baseCrudService.get(Mockito.anyLong())).thenReturn(createEntity(Accessible::delete, "admin"));
 
-        Context context = new Context();
-        context.add(providingRules.create("admin"));
-
-        Long id = crudSecurityService.delete(1L, context);
+        Long id = crudSecurityService.delete(1L, "admin");
         assertThat(id).isEqualTo(1L);
 
-
         when(baseCrudService.delete(Mockito.anyLong())).thenReturn(1L);
-        when(baseCrudService.get(Mockito.anyLong())).thenReturn(create(Accessible::update, "admin"));
+        when(baseCrudService.get(Mockito.anyLong())).thenReturn(createEntity(Accessible::update, "admin"));
 
-        context = new Context();
-        context.add(providingRules.create("admin"));
-
-        id = crudSecurityService.delete(1L, context);
+        id = crudSecurityService.delete(1L, "admin");
         assertThat(id).isNull();
 
-
         when(baseCrudService.delete(Mockito.anyLong())).thenReturn(1L);
-        when(baseCrudService.get(Mockito.anyLong())).thenReturn(create(Accessible::read, "admin"));
+        when(baseCrudService.get(Mockito.anyLong())).thenReturn(createEntity(Accessible::read, "admin"));
 
-        context = new Context();
-        context.add(providingRules.create("admin"));
-
-        id = crudSecurityService.delete(1L, context);
+        id = crudSecurityService.delete(1L, "admin");
         assertThat(id).isNull();
 
-
         when(baseCrudService.delete(Mockito.anyLong())).thenReturn(1L);
-        when(baseCrudService.get(Mockito.anyLong())).thenReturn(create(a -> a.update().read().one(), "admin"));
+        when(baseCrudService.get(Mockito.anyLong())).thenReturn(createEntity(a -> a.update().read().one(), "admin"));
 
-        context = new Context();
-        context.add(providingRules.create("admin"));
-
-        id = crudSecurityService.delete(1L, context);
+        id = crudSecurityService.delete(1L, "admin");
         assertThat(id).isNull();
 
     }
 
     @Test
-    public void update() {
+    public void updateIfDifferentPrivileges() {
 
-        Entit entit = create(Accessible::update, "admin");
+        Entit entit = createEntity(Accessible::update, "admin");
         when(baseCrudService.update(1L, entit)).thenReturn(entit);
         when(baseCrudService.get(Mockito.anyLong())).thenReturn(entit);
 
-        Context context = new Context();
-        context.add(providingRules.create("admin"));
 
-        Entit update = crudSecurityService.update(1L, entit, context);
+        Entit update = crudSecurityService.update(1L, entit, "admin");
         assertThat(update).isNotNull();
 
 
-        entit = create(Accessible::delete, "admin");
+        entit = createEntity(Accessible::delete, "admin");
         when(baseCrudService.update(1L, entit)).thenReturn(entit);
         when(baseCrudService.get(Mockito.anyLong())).thenReturn(entit);
 
-        context = new Context();
-        context.add(providingRules.create("admin"));
-
-        update = crudSecurityService.update(1L, entit, context);
+        update = crudSecurityService.update(1L, entit, "admin");
         assertThat(update).isNull();
 
     }
 
-
-    private Entit create(ConfigurationAccessible configurationAccessible, String name) {
-        Entit inDatabase = new Entit();
-        inDatabase.setColor(COLOR);
-
-
+    private Entit createEntity(ConfigurationAccessible configurationAccessible, String privilege) {
+        Entit entit = new Entit();
+        entit.setColor(COLOR);
         Set<Access> accesses = new HashSet<>();
-        AccessContext accessContext = providingRules.create(configurationAccessible, name);
-        Access access = new Access();
-        access.setRud(accessContext.getRud());
-        access.setName(accessContext.getName());
-        access.setValue(accessContext.getName() + Access.SEPARATOR + accessContext.getRud());
+        String privilegeRud = providingRules.create(configurationAccessible, privilege);
+        Access access = new Access(privilege, providingRules.rud(privilegeRud), privilegeRud);
         accesses.add(access);
-        inDatabase.setAccesses(accesses);
-        return inDatabase;
+        entit.setAccesses(accesses);
+        return entit;
     }
 }

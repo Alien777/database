@@ -5,7 +5,6 @@ import pl.lasota.tool.sr.mapping.NotUpdating;
 import pl.lasota.tool.sr.repository.EntityBase;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -13,6 +12,8 @@ import java.util.stream.Collectors;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @ToString(callSuper = true)
 public abstract class EntitySecurity extends EntityBase {
+
+    public static final String FIELD_SECURED = "accesses.privilegeRud";
 
     public EntitySecurity() {
     }
@@ -35,11 +36,11 @@ public abstract class EntitySecurity extends EntityBase {
 
     public void copySet(Set<Access> accesses) {
         this.accesses = accesses.stream()
-                .map(access -> new Access(access.getName(), access.getRud())).collect(Collectors.toSet());
+                .map(access -> new Access(access.getPrivilege(), access.getRud(), access.getPrivilegeRud())).collect(Collectors.toSet());
     }
 
     public Set<Access> copyGet() {
         return this.accesses.stream()
-                .map(access -> new Access(access.getName(), access.getRud())).collect(Collectors.toSet());
+                .map(access -> new Access(access.getPrivilege(), access.getRud(), access.getPrivilegeRud())).collect(Collectors.toSet());
     }
 }

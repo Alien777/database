@@ -5,6 +5,7 @@ import pl.lasota.tool.sr.mapping.DozerMapper;
 import pl.lasota.tool.sr.security.*;
 import pl.lasota.tool.sr.service.base.BaseCrudService;
 
+import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,85 +24,71 @@ public class CrudSecurityService<CREATING extends CreatableSecurity, READING, UP
     }
 
     @Transactional
-    public READING save(CREATING creating, Context context) {
-        fillObjectSecurity(creating, context);
+    public READING save(CREATING creating, String... withPrivilegesRud) {
+        fillObjectSecurity(creating, withPrivilegesRud);
         MODEL save = crudService.save(creating);
         return modelToReading.mapper(save);
     }
 
-    public READING get(Long id, Context context) {
+    public READING get(Long id, String... privileges) {
         MODEL reading = crudService.get(id);
-        boolean b = canRead(reading, context);
+        boolean b = canRead(reading, privileges);
         return b ? modelToReading.mapper(reading) : null;
     }
 
     @Transactional
-    public Long delete(Long id, Context context) {
+    public Long delete(Long id, String... privileges) {
         MODEL reading = crudService.get(id);
-        boolean b = canDelete(reading, context);
+        boolean b = canDelete(reading, privileges);
         return b ? crudService.delete(id) : null;
     }
 
     @Transactional
-    public READING update(Long id, UPDATING updating, Context context) {
+    public READING update(Long id, UPDATING updating, String... privileges) {
         MODEL reading = crudService.get(id);
-        boolean b = canUpdate(reading, context);
+        boolean b = canUpdate(reading, privileges);
         return b ? modelToReading.mapper(crudService.update(id, updating)) : null;
     }
 
 
-    private void fillObjectSecurity(CreatableSecurity creatableSecurity, Context context) {
-        Set<Access> accesses = context.getSecured().stream()
-                .map(accessContext -> new Access(accessContext.getName(), accessContext.getRud()))
-                .filter(access -> access.getRud() != 0)
+    private void fillObjectSecurity(CreatableSecurity creatableSecurity, String... withPrivilegesRud) {
+        Set<Access> withAccesses = Arrays.stream(withPrivilegesRud)
+                .map(s -> {
+                    short rud = providingRules.rud(s);
+                    return new Access(s, rud, providingRules.create(s, rud));
+                })
                 .collect(Collectors.toSet());
 
-        creatableSecurity.setAccesses(accesses);
+        creatableSecurity.setAccesses(withAccesses);
     }
 
-    private boolean canRead(EntitySecurity objectSecurity, Context context) {
-        Set<AccessContext> secureds = context.getSecured();
-        Set<Access> accesses = objectSecurity.getAccesses();
-        for (Access access : accesses) {
-            for (AccessContext secured : secureds) {
-                if (access.getName().equals(secured.getName())) {
-                    short rud = access.getRud();
-                    if (providingRules.forCanRead().contains(rud)) {
-                        return true;
-                    }
-                }
-            }
-
-        }
-        return false;
-    }
-
-    private boolean canDelete(EntitySecurity objectSecurity, Context context) {
-        Set<AccessContext> secureds = context.getSecured();
-        Set<Access> accesses = objectSecurity.getAccesses();
-        for (Access access : accesses) {
-            for (AccessContext secured : secureds) {
-                if (access.getName().equals(secured.getName())) {
-                    short rud = access.getRud();
-                    if (providingRules.forCanDelete().contains(rud)) {
-                        return true;
-                    }
+    private boolean canRead(EntitySecurity objectSecurity, String... privileges) {
+        for (Access access : objectSecurity.getAccesses()) {
+            for (String secured : privileges) {
+                if (access.getPrivilege().equals(secured)) {
+                    return providingRules.canRead(access.getRud());
                 }
             }
         }
         return false;
     }
 
-    private boolean canUpdate(EntitySecurity objectSecurity, Context context) {
-        Set<AccessContext> secureds = context.getSecured();
-        Set<Access> accesses = objectSecurity.getAccesses();
-        for (Access access : accesses) {
-            for (AccessContext secured : secureds) {
-                if (access.getName().equals(secured.getName())) {
-                    short rud = access.getRud();
-                    if (providingRules.forCanUpdate().contains(rud)) {
-                        return true;
-                    }
+    private boolean canDelete(EntitySecurity objectSecurity, String... privileges) {
+        for (Access access : objectSecurity.getAccesses()) {
+            for (String secured : privileges) {
+                if (access.getPrivilege().equals(secured)) {
+                    return providingRules.canDelete(access.getRud());
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean canUpdate(EntitySecurity objectSecurity, String... privileges) {
+        for (Access access : objectSecurity.getAccesses()) {
+            for (String secured : privileges) {
+                if (access.getPrivilege().equals(secured)) {
+                    return providingRules.canUpdate(access.getRud());
                 }
             }
         }

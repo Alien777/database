@@ -1,30 +1,30 @@
 package pl.lasota.tool.sr.service.security;
 
 import org.junit.Test;
-import pl.lasota.tool.sr.security.AccessContext;
 
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DefaultProvidingRulesTest {
     @Test
     public void testParser() {
         DefaultProvidingRules defaultProvidingRules = new DefaultProvidingRules();
 
-        AccessContext test = defaultProvidingRules.create(Accessible::zero, "adam");
-        assert test.getRud() == 0 && test.getName().equals("adam");
+        String test = defaultProvidingRules.create(Accessible::zero, "adam");
+        assertThat(test).isEqualTo("adam___0");
 
         test = defaultProvidingRules.create(accessible -> accessible.read().delete().update(), "adam");
-        assert test.getRud() == 7 && test.getName().equals("adam");
+        assertThat(test).isEqualTo("adam___7");
 
         test = defaultProvidingRules.create(Accessible::delete, "adam");
-        assert test.getRud() == 1 && test.getName().equals("adam");
+        assertThat(test).isEqualTo("adam___1");
 
-        test = defaultProvidingRules.create(accessible -> accessible.delete().update(), "test");
-        assert test.getRud() == 3 && test.getName().equals("test");
+        test = defaultProvidingRules.create(accessible -> accessible.delete().update(), "adam");
+        assertThat(test).isEqualTo("adam___3");
 
         test = defaultProvidingRules.create(accessible -> accessible.delete().update()
                 .one().one().one().one().one().one().one(), "test");
 
-        assert test.getRud() == 511 && test.getName().equals("test");
+        assertThat(test).isEqualTo("test___511");
 
     }
 

@@ -24,14 +24,6 @@ public final class DozerSameObject<S_D> {
         List<FieldClass> notUpdate = UtilsReflections.getAllFieldWithAnnotation(sourceClass, NotUpdating.class);
         List<FieldClass> othersFields = UtilsReflections.getAllFieldWithoutAnnotation(sourceClass, NotUpdating.class, CopyByReference.class);
 
-        System.out.println("******************************");
-        System.out.println(copyByReferences);
-        System.out.println("******************************");
-        System.out.println(notUpdate);
-        System.out.println("******************************");
-        System.out.println(othersFields);
-
-
         configs.add(new BeanMappingBuilder() {
             protected void configure() {
 

@@ -1,16 +1,11 @@
 package pl.lasota.tool.sr.mapping;
 
-import com.github.dozermapper.core.DozerBeanMapperBuilder;
-import com.github.dozermapper.core.Mapper;
-import com.github.dozermapper.core.classmap.RelationshipType;
-import com.github.dozermapper.core.loader.api.BeanMappingBuilder;
-import com.github.dozermapper.core.loader.api.TypeMappingOption;
-import com.github.dozermapper.core.loader.api.TypeMappingOptions;
 import org.junit.Test;
 import pl.lasota.tool.sr.helper.Entit;
 import pl.lasota.tool.sr.helper.ObjectTest;
 import pl.lasota.tool.sr.helper.TestNotMapping;
 import pl.lasota.tool.sr.security.Access;
+import pl.lasota.tool.sr.service.security.DefaultProvidingRules;
 
 import java.util.HashSet;
 import java.util.function.Function;
@@ -37,7 +32,7 @@ public class DozerSameObjectTest {
         toUpdate.setColor("NOWY KOLOR");
         toUpdate.setId(1L);
         HashSet<Access> toUpdateAccesses = new HashSet<>();
-        toUpdateAccesses.add(new Access("role", (short) 4));
+        toUpdateAccesses.add(new Access("role", (short) 4, new DefaultProvidingRules().create("role", (short) 4)));
         toUpdate.setAccesses(toUpdateAccesses);
 
 
@@ -45,7 +40,7 @@ public class DozerSameObjectTest {
         toOld.setId(2L);
         toOld.setColor("STARY  KOLOR");
         HashSet<Access> toOldAccesses = new HashSet<>();
-        toOldAccesses.add(new Access("stary_role", (short) 5));
+        toOldAccesses.add(new Access("stary_role", (short) 5, new DefaultProvidingRules().create("stary_role", (short) 5)));
         toUpdate.setAccesses(toOldAccesses);
 
 
@@ -56,7 +51,7 @@ public class DozerSameObjectTest {
         assertThat(toOld.getId()).isEqualTo(2L);
         assertThat(toOld.getAccesses())
                 .hasSize(1)
-                .extracting((Function<Access, String>) Access::getValue)
+                .extracting((Function<Access, String>) Access::getPrivilegeRud)
                 .contains("stary_role___5");
 
     }

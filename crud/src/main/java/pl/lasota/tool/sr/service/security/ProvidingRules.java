@@ -1,18 +1,33 @@
 package pl.lasota.tool.sr.service.security;
 
-import com.google.common.collect.ImmutableSet;
-import pl.lasota.tool.sr.security.AccessContext;
+import java.util.*;
 
 public interface ProvidingRules {
 
-    ImmutableSet<Short> forCanRead();
+    boolean canRead(String privilegeRud);
 
-    ImmutableSet<Short> forCanUpdate();
+    boolean canUpdate(String privilegeRud);
 
-    ImmutableSet<Short> forCanDelete();
+    boolean canDelete(String privilegeRud);
 
-    AccessContext create(ConfigurationAccessible configurationAccessible, String name);
+    boolean canRead(short rud);
 
-    AccessContext create(String name);
+    boolean canUpdate(short rud);
+
+    boolean canDelete(short rud);
+
+    List<String> createAllReadPrivilegeRud(String privilege);
+
+    List<String> createAllDeletePrivilegeRud(String privilege);
+
+    List<String> createAllUpdatePrivilegeRud(String privilege);
+
+    String create(ConfigurationAccessible configurationAccessible, String privilege);
+
+    String create(String privilege, short rud);
+
+    boolean hasAccess(String privilegeRud, short rud);
+
+    short rud(String privilegeRud);
 
 }
