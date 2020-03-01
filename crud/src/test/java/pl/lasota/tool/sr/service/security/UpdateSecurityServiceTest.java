@@ -11,7 +11,7 @@ import pl.lasota.tool.sr.field.Selector;
 import pl.lasota.tool.sr.field.StringFields;
 import pl.lasota.tool.sr.helper.Entit;
 import pl.lasota.tool.sr.security.EntitySecurity;
-import pl.lasota.tool.sr.service.base.BaseUpdateService;
+import pl.lasota.tool.sr.service.base.UpdateAction;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -22,16 +22,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UpdateSecurityServiceTest {
 
     @Mock
-    private BaseUpdateService<Entit> baseUpdateService;
+    private UpdateAction<Entit> updateAction;
 
-    private ProvidingRules providingRules;
+    private ProvidingPrivilege providingPrivilege;
 
-    private UpdateSecurityService<Entit> updateSecurityService;
+    private UpdateSecurity updateSecurityService;
 
     @Before
     public void init() {
-        providingRules = new DefaultProvidingRules();
-        updateSecurityService = new UpdateSecurityService<>(baseUpdateService, providingRules);
+        providingPrivilege = new SimpleProvidingPrivileges();
+        updateSecurityService = new UpdateSecurity(updateAction, providingPrivilege);
     }
 
 
@@ -41,13 +41,23 @@ public class UpdateSecurityServiceTest {
         List<Field<?>> fields = new LinkedList<>();
         updateSecurityService.update(fields, "admin");
         assertThat(fields)
-                .hasSize(1)
+                .hasSize(2)
                 .element(0)
                 .isInstanceOfSatisfying(StringFields.class, a -> {
                     assertThat(a.condition()).isEqualByComparingTo(Operator.EQUALS);
-                    assertThat(a.getValue()).contains("admin___2", "admin___3", "admin___6", "admin___7");
+                    assertThat(a.getValue()).contains("admin");
                     assertThat(a.getSelector()).isEqualByComparingTo(Selector.AND);
-                    assertThat(a.getName()).isEqualTo(EntitySecurity.FIELD_SECURED);
+                    assertThat(a.getName()).isEqualTo(EntitySecurity.AUTHORIZATION_PRIVILEGED);
+                });
+
+        assertThat(fields)
+                .hasSize(2)
+                .element(1)
+                .isInstanceOfSatisfying(StringFields.class, a -> {
+                    assertThat(a.condition()).isEqualByComparingTo(Operator.EQUALS);
+                    assertThat(a.getValue()).contains("2", "3", "6", "7");
+                    assertThat(a.getSelector()).isEqualByComparingTo(Selector.AND);
+                    assertThat(a.getName()).isEqualTo(EntitySecurity.AUTHORIZATION_PERMISSION);
                 });
     }
 

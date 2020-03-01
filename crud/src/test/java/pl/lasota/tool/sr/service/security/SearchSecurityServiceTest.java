@@ -14,7 +14,7 @@ import pl.lasota.tool.sr.helper.Entit;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import pl.lasota.tool.sr.security.EntitySecurity;
-import pl.lasota.tool.sr.service.base.BaseSearchService;
+import pl.lasota.tool.sr.service.base.Search;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -23,16 +23,16 @@ import java.util.List;
 public class SearchSecurityServiceTest {
 
     @Mock
-    private BaseSearchService<Entit, Entit> baseSearchService;
+    private Search<Entit> searchAction;
 
-    private ProvidingRules providingRules;
+    private ProvidingPrivilege providingPrivilege;
 
-    private SearchSecurityService<Entit, Entit> searchSecurityService;
+    private SearchSecurity<Entit> searchSecurityService;
 
     @Before
     public void init() {
-        providingRules = new DefaultProvidingRules();
-        searchSecurityService = new SearchSecurityService<>(baseSearchService, providingRules);
+        providingPrivilege = new SimpleProvidingPrivileges();
+        searchSecurityService = new SearchSecurity<Entit>(searchAction, providingPrivilege);
     }
 
     @Test
@@ -41,13 +41,23 @@ public class SearchSecurityServiceTest {
         List<Field<?>> fields = new LinkedList<>();
         searchSecurityService.find(fields, "admin");
         assertThat(fields)
-                .hasSize(1)
+                .hasSize(2)
                 .element(0)
                 .isInstanceOfSatisfying(StringFields.class, a -> {
                     assertThat(a.condition()).isEqualByComparingTo(Operator.EQUALS);
-                    assertThat(a.getValue()).contains("admin___4", "admin___5", "admin___6", "admin___7");
+                    assertThat(a.getValue()).contains("admin");
                     assertThat(a.getSelector()).isEqualByComparingTo(Selector.AND);
-                    assertThat(a.getName()).isEqualTo(EntitySecurity.FIELD_SECURED);
+                    assertThat(a.getName()).isEqualTo(EntitySecurity.AUTHORIZATION_PRIVILEGED);
+                });
+
+        assertThat(fields)
+                .hasSize(2)
+                .element(1)
+                .isInstanceOfSatisfying(StringFields.class, a -> {
+                    assertThat(a.condition()).isEqualByComparingTo(Operator.EQUALS);
+                    assertThat(a.getValue()).contains("4", "5", "6", "7");
+                    assertThat(a.getSelector()).isEqualByComparingTo(Selector.AND);
+                    assertThat(a.getName()).isEqualTo(EntitySecurity.AUTHORIZATION_PERMISSION);
                 });
     }
 

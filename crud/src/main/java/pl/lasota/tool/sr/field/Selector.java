@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public enum Selector {
-    AND, OR, SORT, SET, MUST, SHOULD, NOT_MUST;
+    AND, OR, SORT, SET;
 
     public static Selector find(String[] pre) {
         Optional<Selector> first = Arrays.stream(Selector.values())

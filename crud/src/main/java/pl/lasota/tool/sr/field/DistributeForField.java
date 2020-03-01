@@ -1,13 +1,12 @@
 package pl.lasota.tool.sr.field;
 
 import pl.lasota.tool.sr.repository.DistributeForCriteria;
-import pl.lasota.tool.sr.repository.DistributeForTokenizer;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class DistributeForField implements DistributeForCriteria, DistributeForTokenizer {
+public class DistributeForField implements DistributeForCriteria {
 
     private final List<CriteriaField<?>> fields;
 
@@ -48,29 +47,4 @@ public class DistributeForField implements DistributeForCriteria, DistributeForT
                 .findFirst().orElse(null);
     }
 
-    public List<CriteriaField<?>> must() {
-
-        return fields.stream()
-                .filter(Objects::nonNull)
-                .map(field -> (CriteriaField<?>) field)
-                .filter(field -> field.getSelector() == Selector.MUST || field.getSelector() == Selector.AND)
-                .collect(Collectors.toList());
-    }
-
-    public List<CriteriaField<?>> notMust() {
-
-        return fields.stream()
-                .filter(Objects::nonNull)
-                .map(field -> (CriteriaField<?>) field)
-                .filter(field -> field.getSelector() == Selector.NOT_MUST)
-                .collect(Collectors.toList());
-    }
-
-    public List<CriteriaField<?>> should() {
-        return fields.stream()
-                .filter(Objects::nonNull)
-                .map(field -> (CriteriaField<?>) field)
-                .filter(field -> field.getSelector() == Selector.SHOULD)
-                .collect(Collectors.toList());
-    }
 }

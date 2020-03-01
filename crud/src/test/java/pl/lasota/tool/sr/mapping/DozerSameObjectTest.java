@@ -4,8 +4,7 @@ import org.junit.Test;
 import pl.lasota.tool.sr.helper.Entit;
 import pl.lasota.tool.sr.helper.ObjectTest;
 import pl.lasota.tool.sr.helper.TestNotMapping;
-import pl.lasota.tool.sr.security.Access;
-import pl.lasota.tool.sr.service.security.DefaultProvidingRules;
+import pl.lasota.tool.sr.security.SpecialPermission;
 
 import java.util.HashSet;
 import java.util.function.Function;
@@ -31,17 +30,17 @@ public class DozerSameObjectTest {
         Entit toUpdate = new Entit();
         toUpdate.setColor("NOWY KOLOR");
         toUpdate.setId(1L);
-        HashSet<Access> toUpdateAccesses = new HashSet<>();
-        toUpdateAccesses.add(new Access("role", (short) 4, new DefaultProvidingRules().create("role", (short) 4)));
-        toUpdate.setAccesses(toUpdateAccesses);
+        HashSet<SpecialPermission> toUpdateSpecialPermissions = new HashSet<>();
+        toUpdateSpecialPermissions.add(new SpecialPermission("role", (short) 4));
+        toUpdate.setSpecialPermission(toUpdateSpecialPermissions);
 
 
         Entit toOld = new Entit();
         toOld.setId(2L);
         toOld.setColor("STARY  KOLOR");
-        HashSet<Access> toOldAccesses = new HashSet<>();
-        toOldAccesses.add(new Access("stary_role", (short) 5, new DefaultProvidingRules().create("stary_role", (short) 5)));
-        toUpdate.setAccesses(toOldAccesses);
+        HashSet<SpecialPermission> toOldSpecialPermissions = new HashSet<>();
+        toOldSpecialPermissions.add(new SpecialPermission("stary_role", (short) 5));
+        toUpdate.setSpecialPermission(toOldSpecialPermissions);
 
 
         DozerSameObject<Entit> object = new DozerSameObject<>(Entit.class);
@@ -49,10 +48,15 @@ public class DozerSameObjectTest {
 
         assertThat(toOld.getColor()).isEqualTo("NOWY KOLOR");
         assertThat(toOld.getId()).isEqualTo(2L);
-        assertThat(toOld.getAccesses())
+        assertThat(toOld.getSpecialPermission())
                 .hasSize(1)
-                .extracting((Function<Access, String>) Access::getPrivilegeRud)
-                .contains("stary_role___5");
+                .extracting((Function<SpecialPermission, String>) SpecialPermission::getPrivileged)
+                .contains("stary_role");
+
+        assertThat(toOld.getSpecialPermission())
+                .hasSize(1)
+                .extracting((Function<SpecialPermission, Short>) SpecialPermission::getPermission)
+                .contains((short) 5);
 
     }
 
