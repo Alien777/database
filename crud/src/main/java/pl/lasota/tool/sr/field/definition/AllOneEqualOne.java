@@ -1,4 +1,7 @@
-package pl.lasota.tool.sr.field;
+package pl.lasota.tool.sr.field.definition;
+
+import pl.lasota.tool.sr.field.Operator;
+import pl.lasota.tool.sr.field.Selector;
 
 public class AllOneEqualOne extends CriteriaField<Object> {
     public AllOneEqualOne() {
@@ -7,6 +10,6 @@ public class AllOneEqualOne extends CriteriaField<Object> {
 
     @Override
     public Operator condition() {
-        return Operator.ALL;
+        return Operator.GET_ALL;
     }
 }

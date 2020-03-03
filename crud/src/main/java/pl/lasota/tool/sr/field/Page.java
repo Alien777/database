@@ -1,8 +1,8 @@
 package pl.lasota.tool.sr.field;
 
-public final class Pageable {
+public final class Page {
 
-    public Pageable(int page, int limit) {
+    public Page(int page, int limit) {
         this.page = Math.max(page, 0);
         this.limit = limit <= 0 ? 1 : limit;
     }

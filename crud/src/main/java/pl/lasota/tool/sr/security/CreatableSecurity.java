@@ -7,17 +7,15 @@ public interface CreatableSecurity {
 
     Set<SpecialPermission> getSpecialPermission();
 
-    void setSpecialPermission(Set<SpecialPermission> specialPermission);
-
     String getUser();
-
-    void setUser(String user);
 
     String getGroup();
 
+    Short getPermission();
+
+    void setUser(String user);
+
     void setGroup(String group);
 
-    short getPermission();
-
-    void setPermission(short permission);
+    void setPermission(Short permission);
 }

@@ -25,7 +25,7 @@ public final class UtilsReflections {
         for (int i = 0; i < partPaths.length; i++) {
             for (ReflectionField r : reflectionFields) {
                 if (r.getPath().equals(rootPath)) {
-                    classes.add(new FieldClass(r.getField().getName(), r.getPath(), r.getField().getType(), r.getParentField()));
+                    classes.add(new FieldClass(r.getField().getName(), r.getPath(), r.getField(), r.getField().getType(), r.getParentField()));
                 }
             }
             if (i + 1 < partPaths.length) {
@@ -41,7 +41,7 @@ public final class UtilsReflections {
         return allField(baseClass)
                 .stream()
                 .filter(reflectionField -> Arrays.stream(annotations).noneMatch(c -> reflectionField.getField().isAnnotationPresent(c)))
-                .map(r -> new FieldClass(r.getField().getName(), r.getPath(), r.getField().getType(), r.getParentField()))
+                .map(r -> new FieldClass(r.getField().getName(), r.getPath(), r.getField(), r.getField().getType(), r.getParentField()))
                 .collect(Collectors.toList());
     }
 
@@ -50,14 +50,14 @@ public final class UtilsReflections {
         return allField(baseClass)
                 .stream()
                 .filter(reflectionField -> Arrays.stream(annotations).anyMatch(c -> reflectionField.getField().isAnnotationPresent(c)))
-                .map(r -> new FieldClass(r.getField().getName(), r.getPath(), r.getField().getType(), r.getParentField()))
+                .map(r -> new FieldClass(r.getField().getName(), r.getPath(), r.getField(), r.getField().getType(), r.getParentField()))
                 .collect(Collectors.toList());
     }
 
     public static List<FieldClass> getAllField(Class<?> baseClass) {
         return allField(baseClass)
                 .stream()
-                .map(r -> new FieldClass(r.getField().getName(), r.getPath(), r.getField().getType(), r.getParentField()))
+                .map(r -> new FieldClass(r.getField().getName(), r.getPath(), r.getField(), r.getField().getType(), r.getParentField()))
                 .collect(Collectors.toList());
     }
 
@@ -83,13 +83,13 @@ public final class UtilsReflections {
             LinkedList<ReflectionField> collect = new LinkedList<>();
 
             Type genericFieldType = reflectionField.getField().getGenericType();
-
             if (genericFieldType instanceof ParameterizedType) {
                 ParameterizedType aType = (ParameterizedType) genericFieldType;
                 Type[] fieldArgTypes = aType.getActualTypeArguments();
                 for (Type fieldArgType : fieldArgTypes) {
+                    Class<?> stringListClass = (Class<?>) aType.getActualTypeArguments()[0];
                     collect.addAll(FieldUtils.getAllFieldsList((Class<?>) fieldArgType).stream()
-                            .map(field -> new ReflectionField(reflectionField.getPath() + "." + field.getName(), field, reflectionField.getField().getType()))
+                            .map(field -> new ReflectionField(reflectionField.getPath() + "." + field.getName(), field, stringListClass))
                             .collect(Collectors.toCollection(LinkedList::new)));
                 }
             }

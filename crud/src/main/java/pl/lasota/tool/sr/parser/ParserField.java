@@ -5,6 +5,7 @@ import pl.lasota.tool.sr.field.Operator;
 import pl.lasota.tool.sr.field.Selector;
 import pl.lasota.tool.sr.field.Sort;
 import pl.lasota.tool.sr.field.*;
+import pl.lasota.tool.sr.field.definition.*;
 
 
 import java.util.Arrays;
@@ -35,12 +36,12 @@ public class ParserField implements Parser<MultiValueMap<String, String>, List<F
                     }else
                     if (nameField.equals(PAGE)) {
                         String[] pages = valueField.split(BETWEEN_SEPARATOR);
-                        fields.add(new PaginationField(new Pageable( Integer.parseInt(pages[0]),Integer.parseInt(pages[1]))));
+                        fields.add(new PageField(new Page( Integer.parseInt(pages[0]),Integer.parseInt(pages[1]))));
                     } else if (isBetweenNumber(valueField)) {
                         try {
                             String[] values = valueField.split(BETWEEN_SEPARATOR);
                             Range<String> numberRange = new Range<>(values[0].trim(), values[1].trim());
-                            fields.add(new RangeStringField(nameField, numberRange, selectorField));
+                            fields.add(new RangeField(nameField, numberRange, selectorField));
                         } catch (Exception ex) {
                             throw new RuntimeException(ex);
                         }
@@ -50,7 +51,7 @@ public class ParserField implements Parser<MultiValueMap<String, String>, List<F
                             fields.add(new SortField(nameField, Sort.find(secondRaw)));
                         } else {
                             try {
-                                fields.add(new StringField(nameField, valueField, selectorField, operatorField));
+                                fields.add(new SimpleField(nameField, valueField, selectorField, operatorField));
                             } catch (Exception ex) {
                                 throw new RuntimeException(ex);
                             }

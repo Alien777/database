@@ -1,11 +1,13 @@
-package pl.lasota.tool.sr.field;
+package pl.lasota.tool.sr.field.definition;
 
 
 import lombok.ToString;
+import pl.lasota.tool.sr.field.Normalizer;
+import pl.lasota.tool.sr.field.Operator;
+import pl.lasota.tool.sr.field.Selector;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Consumer;
 
 @ToString(callSuper = true)
 public abstract class CriteriaField<VALUE> extends NamedField<VALUE> {

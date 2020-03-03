@@ -4,7 +4,7 @@ package pl.lasota.tool.sr.repository;
 import org.springframework.data.util.Pair;
 import pl.lasota.tool.sr.field.Sort;
 import pl.lasota.tool.sr.field.*;
-import pl.lasota.tool.sr.field.SetField;
+import pl.lasota.tool.sr.field.definition.*;
 import pl.lasota.tool.sr.reflection.FieldClass;
 import pl.lasota.tool.sr.reflection.UtilsReflections;
 
@@ -53,15 +53,15 @@ public final class CriteriaFieldMapping<MODEL> {
 
         List<Predicate> predicates = new LinkedList<>();
 
-        if (field instanceof RangeStringField) {
+        if (field instanceof RangeField) {
             try {
-                create((RangeStringField) field, predicates, root, cb);
+                create((RangeField) field, predicates, root, cb);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-        } else if (field instanceof StringField) {
+        } else if (field instanceof SimpleField) {
             try {
-                Predicate predicate = create((StringField) field, root, cb);
+                Predicate predicate = create((SimpleField) field, root, cb);
                 if (predicate != null) {
                     predicates.add(predicate);
                 }
@@ -77,9 +77,9 @@ public final class CriteriaFieldMapping<MODEL> {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-        } else if (field instanceof StringFields) {
+        } else if (field instanceof MultipleValuesField) {
             try {
-                create((StringFields) field, predicates, root, cb);
+                create((MultipleValuesField) field, predicates, root, cb);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -88,12 +88,13 @@ public final class CriteriaFieldMapping<MODEL> {
         return predicates;
     }
 
-    private void create(StringFields field, List<Predicate> predicates, Root<MODEL> root, CriteriaBuilder cb) throws ParseException {
+
+    private void create(MultipleValuesField field, List<Predicate> predicates, Root<MODEL> root, CriteriaBuilder cb) throws ParseException {
 
         List<Predicate> predOr = new LinkedList<>();
         for (String value : field.getValue()) {
             Predicate predicate = create(
-                    new StringField(field.getName(), value, field.getSelector(), field.condition()),
+                    new SimpleField(field.getName(), value, field.getSelector(), field.condition()),
                     root, cb);
             if (predicate != null) {
                 predOr.add(predicate);
@@ -111,12 +112,12 @@ public final class CriteriaFieldMapping<MODEL> {
         return Pair.of(objectPath, o);
     }
 
-    private void create(RangeStringField field, List<Predicate> predicates, Root<MODEL> root, CriteriaBuilder cb) throws ParseException {
+    private void create(RangeField field, List<Predicate> predicates, Root<MODEL> root, CriteriaBuilder cb) throws ParseException {
         Predicate predicate = null;
 
         Path objectPath = generatePath(field.getName(), root);
 
-        if (field.condition() == Operator.BETWEEN) {
+        if (field.condition() == Operator.RANGE) {
             Range<String> range = field.getValue();
             if (!isNumeric(range.getMinimum()) && !isNumeric(range.getMaximum())) {
                 return;
@@ -216,20 +217,20 @@ public final class CriteriaFieldMapping<MODEL> {
 
     private Predicate create(AllOneEqualOne field, CriteriaBuilder cb) throws ParseException {
 
-        if (field.condition() == Operator.ALL) {
+        if (field.condition() == Operator.GET_ALL) {
             return cb.equal(cb.literal(1), 1);
         }
         return null;
     }
 
-    private Predicate create(StringField field, Root<MODEL> root, CriteriaBuilder cb) throws ParseException {
+    private Predicate create(SimpleField field, Root<MODEL> root, CriteriaBuilder cb) throws ParseException {
         Predicate predicate = null;
 
 
         Path objectPath = generatePath(field.getName(), root);
 
         switch (field.condition()) {
-            case ALL:
+            case GET_ALL:
                 predicate = cb.equal(cb.literal(1), 1);
                 break;
             case EQUALS:

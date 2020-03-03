@@ -1,6 +1,6 @@
 package pl.lasota.tool.sr.repository.search.specification;
 
-import pl.lasota.tool.sr.field.SortField;
+import pl.lasota.tool.sr.field.definition.SortField;
 import pl.lasota.tool.sr.repository.CommonSpecification;
 import pl.lasota.tool.sr.repository.CriteriaFieldMapping;
 import pl.lasota.tool.sr.repository.DistributeForCriteria;

@@ -4,7 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.sr.field.DistributeForField;
-import pl.lasota.tool.sr.field.Field;
+import pl.lasota.tool.sr.field.definition.Field;
 import pl.lasota.tool.sr.mapping.Mapping;
 import pl.lasota.tool.sr.repository.CriteriaFieldMapping;
 import pl.lasota.tool.sr.repository.EntityBase;

@@ -13,6 +13,7 @@ import java.lang.reflect.Field;
 public class FieldClass {
     private String name;
     private String path;
+    private Field field;
     private Class<?> typeField;
     private Class<?> parentClass;
 }

@@ -5,10 +5,10 @@ import pl.lasota.tool.sr.mapping.DozerSameObject;
 import pl.lasota.tool.sr.mapping.Mapping;
 import pl.lasota.tool.sr.repository.EntityBase;
 import pl.lasota.tool.sr.repository.crud.CrudRepository;
+import pl.lasota.tool.sr.security.EntitySecurity;
 
 @Transactional(readOnly = true)
-public class CrudAction<CREATING, READING, UPDATING, MODEL extends EntityBase>
-        implements Crud<CREATING, READING, UPDATING> {
+public class CrudAction<CREATING, READING, UPDATING, MODEL extends EntityBase> implements Crud<CREATING, READING, UPDATING> {
 
     private final CrudRepository<MODEL> repository;
     private final Mapping<CREATING, MODEL> creatingToModel;

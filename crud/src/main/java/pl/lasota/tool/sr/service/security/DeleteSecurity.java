@@ -1,8 +1,8 @@
 package pl.lasota.tool.sr.service.security;
 
-import pl.lasota.tool.sr.field.Field;
+import pl.lasota.tool.sr.field.definition.Field;
 import pl.lasota.tool.sr.field.Operator;
-import pl.lasota.tool.sr.field.StringFields;
+import pl.lasota.tool.sr.field.definition.MultipleValuesField;
 import pl.lasota.tool.sr.security.EntitySecurity;
 import pl.lasota.tool.sr.service.base.Delete;
 
@@ -34,8 +34,8 @@ public class DeleteSecurity implements DeleteSecurityAction {
 
     private List<Field<?>> createFieldsSecured(String... privileges) {
         String[] strings = Arrays.stream(providingPrivilege.update()).sorted().map(String::valueOf).toArray(String[]::new);
-        StringFields securedPrivileges = StringFields.shouldBeOneOfThem(EntitySecurity.AUTHORIZATION_PRIVILEGED, Operator.EQUALS, privileges);
-        StringFields securedPermission = StringFields.shouldBeOneOfThem(EntitySecurity.AUTHORIZATION_PERMISSION,  Operator.EQUALS, strings);
+        MultipleValuesField securedPrivileges = MultipleValuesField.shouldBeOneOfThem(EntitySecurity.AUTHORIZATION_PRIVILEGED, Operator.EQUALS, privileges);
+        MultipleValuesField securedPermission = MultipleValuesField.shouldBeOneOfThem(EntitySecurity.AUTHORIZATION_PERMISSION,  Operator.EQUALS, strings);
 
         LinkedList<Field<?>> fields = new LinkedList<>();
         fields.add(securedPrivileges);

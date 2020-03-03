@@ -1,6 +1,8 @@
-package pl.lasota.tool.sr.field;
+package pl.lasota.tool.sr.field.definition;
 
 import lombok.ToString;
+import pl.lasota.tool.sr.field.Operator;
+import pl.lasota.tool.sr.field.Selector;
 
 @ToString(callSuper = true)
 public final class SetField extends CriteriaField<String> {

@@ -1,6 +1,6 @@
 package pl.lasota.tool.sr.service.security;
 
-import java.util.*;
+import pl.lasota.tool.sr.security.CreatableSecurity;
 
 public interface ProvidingPrivilege {
 
@@ -10,12 +10,14 @@ public interface ProvidingPrivilege {
 
     Short[] update();
 
-    boolean canRead(short permissions);
+    boolean canRead(CreatableSecurity creatableSecurity, Context context);
 
-    boolean canUpdate(short permissions);
+    boolean canUpdate(CreatableSecurity creatableSecurity, Context context);
 
-    boolean canDelete(short permissions);
+    boolean canDelete(CreatableSecurity creatableSecurity, Context context);
 
     Short create(ConfigurationAccessible configurationAccessible);
+
+    Short create(ConfigurationAccessibleChmod configurationAccessible);
 
 }

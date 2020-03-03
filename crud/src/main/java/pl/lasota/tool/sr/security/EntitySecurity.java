@@ -21,13 +21,16 @@ public abstract class EntitySecurity extends EntityBase implements CreatableSecu
     }
 
     @Column(nullable = false)
+    @NotUpdating
     private String user;
 
     @Column(nullable = false)
+    @NotUpdating
     private String group;
 
     @Column(nullable = false)
-    private short permission;
+    @NotUpdating
+    private Short permission;
 
     @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @NotUpdating
@@ -55,32 +58,31 @@ public abstract class EntitySecurity extends EntityBase implements CreatableSecu
                 .map(access -> new SpecialPermission(access.getPrivileged(), access.getPermission())).collect(Collectors.toSet());
     }
 
-    public String getOwner() {
-        return owner;
-    }
-
-    public void setOwner(String user) {
-        this.owner = user;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String group) {
-        this.role = group;
-    }
 
     @Override
-    public short getPermission() {
+    public Short getPermission() {
         return permission;
     }
 
     @Override
-    public void setPermission(short permission) {
+    public String getUser() {
+        return user;
+    }
+
+    @Override
+    public String getGroup() {
+        return group;
+    }
+
+    public void setPermission(Short permission) {
         this.permission = permission;
     }
 
-    private class Shrot {
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
     }
 }

@@ -3,8 +3,8 @@ package pl.lasota.tool.sr.service.base;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import pl.lasota.tool.sr.field.Field;
-import pl.lasota.tool.sr.field.PaginationField;
+import pl.lasota.tool.sr.field.definition.Field;
+import pl.lasota.tool.sr.field.definition.PageField;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,12 +14,12 @@ public interface Search<READING> {
     Page<READING> find(List<Field<?>> source, Pageable pageable);
 
     default Page<READING> find(List<Field<?>> source) {
-        Optional<PaginationField> first = source.stream().filter(field -> field instanceof PaginationField)
-                .map(field -> (PaginationField) field).findFirst();
+        Optional<PageField> first = source.stream().filter(field -> field instanceof PageField)
+                .map(field -> (PageField) field).findFirst();
 
-        PaginationField paginationField = first.orElse(new PaginationField(new pl.lasota.tool.sr.field.Pageable(0, 10)));
+        PageField pageField = first.orElse(new PageField(new pl.lasota.tool.sr.field.Page(0, 10)));
 
-        pl.lasota.tool.sr.field.Pageable pageable = paginationField.getValue();
-        return this.find(source, PageRequest.of(pageable.getPage(), pageable.getLimit()));
+        pl.lasota.tool.sr.field.Page page = pageField.getValue();
+        return this.find(source, PageRequest.of(page.getPage(), page.getLimit()));
     }
 }

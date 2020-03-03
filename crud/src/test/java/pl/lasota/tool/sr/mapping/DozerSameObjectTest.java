@@ -40,7 +40,7 @@ public class DozerSameObjectTest {
         toOld.setColor("STARY  KOLOR");
         HashSet<SpecialPermission> toOldSpecialPermissions = new HashSet<>();
         toOldSpecialPermissions.add(new SpecialPermission("stary_role", (short) 5));
-        toUpdate.setSpecialPermission(toOldSpecialPermissions);
+        toOld.setSpecialPermission(toOldSpecialPermissions);
 
 
         DozerSameObject<Entit> object = new DozerSameObject<>(Entit.class);
@@ -48,6 +48,7 @@ public class DozerSameObjectTest {
 
         assertThat(toOld.getColor()).isEqualTo("NOWY KOLOR");
         assertThat(toOld.getId()).isEqualTo(2L);
+
         assertThat(toOld.getSpecialPermission())
                 .hasSize(1)
                 .extracting((Function<SpecialPermission, String>) SpecialPermission::getPrivileged)

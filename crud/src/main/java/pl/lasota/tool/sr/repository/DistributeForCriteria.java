@@ -1,8 +1,8 @@
 package pl.lasota.tool.sr.repository;
 
-import pl.lasota.tool.sr.field.CriteriaField;
-import pl.lasota.tool.sr.field.SetField;
-import pl.lasota.tool.sr.field.SortField;
+import pl.lasota.tool.sr.field.definition.CriteriaField;
+import pl.lasota.tool.sr.field.definition.SetField;
+import pl.lasota.tool.sr.field.definition.SortField;
 
 import java.util.List;
 

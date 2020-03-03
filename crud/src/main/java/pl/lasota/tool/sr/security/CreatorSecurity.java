@@ -9,7 +9,7 @@ public abstract class CreatorSecurity implements CreatableSecurity {
 
     private String user;
     private String group;
-    private short permission;
+    private Short permission;
 
 
     public Set<SpecialPermission> getSpecialPermissions() {
@@ -36,11 +36,11 @@ public abstract class CreatorSecurity implements CreatableSecurity {
         this.group = group;
     }
 
-    public short getPermission() {
+    public Short getPermission() {
         return permission;
     }
 
-    public void setPermission(short permission) {
+    public void setPermission(Short permission) {
         this.permission = permission;
     }
 }

@@ -5,10 +5,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import pl.lasota.tool.sr.field.Field;
+import pl.lasota.tool.sr.field.definition.Field;
 import pl.lasota.tool.sr.field.Operator;
 import pl.lasota.tool.sr.field.Selector;
-import pl.lasota.tool.sr.field.StringFields;
+import pl.lasota.tool.sr.field.definition.MultipleValuesField;
 import pl.lasota.tool.sr.helper.Entit;
 import pl.lasota.tool.sr.security.EntitySecurity;
 import pl.lasota.tool.sr.service.base.UpdateAction;
@@ -43,7 +43,7 @@ public class UpdateSecurityServiceTest {
         assertThat(fields)
                 .hasSize(2)
                 .element(0)
-                .isInstanceOfSatisfying(StringFields.class, a -> {
+                .isInstanceOfSatisfying(MultipleValuesField.class, a -> {
                     assertThat(a.condition()).isEqualByComparingTo(Operator.EQUALS);
                     assertThat(a.getValue()).contains("admin");
                     assertThat(a.getSelector()).isEqualByComparingTo(Selector.AND);
@@ -53,7 +53,7 @@ public class UpdateSecurityServiceTest {
         assertThat(fields)
                 .hasSize(2)
                 .element(1)
-                .isInstanceOfSatisfying(StringFields.class, a -> {
+                .isInstanceOfSatisfying(MultipleValuesField.class, a -> {
                     assertThat(a.condition()).isEqualByComparingTo(Operator.EQUALS);
                     assertThat(a.getValue()).contains("2", "3", "6", "7");
                     assertThat(a.getSelector()).isEqualByComparingTo(Selector.AND);

@@ -140,7 +140,7 @@ public class CrudActionTest {
         toOld.setColor("STARY  KOLOR");
         HashSet<SpecialPermission> toOldSpecialPermissions = new HashSet<>();
         toOldSpecialPermissions.add(new SpecialPermission("stary_role", (short) 5));
-        toUpdate.setSpecialPermission(toOldSpecialPermissions);
+        toOld.setSpecialPermission(toOldSpecialPermissions);
 
 
         DozerSameObject<Entit> object = new DozerSameObject<>(Entit.class);

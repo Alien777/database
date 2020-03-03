@@ -1,7 +1,7 @@
 package pl.lasota.tool.sr.service.base;
 
-import pl.lasota.tool.sr.field.Field;
-import pl.lasota.tool.sr.field.CriteriaField;
+import pl.lasota.tool.sr.field.definition.Field;
+import pl.lasota.tool.sr.field.definition.CriteriaField;
 
 import java.util.List;
 import java.util.stream.Collectors;

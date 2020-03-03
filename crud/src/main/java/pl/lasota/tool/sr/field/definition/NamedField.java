@@ -1,4 +1,4 @@
-package pl.lasota.tool.sr.field;
+package pl.lasota.tool.sr.field.definition;
 
 import lombok.ToString;
 

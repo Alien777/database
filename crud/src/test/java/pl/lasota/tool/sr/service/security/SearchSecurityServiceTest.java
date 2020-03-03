@@ -5,10 +5,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import pl.lasota.tool.sr.field.Field;
+import pl.lasota.tool.sr.field.definition.Field;
 import pl.lasota.tool.sr.field.Operator;
 import pl.lasota.tool.sr.field.Selector;
-import pl.lasota.tool.sr.field.StringFields;
+import pl.lasota.tool.sr.field.definition.MultipleValuesField;
 import pl.lasota.tool.sr.helper.Entit;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,18 +32,25 @@ public class SearchSecurityServiceTest {
     @Before
     public void init() {
         providingPrivilege = new SimpleProvidingPrivileges();
-        searchSecurityService = new SearchSecurity<Entit>(searchAction, providingPrivilege);
+        searchSecurityService = new SearchSecurity<Entit>(searchAction, providingPrivilege, new ProvidingContext() {
+            @Override
+            public Context supply() {
+                LinkedList<String> strings = new LinkedList<>();
+                strings.add("admin");
+                return new Context("admin", "admin", strings);
+            }
+        });
     }
 
     @Test
     public void findIfCorrectPrivilege() {
 
         List<Field<?>> fields = new LinkedList<>();
-        searchSecurityService.find(fields, "admin");
+        searchSecurityService.find(fields);
         assertThat(fields)
                 .hasSize(2)
                 .element(0)
-                .isInstanceOfSatisfying(StringFields.class, a -> {
+                .isInstanceOfSatisfying(MultipleValuesField.class, a -> {
                     assertThat(a.condition()).isEqualByComparingTo(Operator.EQUALS);
                     assertThat(a.getValue()).contains("admin");
                     assertThat(a.getSelector()).isEqualByComparingTo(Selector.AND);
@@ -53,7 +60,7 @@ public class SearchSecurityServiceTest {
         assertThat(fields)
                 .hasSize(2)
                 .element(1)
-                .isInstanceOfSatisfying(StringFields.class, a -> {
+                .isInstanceOfSatisfying(MultipleValuesField.class, a -> {
                     assertThat(a.condition()).isEqualByComparingTo(Operator.EQUALS);
                     assertThat(a.getValue()).contains("4", "5", "6", "7");
                     assertThat(a.getSelector()).isEqualByComparingTo(Selector.AND);
@@ -64,6 +71,6 @@ public class SearchSecurityServiceTest {
     @Test(expected = NullPointerException.class)
     public void findIfNotCorrectPrivilege() {
         List<Field<?>> fields = new LinkedList<>();
-        searchSecurityService.find(fields, null);
+    new SearchSecurity<Entit>(searchAction, providingPrivilege, () -> new Context(null, null, null)).find(fields);
     }
 }

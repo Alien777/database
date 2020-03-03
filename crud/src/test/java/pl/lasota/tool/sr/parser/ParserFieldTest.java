@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import pl.lasota.tool.sr.field.*;
+import pl.lasota.tool.sr.field.definition.*;
 
 import java.util.List;
 
@@ -20,39 +21,33 @@ public class ParserFieldTest {
         assertThat(parse)
                 .hasSize(1)
                 .anyMatch(field -> field.getValue().equals("12"))
-                .anyMatch(field -> field instanceof StringField);
+                .anyMatch(field -> field instanceof SimpleField);
 
         parse = parserField.parse(createMVP("?adam=12&pole=adamek lasota"));
         assertThat(parse)
                 .hasSize(2)
                 .anyMatch(field -> field.getValue().equals("12"))
                 .anyMatch(field -> field.getValue().equals("adamek lasota"))
-                .anyMatch(field -> field instanceof StringField);
+                .anyMatch(field -> field instanceof SimpleField);
 
         parse = parserField.parse(createMVP("?adam=12&pole=adamek lasota"));
         assertThat(parse)
                 .hasSize(2)
                 .element(1)
-                .isInstanceOfSatisfying(StringField.class, s -> {
+                .isInstanceOfSatisfying(SimpleField.class, s -> {
                     assertThat(s.getName()).isEqualTo("pole");
                     assertThat(s.getValue()).isEqualTo("adamek lasota");
                     assertThat(s.getSelector()).isEqualTo(Selector.AND);
                     assertThat(s.condition()).isEqualTo(Operator.EQUALS);
                 });
 
-        parse = parserField.parse(createMVP("?adam=12&pole=adamek lasota;SORT"));
-        assertThat(parse)
-                .hasSize(2)
-                .element(1)
-                .isInstanceOfSatisfying(SortField.class, s -> {
-                    assertThat(s.getName()).isEqualTo("pole");
-                    assertThat(s.getValue()).isEqualTo(Sort.ASC);
-                    assertThat(s.getSelector()).isEqualTo(Selector.SORT);
-                    assertThat(s.condition()).isEqualTo(Operator.SORT);
-                });
 
 
         parse = parserField.parse(createMVP("?adam=12&pole=DESC;SORT"));
+        parse.forEach(field -> {
+
+            System.out.println(field);
+        });
         assertThat(parse)
                 .hasSize(2)
                 .element(1)
@@ -67,7 +62,7 @@ public class ParserFieldTest {
         assertThat(parse)
                 .hasSize(2)
                 .element(1)
-                .isInstanceOfSatisfying(StringField.class, s -> {
+                .isInstanceOfSatisfying(SimpleField.class, s -> {
                     assertThat(s.getName()).isEqualTo("pole");
                     assertThat(s.getValue()).isEqualTo("adamek");
                     assertThat(s.getSelector()).isEqualTo(Selector.OR);
@@ -78,7 +73,7 @@ public class ParserFieldTest {
         assertThat(parse)
                 .hasSize(2)
                 .element(1)
-                .isInstanceOfSatisfying(StringField.class, s -> {
+                .isInstanceOfSatisfying(SimpleField.class, s -> {
                     assertThat(s.getName()).isEqualTo("pole");
                     assertThat(s.getValue()).isEqualTo("adamek");
                     assertThat(s.getSelector()).isEqualTo(Selector.OR);
@@ -89,31 +84,31 @@ public class ParserFieldTest {
         assertThat(parse)
                 .hasSize(2)
                 .element(1)
-                .isInstanceOfSatisfying(RangeStringField.class, s -> {
+                .isInstanceOfSatisfying(RangeField.class, s -> {
                     assertThat(s.getName()).isEqualTo("pole");
                     assertThat(s.getValue().getMinimum()).isEqualTo("12");
                     assertThat(s.getValue().getMaximum()).isEqualTo("23");
                     assertThat(s.getSelector()).isEqualTo(Selector.OR);
-                    assertThat(s.condition()).isEqualTo(Operator.BETWEEN);
+                    assertThat(s.condition()).isEqualTo(Operator.RANGE);
                 });
 
         parse = parserField.parse(createMVP("?adam=12&pole=12!23;and;"));
         assertThat(parse)
                 .hasSize(2)
                 .element(1)
-                .isInstanceOfSatisfying(RangeStringField.class, s -> {
+                .isInstanceOfSatisfying(RangeField.class, s -> {
                     assertThat(s.getName()).isEqualTo("pole");
                     assertThat(s.getValue().getMinimum()).isEqualTo("12");
                     assertThat(s.getValue().getMaximum()).isEqualTo("23");
                     assertThat(s.getSelector()).isEqualTo(Selector.AND);
-                    assertThat(s.condition()).isEqualTo(Operator.BETWEEN);
+                    assertThat(s.condition()).isEqualTo(Operator.RANGE);
                 });
 
         parse = parserField.parse(createMVP("?adam=12&page=12!23"));
         assertThat(parse)
                 .hasSize(2)
                 .element(1)
-                .isInstanceOfSatisfying(PaginationField.class, s -> {
+                .isInstanceOfSatisfying(PageField.class, s -> {
                     assertThat(s.getValue().getLimit()).isEqualTo(23);
                     assertThat(s.getValue().getPage()).isEqualTo(12);
                 });

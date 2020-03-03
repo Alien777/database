@@ -1,4 +1,4 @@
-package pl.lasota.tool.sr.field;
+package pl.lasota.tool.sr.field.definition;
 
 import lombok.ToString;
 
@@ -9,6 +9,7 @@ public class Field<VALUE> {
     public Field(VALUE value) {
         this.value = value;
     }
+
     public VALUE getValue() {
         return value;
     }
