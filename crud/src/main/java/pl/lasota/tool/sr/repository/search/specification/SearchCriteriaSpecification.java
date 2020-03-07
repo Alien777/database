@@ -1,10 +1,9 @@
 package pl.lasota.tool.sr.repository.search.specification;
 
-import pl.lasota.tool.sr.field.definition.SortField;
 import pl.lasota.tool.sr.repository.CommonSpecification;
-import pl.lasota.tool.sr.repository.CriteriaFieldMapping;
-import pl.lasota.tool.sr.repository.DistributeForCriteria;
 import pl.lasota.tool.sr.repository.EntityBase;
+import pl.lasota.tool.sr.repository.query.Predicatable;
+import pl.lasota.tool.sr.repository.query.sort.Sortable;
 
 import javax.persistence.criteria.*;
 
@@ -12,18 +11,19 @@ public class SearchCriteriaSpecification<MODEL extends EntityBase>
         extends CommonSpecification<MODEL> implements SpecificationQuery<MODEL> {
 
 
-    public SearchCriteriaSpecification(DistributeForCriteria distributeField, CriteriaFieldMapping<MODEL> fieldMapping) {
-        super(distributeField, fieldMapping);
+    private final Sortable sortable;
+
+    public SearchCriteriaSpecification(Predicatable predicatable, Sortable sortable) {
+        super(predicatable);
+        this.sortable = sortable;
     }
 
     @Override
-    public Predicate toPredicate(Root<MODEL> root, CriteriaQuery<MODEL> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-        SortField sort = distributeField.sort();
-
-        if (sort != null) {
-            Order map = fieldMapping.map(sort, root, criteriaBuilder);
-            criteriaQuery.orderBy(map);
+    public Predicate toPredicate(Class<MODEL> model, Root<MODEL> root, CriteriaQuery<MODEL> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+        Order order = sortable.order(model, root, criteriaBuilder);
+        if (order != null) {
+            criteriaQuery.orderBy(order);
         }
-        return super.toPredicate(root, criteriaBuilder);
+        return super.toPredicate(model, root, criteriaBuilder);
     }
 }

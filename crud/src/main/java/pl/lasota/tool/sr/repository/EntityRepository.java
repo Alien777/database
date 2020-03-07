@@ -64,7 +64,7 @@ public class EntityRepository<MODEL extends EntityBase>
 
     @Override
     public Page<MODEL> find(SpecificationQuery<MODEL> specification, Pageable pageable) {
-        return searchRepository.find(specification, pageable);
+        return searchRepository.find(specification,pageable);
     }
 
     @Override
@@ -79,5 +79,6 @@ public class EntityRepository<MODEL extends EntityBase>
         crudRepository.modelClass(modelClass);
         updateRepository.modelClass(modelClass);
     }
+
 
 }

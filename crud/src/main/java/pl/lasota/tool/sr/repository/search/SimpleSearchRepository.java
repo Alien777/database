@@ -33,7 +33,7 @@ public class SimpleSearchRepository<MODEL extends EntityBase> implements SearchR
         CriteriaQuery<MODEL> query = cb.createQuery(modelClass);
         Root<MODEL> root = query.from(modelClass);
 
-        Predicate predicate = specification.toPredicate(root, query, cb);
+        Predicate predicate = specification.toPredicate(modelClass,root, query, cb);
 
         query.where(predicate);
         query.distinct(true);
@@ -46,7 +46,7 @@ public class SimpleSearchRepository<MODEL extends EntityBase> implements SearchR
         CriteriaBuilder qb1 = em.getCriteriaBuilder();
         CriteriaQuery<Long> cq1 = qb1.createQuery(Long.class);
         cq1.select(qb1.count(cq1.from(modelClass)));
-        Predicate predicate1 = specification.toPredicate(root, query, cb);
+        Predicate predicate1 = specification.toPredicate(modelClass,root, query, cb);
         cq1.where(predicate1);
         cq1.distinct(true);
         Long singleResult = em.createQuery(cq1).getSingleResult();

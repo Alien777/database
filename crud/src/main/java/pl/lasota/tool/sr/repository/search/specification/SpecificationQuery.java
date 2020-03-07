@@ -10,6 +10,6 @@ import javax.persistence.criteria.Root;
 
 public interface SpecificationQuery<MODEL extends EntityBase> extends Specification<MODEL> {
 
-    Predicate toPredicate(Root<MODEL> root, CriteriaQuery<MODEL> criteriaQuery, CriteriaBuilder criteriaBuilder);
+    Predicate toPredicate(Class<MODEL> model, Root<MODEL> root, CriteriaQuery<MODEL> criteriaQuery, CriteriaBuilder criteriaBuilder);
 
 }

@@ -28,7 +28,7 @@ public class SimpleDeleteRepository<MODEL extends EntityBase> implements DeleteR
 
         CriteriaQuery<MODEL> query = cb.createQuery(modelClass);
         Root<MODEL> roo1t = query.from(modelClass);
-        Predicate queryPredicate = specification.toPredicate(roo1t, cb);
+        Predicate queryPredicate = specification.toPredicate(modelClass, roo1t, cb);
         query.where(queryPredicate);
         query.distinct(true);
         List<MODEL> resultList = em.createQuery(query).getResultList();
@@ -36,7 +36,7 @@ public class SimpleDeleteRepository<MODEL extends EntityBase> implements DeleteR
         CriteriaDelete<MODEL> criteriaDelete = cb.createCriteriaDelete(modelClass);
         Root<MODEL> root = criteriaDelete.from(modelClass);
 
-        Predicate predicateUpdate = specification.toPredicate(root, cb);
+        Predicate predicateUpdate = specification.toPredicate(modelClass, root, cb);
 
         criteriaDelete.where(predicateUpdate);
         em.createQuery(criteriaDelete).executeUpdate();

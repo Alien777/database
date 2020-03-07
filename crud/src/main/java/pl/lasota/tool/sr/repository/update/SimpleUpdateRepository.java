@@ -27,7 +27,7 @@ public class SimpleUpdateRepository<MODEL extends EntityBase> implements UpdateR
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<MODEL> query = cb.createQuery(modelClass);
         Root<MODEL> roo1t = query.from(modelClass);
-        Predicate queryPredicate = specification.toPredicate(roo1t, cb);
+        Predicate queryPredicate = specification.toPredicate(modelClass,roo1t, cb);
         query.where(queryPredicate);
         query.distinct(true);
 
@@ -40,7 +40,7 @@ public class SimpleUpdateRepository<MODEL extends EntityBase> implements UpdateR
         CriteriaUpdate<MODEL> update = cb.createCriteriaUpdate(modelClass);
         Root<MODEL> root = update.from(modelClass);
 
-        Predicate predicateUpdate = specification.toPredicate(root, update, cb);
+        Predicate predicateUpdate = specification.toPredicate(modelClass,root, update, cb);
 
         update.where(predicateUpdate);
         em.createQuery(update).executeUpdate();
@@ -50,7 +50,6 @@ public class SimpleUpdateRepository<MODEL extends EntityBase> implements UpdateR
 
     @Override
     public void modelClass(Class<MODEL> modelClass) {
-
         this.modelClass = modelClass;
     }
 }

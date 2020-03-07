@@ -10,5 +10,5 @@ import javax.persistence.criteria.Root;
 public interface SpecificationDelete<MODEL extends EntityBase> extends Specification<MODEL> {
 
     @Override
-    Predicate toPredicate(Root<MODEL> root, CriteriaBuilder criteriaBuilder);
+    Predicate toPredicate(Class<MODEL> modelClass, Root<MODEL> root, CriteriaBuilder criteriaBuilder);
 }

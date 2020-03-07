@@ -3,12 +3,10 @@ package pl.lasota.tool.sr.service.base;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
-import pl.lasota.tool.sr.field.DistributeForField;
-import pl.lasota.tool.sr.field.definition.Field;
 import pl.lasota.tool.sr.mapping.Mapping;
-import pl.lasota.tool.sr.repository.CriteriaFieldMapping;
 import pl.lasota.tool.sr.repository.EntityBase;
 import pl.lasota.tool.sr.repository.Specification;
+import pl.lasota.tool.sr.repository.query.QueryCriteria;
 import pl.lasota.tool.sr.repository.search.SearchRepository;
 import pl.lasota.tool.sr.repository.search.specification.SearchCriteriaSpecification;
 import pl.lasota.tool.sr.repository.search.specification.SpecificationQuery;
@@ -17,27 +15,28 @@ import java.util.List;
 
 @Transactional(readOnly = true)
 public class SearchAction<READING, MODEL extends EntityBase> implements Search<READING>,
-        SpecificationProvider<Specification<MODEL>> {
+        SpecificationProvider<SpecificationQuery<MODEL>, QueryCriteria> {
 
     private final SearchRepository<MODEL> repository;
     private final Mapping<Page<MODEL>, Page<READING>> mapping;
-    private final CriteriaFieldMapping<MODEL> map;
+
 
     public SearchAction(SearchRepository<MODEL> repository, Mapping<Page<MODEL>, Page<READING>> mapping, Class<MODEL> modelClass) {
         this.repository = repository;
         repository.modelClass(modelClass);
         this.mapping = mapping;
-        map = new CriteriaFieldMapping<>(modelClass);
+
     }
 
     @Override
-    public Page<READING> find(List<Field<?>> source, Pageable pageable) {
-        Page<MODEL> models = repository.find(providerSpecification(source), pageable);
+    public Page<READING> find(QueryCriteria queryCriteria) {
+        Page<MODEL> models = repository.find(providerSpecification(queryCriteria),queryCriteria.getPageable());
         return mapping.mapper(models);
     }
 
+
     @Override
-    public SpecificationQuery<MODEL> providerSpecification(List<Field<?>> fields) {
-        return new SearchCriteriaSpecification<>(new DistributeForField(filter(fields)), map);
+    public SpecificationQuery<MODEL> providerSpecification(QueryCriteria queryCriteria) {
+        return new SearchCriteriaSpecification<>(queryCriteria, queryCriteria);
     }
 }
