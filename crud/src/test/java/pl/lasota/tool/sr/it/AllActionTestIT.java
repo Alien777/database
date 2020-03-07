@@ -1,5 +1,7 @@
 package pl.lasota.tool.sr.it;
 
+import com.google.common.collect.Ordering;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +14,13 @@ import pl.lasota.tool.sr.mapping.DozerPageMapping;
 import pl.lasota.tool.sr.repository.EntityRepository;
 import pl.lasota.tool.sr.repository.query.*;
 import pl.lasota.tool.sr.repository.query.field.SetField;
+import pl.lasota.tool.sr.repository.query.sort.Sortable;
 import pl.lasota.tool.sr.service.base.AllAction;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import javax.persistence.EntityManager;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 
@@ -56,6 +60,12 @@ class AllActionTestIT {
                 .hasSize(1)
                 .flatExtracting((Function<Shop, String>) Shop::getName)
                 .contains("Paulinka");
+
+
+        criteria = CriteriaBuilderImpl.criteria();
+        root = criteria.root(criteria.all());
+        shops = entityAll.find(criteria.build(root, criteria.sort("value", Sortable.Sort.DESC), criteria.page(0, 10)));
+        assertThat(shops.getContent()).isSortedAccordingTo((shop, t1) -> t1.getValue() - shop.getValue());
 
 
         root = criteria.root(criteria.and(criteria.gt("value", 3)));
