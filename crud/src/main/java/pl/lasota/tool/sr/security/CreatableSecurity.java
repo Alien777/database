@@ -5,17 +5,19 @@ import java.util.Set;
 
 public interface CreatableSecurity {
 
-    Set<SpecialPermission> getSpecialPermission();
+    Set<SpecialPermission> getSpecialPermissions();
 
-    String getUser();
+    void setSpecialPermissions(Set<SpecialPermission> specialPermissions);
+
+    String getOwner();
+
+    void setOwner(String owner);
 
     String getGroup();
 
-    Short getPermission();
-
-    void setUser(String user);
-
     void setGroup(String group);
+
+    Short getPermission();
 
     void setPermission(Short permission);
 }

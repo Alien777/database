@@ -28,7 +28,7 @@ public class SimpleProvidingPrivilegesTest {
 
         assertThat(simpleProvidingPrivileges.create(new ConfigurationAccessibleChmod() {
             @Override
-            public void user(Accessible accessible) {
+            public void owner(Accessible accessible) {
                 accessible.read().delete().update();
             }
 
@@ -47,7 +47,7 @@ public class SimpleProvidingPrivilegesTest {
 
         assertThat(simpleProvidingPrivileges.create(new ConfigurationAccessibleChmod() {
             @Override
-            public void user(Accessible accessible) {
+            public void owner(Accessible accessible) {
 
             }
 

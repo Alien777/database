@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 public abstract class EntitySecurity extends EntityBase implements CreatableSecurity {
 
     public static final String AUTHORIZATION_PRIVILEGED = "authorization.privileged";
-
     public static final String AUTHORIZATION_PERMISSION = "authorization.permission";
 
     public EntitySecurity() {
@@ -22,9 +21,9 @@ public abstract class EntitySecurity extends EntityBase implements CreatableSecu
 
     @Column(nullable = false)
     @NotUpdating
-    private String user;
+    private String owner;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "\"group\"")
     @NotUpdating
     private String group;
 
@@ -38,35 +37,26 @@ public abstract class EntitySecurity extends EntityBase implements CreatableSecu
             joinColumns = @JoinColumn(name = "entity_id"),
             inverseJoinColumns = @JoinColumn(name = "authorization_id", unique = true)
     )
-    private Set<SpecialPermission> specialPermission;
+    private Set<SpecialPermission> specialPermissions;
 
-    public Set<SpecialPermission> getSpecialPermission() {
-        return specialPermission;
-    }
-
-    public void setSpecialPermission(Set<SpecialPermission> specialPermissions) {
-        this.specialPermission = specialPermissions;
-    }
 
     public void copySet(Set<SpecialPermission> specialPermissions) {
-        this.specialPermission = specialPermissions.stream()
+        this.specialPermissions = specialPermissions.stream()
                 .map(access -> new SpecialPermission(access.getPrivileged(), access.getPermission())).collect(Collectors.toSet());
     }
 
     public Set<SpecialPermission> copyGet() {
-        return this.specialPermission.stream()
+        return this.specialPermissions.stream()
                 .map(access -> new SpecialPermission(access.getPrivileged(), access.getPermission())).collect(Collectors.toSet());
     }
 
 
-    @Override
-    public Short getPermission() {
-        return permission;
+    public String getOwner() {
+        return owner;
     }
 
-    @Override
-    public String getUser() {
-        return user;
+    public void setOwner(String user) {
+        this.owner = user;
     }
 
     @Override
@@ -74,15 +64,28 @@ public abstract class EntitySecurity extends EntityBase implements CreatableSecu
         return group;
     }
 
+    @Override
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    @Override
+    public Short getPermission() {
+        return permission;
+    }
+
+    @Override
     public void setPermission(Short permission) {
         this.permission = permission;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    @Override
+    public Set<SpecialPermission> getSpecialPermissions() {
+        return specialPermissions;
     }
 
-    public void setGroup(String group) {
-        this.group = group;
+    @Override
+    public void setSpecialPermissions(Set<SpecialPermission> specialPermission) {
+        this.specialPermissions = specialPermission;
     }
 }

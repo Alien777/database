@@ -50,9 +50,9 @@ public class CrudSecurityActionTest {
 
         assertThat(toSave).matches(e -> e.getColor().equals(COLOR)
                 && e.getGroup().equals("ADMIN")
-                && e.getUser().equals("admin")
+                && e.getOwner().equals("admin")
                 && e.getPermission() == (short) 1700
-                && e.getSpecialPermission() == null);
+                && e.getSpecialPermissions() == null);
     }
 
     @Test
@@ -286,10 +286,10 @@ public class CrudSecurityActionTest {
             short privilegeRud = providingPrivilege.create(configurationAccessible);
             SpecialPermission specialPermission = new SpecialPermission(privilege, privilegeRud);
             specialPermissions.add(specialPermission);
-            entit.setSpecialPermission(specialPermissions);
+            entit.setSpecialPermissions(specialPermissions);
         }
         if (username != null)
-            entit.setUser(username);
+            entit.setOwner(username);
 
         if (group != null)
             entit.setGroup(group);

@@ -3,14 +3,12 @@ package pl.lasota.tool.sr.security;
 import java.util.Set;
 
 
-public abstract class CreatorSecurity implements CreatableSecurity {
+public class CreatorSecurity implements CreatableSecurity {
 
     private Set<SpecialPermission> specialPermissions;
-
     private String user;
     private String group;
     private Short permission;
-
 
     public Set<SpecialPermission> getSpecialPermissions() {
         return specialPermissions;
@@ -20,12 +18,12 @@ public abstract class CreatorSecurity implements CreatableSecurity {
         this.specialPermissions = specialPermissions;
     }
 
-    public String getUser() {
+    public String getOwner() {
         return user;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setOwner(String owner) {
+        this.user = owner;
     }
 
     public String getGroup() {

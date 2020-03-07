@@ -29,6 +29,7 @@ public class SpecialPermission {
         this.permission = permission;
     }
 
+
     public long getId() {
         return id;
     }

@@ -2,7 +2,7 @@ package pl.lasota.tool.sr.service.security;
 
 public interface ConfigurationAccessibleChmod {
 
-    void user(Accessible accessible);
+    void owner(Accessible accessible);
 
     void group(Accessible accessible);
 

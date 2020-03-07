@@ -32,7 +32,7 @@ public class DozerSameObjectTest {
         toUpdate.setId(1L);
         HashSet<SpecialPermission> toUpdateSpecialPermissions = new HashSet<>();
         toUpdateSpecialPermissions.add(new SpecialPermission("role", (short) 4));
-        toUpdate.setSpecialPermission(toUpdateSpecialPermissions);
+        toUpdate.setSpecialPermissions(toUpdateSpecialPermissions);
 
 
         Entit toOld = new Entit();
@@ -40,7 +40,7 @@ public class DozerSameObjectTest {
         toOld.setColor("STARY  KOLOR");
         HashSet<SpecialPermission> toOldSpecialPermissions = new HashSet<>();
         toOldSpecialPermissions.add(new SpecialPermission("stary_role", (short) 5));
-        toOld.setSpecialPermission(toOldSpecialPermissions);
+        toOld.setSpecialPermissions(toOldSpecialPermissions);
 
 
         DozerSameObject<Entit> object = new DozerSameObject<>(Entit.class);
@@ -49,12 +49,12 @@ public class DozerSameObjectTest {
         assertThat(toOld.getColor()).isEqualTo("NOWY KOLOR");
         assertThat(toOld.getId()).isEqualTo(2L);
 
-        assertThat(toOld.getSpecialPermission())
+        assertThat(toOld.getSpecialPermissions())
                 .hasSize(1)
                 .extracting((Function<SpecialPermission, String>) SpecialPermission::getPrivileged)
                 .contains("stary_role");
 
-        assertThat(toOld.getSpecialPermission())
+        assertThat(toOld.getSpecialPermissions())
                 .hasSize(1)
                 .extracting((Function<SpecialPermission, Short>) SpecialPermission::getPermission)
                 .contains((short) 5);

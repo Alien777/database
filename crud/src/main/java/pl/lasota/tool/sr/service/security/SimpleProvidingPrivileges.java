@@ -60,7 +60,7 @@ public class SimpleProvidingPrivileges implements ProvidingPrivilege {
         userRole.add(false);
         userRole.add(false);
         userRole.add(false);
-        configurationAccessible.user(createAccessible(userRole));
+        configurationAccessible.owner(createAccessible(userRole));
 
         final List<Boolean> groupRole = new LinkedList<>();
         groupRole.add(false);
@@ -102,15 +102,15 @@ public class SimpleProvidingPrivileges implements ProvidingPrivilege {
         short u = digit(creatableSecurity.getPermission(), 1);
         short g = digit(creatableSecurity.getPermission(), 2);
         short o = digit(creatableSecurity.getPermission(), 3);
-        if (context.getUsername().equals(creatableSecurity.getUser()) && permissions.contains(u)) {
+        if (context.getOwner().equals(creatableSecurity.getOwner()) && permissions.contains(u)) {
             return true;
-        } else if (context.getRole().equals(creatableSecurity.getGroup()) && permissions.contains(g)) {
+        } else if (context.getGroup().equals(creatableSecurity.getGroup()) && permissions.contains(g)) {
             return true;
         } else if (permissions.contains(o)) {
             return true;
         } else {
             return creatableSecurity
-                    .getSpecialPermission()
+                    .getSpecialPermissions()
                     .stream()
                     .anyMatch(sp -> context.getPrivilege().contains(sp.getPrivileged()) && permissions.contains(sp.getPermission()));
         }

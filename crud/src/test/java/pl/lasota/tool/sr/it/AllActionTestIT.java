@@ -1,7 +1,5 @@
 package pl.lasota.tool.sr.it;
 
-import com.google.common.collect.Ordering;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,17 +10,16 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.sr.mapping.DozerMapper;
 import pl.lasota.tool.sr.mapping.DozerPageMapping;
 import pl.lasota.tool.sr.repository.EntityRepository;
-import pl.lasota.tool.sr.repository.query.*;
-import pl.lasota.tool.sr.repository.query.field.SetField;
+import pl.lasota.tool.sr.repository.query.CriteriaBuilderImpl;
+import pl.lasota.tool.sr.repository.query.Predicatable;
 import pl.lasota.tool.sr.repository.query.sort.Sortable;
 import pl.lasota.tool.sr.service.base.AllAction;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import javax.persistence.EntityManager;
-import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @RunWith(SpringRunner.class)

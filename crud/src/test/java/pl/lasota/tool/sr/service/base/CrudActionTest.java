@@ -133,14 +133,14 @@ public class CrudActionTest {
         toUpdate.setId(3L);
         HashSet<SpecialPermission> toUpdateSpecialPermissions = new HashSet<>();
         toUpdateSpecialPermissions.add(new SpecialPermission("role", (short) 4));
-        toUpdate.setSpecialPermission(toUpdateSpecialPermissions);
+        toUpdate.setSpecialPermissions(toUpdateSpecialPermissions);
 
         Entit toOld = new Entit();
         toOld.setId(1L);
         toOld.setColor("STARY  KOLOR");
         HashSet<SpecialPermission> toOldSpecialPermissions = new HashSet<>();
         toOldSpecialPermissions.add(new SpecialPermission("stary_role", (short) 5));
-        toOld.setSpecialPermission(toOldSpecialPermissions);
+        toOld.setSpecialPermissions(toOldSpecialPermissions);
 
 
         DozerSameObject<Entit> object = new DozerSameObject<>(Entit.class);
@@ -148,12 +148,12 @@ public class CrudActionTest {
 
         assertThat(toOld.getColor()).isEqualTo("NOWY KOLOR");
         assertThat(toOld.getId()).isEqualTo(1L);
-        assertThat(toOld.getSpecialPermission())
+        assertThat(toOld.getSpecialPermissions())
                 .hasSize(1)
                 .extracting((Function<SpecialPermission, String>) SpecialPermission::getPrivileged)
                 .contains("stary_role");
 
-        assertThat(toOld.getSpecialPermission())
+        assertThat(toOld.getSpecialPermissions())
                 .hasSize(1)
                 .extracting((Function<SpecialPermission, Short>) SpecialPermission::getPermission)
                 .contains((short) 5);
@@ -169,12 +169,12 @@ public class CrudActionTest {
 
         assertThat(argument.getValue().getColor()).isEqualTo("NOWY KOLOR");
         assertThat(argument.getValue().getId()).isEqualTo(1L);
-        assertThat(toOld.getSpecialPermission())
+        assertThat(toOld.getSpecialPermissions())
                 .hasSize(1)
                 .extracting((Function<SpecialPermission, String>) SpecialPermission::getPrivileged)
                 .contains("stary_role");
 
-        assertThat(toOld.getSpecialPermission())
+        assertThat(toOld.getSpecialPermissions())
                 .hasSize(1)
                 .extracting((Function<SpecialPermission, Short>) SpecialPermission::getPermission)
                 .contains((short) 5);

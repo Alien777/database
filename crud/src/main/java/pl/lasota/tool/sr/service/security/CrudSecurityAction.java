@@ -40,8 +40,8 @@ public class CrudSecurityAction<CREATING extends CreatableSecurity, READING, UPD
     @Override
     public READING save(CREATING creating) {
         Context context = providingContext.supply();
-        creating.setUser(context.getUsername());
-        creating.setGroup(context.getRole());
+        creating.setOwner(context.getOwner());
+        creating.setGroup(context.getGroup());
         creating.setPermission((short) 1700);
         return super.save(creating);
     }
