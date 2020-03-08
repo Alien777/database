@@ -17,7 +17,7 @@ import pl.lasota.tool.sr.repository.update.specification.SpecificationUpdate;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-public class EntityRepository<MODEL extends EntityBase>
+public class RepositoryAdapter<MODEL extends BasicEntity>
         implements CrudRepository<MODEL>,
         SearchRepository<MODEL>,
         UpdateRepository<MODEL>,
@@ -28,7 +28,7 @@ public class EntityRepository<MODEL extends EntityBase>
     private final CrudRepository<MODEL> crudRepository;
     private final UpdateRepository<MODEL> updateRepository;
 
-    public EntityRepository(EntityManager em) {
+    public RepositoryAdapter(EntityManager em) {
         entityManagerThreadLocal.set(em);
         deleteRepository = new SimpleDeleteRepository<>(entityManagerThreadLocal.get());
         searchRepository = new SimpleSearchRepository<>(entityManagerThreadLocal.get());
@@ -79,6 +79,5 @@ public class EntityRepository<MODEL extends EntityBase>
         crudRepository.modelClass(modelClass);
         updateRepository.modelClass(modelClass);
     }
-
 
 }

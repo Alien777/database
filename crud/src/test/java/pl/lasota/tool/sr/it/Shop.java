@@ -4,8 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.lasota.tool.sr.mapping.NotUpdating;
-import pl.lasota.tool.sr.repository.EntityBase;
-import pl.lasota.tool.sr.security.EntitySecurity;
+import pl.lasota.tool.sr.repository.BasicEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,7 +13,7 @@ import javax.persistence.Entity;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Shop extends EntityBase {
+public class Shop extends BasicEntity {
 
     @Column
     private String name;

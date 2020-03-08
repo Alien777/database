@@ -11,6 +11,7 @@ import pl.lasota.tool.sr.helper.Entit;
 import pl.lasota.tool.sr.mapping.DozerMapper;
 import pl.lasota.tool.sr.mapping.DozerSameObject;
 import pl.lasota.tool.sr.repository.crud.SimpleCrudRepository;
+import pl.lasota.tool.sr.security.Entitlement;
 import pl.lasota.tool.sr.security.SpecialPermission;
 
 import java.util.HashSet;
@@ -133,14 +134,18 @@ public class CrudActionTest {
         toUpdate.setId(3L);
         HashSet<SpecialPermission> toUpdateSpecialPermissions = new HashSet<>();
         toUpdateSpecialPermissions.add(new SpecialPermission("role", (short) 4));
-        toUpdate.setSpecialPermissions(toUpdateSpecialPermissions);
+        Entitlement entitlement = new Entitlement();
+        entitlement.setSpecialPermissions(toUpdateSpecialPermissions);
+        toUpdate.setEntitlement(entitlement);
 
         Entit toOld = new Entit();
         toOld.setId(1L);
         toOld.setColor("STARY  KOLOR");
         HashSet<SpecialPermission> toOldSpecialPermissions = new HashSet<>();
         toOldSpecialPermissions.add(new SpecialPermission("stary_role", (short) 5));
-        toOld.setSpecialPermissions(toOldSpecialPermissions);
+        entitlement = new Entitlement();
+        entitlement.setSpecialPermissions(toOldSpecialPermissions);
+        toOld.setEntitlement(entitlement);
 
 
         DozerSameObject<Entit> object = new DozerSameObject<>(Entit.class);
@@ -148,12 +153,12 @@ public class CrudActionTest {
 
         assertThat(toOld.getColor()).isEqualTo("NOWY KOLOR");
         assertThat(toOld.getId()).isEqualTo(1L);
-        assertThat(toOld.getSpecialPermissions())
+        assertThat(toOld.getEntitlement().getSpecialPermissions())
                 .hasSize(1)
                 .extracting((Function<SpecialPermission, String>) SpecialPermission::getPrivileged)
                 .contains("stary_role");
 
-        assertThat(toOld.getSpecialPermissions())
+        assertThat(toOld.getEntitlement().getSpecialPermissions())
                 .hasSize(1)
                 .extracting((Function<SpecialPermission, Short>) SpecialPermission::getPermission)
                 .contains((short) 5);
@@ -169,12 +174,12 @@ public class CrudActionTest {
 
         assertThat(argument.getValue().getColor()).isEqualTo("NOWY KOLOR");
         assertThat(argument.getValue().getId()).isEqualTo(1L);
-        assertThat(toOld.getSpecialPermissions())
+        assertThat(toOld.getEntitlement().getSpecialPermissions())
                 .hasSize(1)
                 .extracting((Function<SpecialPermission, String>) SpecialPermission::getPrivileged)
                 .contains("stary_role");
 
-        assertThat(toOld.getSpecialPermissions())
+        assertThat(toOld.getEntitlement().getSpecialPermissions())
                 .hasSize(1)
                 .extracting((Function<SpecialPermission, Short>) SpecialPermission::getPermission)
                 .contains((short) 5);

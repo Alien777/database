@@ -6,7 +6,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-public class CommonSpecification<MODEL extends EntityBase> implements Specification<MODEL> {
+public class CommonSpecification<MODEL extends BasicEntity> implements Specification<MODEL> {
 
     private final Predicatable predicatable;
 

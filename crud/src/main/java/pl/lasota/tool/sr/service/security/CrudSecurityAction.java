@@ -4,13 +4,16 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.sr.mapping.DozerMapper;
 import pl.lasota.tool.sr.mapping.Mapping;
 import pl.lasota.tool.sr.repository.crud.CrudRepository;
-import pl.lasota.tool.sr.security.CreatableSecurity;
-import pl.lasota.tool.sr.security.EntitySecurity;
+import pl.lasota.tool.sr.security.ProtectedEntity;
+import pl.lasota.tool.sr.security.Entitlement;
+import pl.lasota.tool.sr.security.SecurityProvider;
 import pl.lasota.tool.sr.service.base.Crud;
 import pl.lasota.tool.sr.service.base.CrudAction;
 
+import java.util.HashSet;
+
 @Transactional(readOnly = true)
-public class CrudSecurityAction<CREATING extends CreatableSecurity, READING, UPDATING, MODEL extends EntitySecurity>
+public class CrudSecurityAction<CREATING extends SecurityProvider, READING, UPDATING, MODEL extends ProtectedEntity>
         extends CrudAction<CREATING, READING, UPDATING, MODEL> {
 
     private final Crud<MODEL, MODEL, MODEL> helper;
@@ -39,12 +42,21 @@ public class CrudSecurityAction<CREATING extends CreatableSecurity, READING, UPD
     @Transactional
     @Override
     public READING save(CREATING creating) {
-        Context context = providingContext.supply();
-        creating.setOwner(context.getOwner());
-        creating.setGroup(context.getGroup());
-        creating.setPermission((short) 1700);
+        throw new UnsupportedOperationException("This operation you can execute only on base Service");
+    }
+
+    @Transactional
+    public READING save(CREATING creating, SecureInit secureInit) {
+        Entitlement entitlement = new Entitlement();
+        entitlement.setOwner(secureInit.getOwner());
+        entitlement.setGroup(secureInit.getGroup());
+        entitlement.setPermission((short) 1700);
+        entitlement.setSpecialPermissions(new HashSet<>(secureInit.getPrivilege()));
+        creating.setEntitlement(entitlement);
+
         return super.save(creating);
     }
+
 
     @Override
     public READING get(Long id) {
@@ -70,15 +82,15 @@ public class CrudSecurityAction<CREATING extends CreatableSecurity, READING, UPD
     }
 
 
-    private boolean canRead(EntitySecurity objectSecurity) {
-        return providingPrivilege.canRead(objectSecurity, providingContext.supply());
+    private boolean canRead(ProtectedEntity objectSecurity) {
+        return providingPrivilege.canRead(objectSecurity.getEntitlement(), providingContext.supply());
     }
 
-    private boolean canDelete(EntitySecurity objectSecurity) {
-        return providingPrivilege.canDelete(objectSecurity, providingContext.supply());
+    private boolean canDelete(ProtectedEntity objectSecurity) {
+        return providingPrivilege.canDelete(objectSecurity.getEntitlement(), providingContext.supply());
     }
 
-    private boolean canUpdate(EntitySecurity objectSecurity) {
-        return providingPrivilege.canUpdate(objectSecurity, providingContext.supply());
+    private boolean canUpdate(ProtectedEntity objectSecurity) {
+        return providingPrivilege.canUpdate(objectSecurity.getEntitlement(), providingContext.supply());
     }
 }

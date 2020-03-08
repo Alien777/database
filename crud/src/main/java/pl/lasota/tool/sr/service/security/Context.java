@@ -11,12 +11,18 @@ public final class Context {
     public final List<String> privilege;
 
     public Context(String owner, String group) {
-        this(owner, group, null);
+        this(owner, group, new LinkedList<>());
     }
 
     public Context(String owner, String group, List<String> privilege) {
         this.owner = owner;
         this.group = group;
         this.privilege = privilege;
+    }
+
+    public Context(String owner, String group, String... privilege) {
+        this.owner = owner;
+        this.group = group;
+        this.privilege = Arrays.asList(privilege);
     }
 }

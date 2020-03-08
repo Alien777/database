@@ -1,7 +1,7 @@
 package pl.lasota.tool.sr.service.security;
 
 import com.google.common.collect.ImmutableSet;
-import pl.lasota.tool.sr.security.CreatableSecurity;
+import pl.lasota.tool.sr.security.Entitling;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -29,18 +29,18 @@ public class SimpleProvidingPrivileges implements ProvidingPrivilege {
     }
 
     @Override
-    public boolean canRead(CreatableSecurity creatableSecurity, Context context) {
-        return isFit(creatableSecurity, context, read);
+    public boolean canRead(Entitling entitling, Context context) {
+        return isFit(entitling, context, read);
     }
 
     @Override
-    public boolean canUpdate(CreatableSecurity creatableSecurity, Context context) {
-        return isFit(creatableSecurity, context, update);
+    public boolean canUpdate(Entitling entitling, Context context) {
+        return isFit(entitling, context, update);
     }
 
     @Override
-    public boolean canDelete(CreatableSecurity creatableSecurity, Context context) {
-        return isFit(creatableSecurity, context, delete);
+    public boolean canDelete(Entitling entitling, Context context) {
+        return isFit(entitling, context, delete);
     }
 
     @Override
@@ -98,18 +98,18 @@ public class SimpleProvidingPrivileges implements ProvidingPrivilege {
         return Short.parseShort(numberS.split("(?<=.)")[position]);
     }
 
-    private boolean isFit(CreatableSecurity creatableSecurity, Context context, ImmutableSet<Short> permissions) {
-        short u = digit(creatableSecurity.getPermission(), 1);
-        short g = digit(creatableSecurity.getPermission(), 2);
-        short o = digit(creatableSecurity.getPermission(), 3);
-        if (context.getOwner().equals(creatableSecurity.getOwner()) && permissions.contains(u)) {
+    private boolean isFit(Entitling entitling, Context context, ImmutableSet<Short> permissions) {
+        short u = digit(entitling.getPermission(), 1);
+        short g = digit(entitling.getPermission(), 2);
+        short o = digit(entitling.getPermission(), 3);
+        if (context.getOwner().equals(entitling.getOwner()) && permissions.contains(u)) {
             return true;
-        } else if (context.getGroup().equals(creatableSecurity.getGroup()) && permissions.contains(g)) {
+        } else if (context.getGroup().equals(entitling.getGroup()) && permissions.contains(g)) {
             return true;
         } else if (permissions.contains(o)) {
             return true;
         } else {
-            return creatableSecurity
+            return entitling
                     .getSpecialPermissions()
                     .stream()
                     .anyMatch(sp -> context.getPrivilege().contains(sp.getPrivileged()) && permissions.contains(sp.getPermission()));

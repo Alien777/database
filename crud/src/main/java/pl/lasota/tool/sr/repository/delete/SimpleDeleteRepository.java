@@ -1,7 +1,7 @@
 package pl.lasota.tool.sr.repository.delete;
 
 import org.springframework.transaction.annotation.Transactional;
-import pl.lasota.tool.sr.repository.EntityBase;
+import pl.lasota.tool.sr.repository.BasicEntity;
 import pl.lasota.tool.sr.repository.delete.specification.SpecificationDelete;
 
 import javax.persistence.EntityManager;
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 
 @Transactional(readOnly = true)
-public class SimpleDeleteRepository<MODEL extends EntityBase> implements DeleteRepository<MODEL> {
+public class SimpleDeleteRepository<MODEL extends BasicEntity> implements DeleteRepository<MODEL> {
 
     private final EntityManager em;
     private Class<MODEL> modelClass;
@@ -41,7 +41,7 @@ public class SimpleDeleteRepository<MODEL extends EntityBase> implements DeleteR
         criteriaDelete.where(predicateUpdate);
         em.createQuery(criteriaDelete).executeUpdate();
 
-        return resultList.stream().map(EntityBase::getId).collect(Collectors.toList());
+        return resultList.stream().map(BasicEntity::getId).collect(Collectors.toList());
     }
 
     @Override

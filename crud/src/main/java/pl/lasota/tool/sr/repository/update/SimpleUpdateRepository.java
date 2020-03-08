@@ -1,7 +1,7 @@
 package pl.lasota.tool.sr.repository.update;
 
 import org.springframework.transaction.annotation.Transactional;
-import pl.lasota.tool.sr.repository.EntityBase;
+import pl.lasota.tool.sr.repository.BasicEntity;
 import pl.lasota.tool.sr.repository.update.specification.SpecificationUpdate;
 
 import javax.persistence.EntityManager;
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 
 @Transactional(readOnly = true)
-public class SimpleUpdateRepository<MODEL extends EntityBase> implements UpdateRepository<MODEL> {
+public class SimpleUpdateRepository<MODEL extends BasicEntity> implements UpdateRepository<MODEL> {
 
     private final EntityManager em;
     private Class<MODEL> modelClass;
@@ -34,7 +34,7 @@ public class SimpleUpdateRepository<MODEL extends EntityBase> implements UpdateR
         List<Long> collect = em.createQuery(query)
                 .getResultList()
                 .stream()
-                .map(EntityBase::getId)
+                .map(BasicEntity::getId)
                 .collect(Collectors.toList());
 
         CriteriaUpdate<MODEL> update = cb.createCriteriaUpdate(modelClass);

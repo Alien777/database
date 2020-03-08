@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
-import pl.lasota.tool.sr.repository.EntityBase;
+import pl.lasota.tool.sr.repository.BasicEntity;
 import pl.lasota.tool.sr.repository.search.specification.SpecificationQuery;
 
 import javax.persistence.EntityManager;
@@ -16,7 +16,7 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Transactional(readOnly = true)
-public class SimpleSearchRepository<MODEL extends EntityBase> implements SearchRepository<MODEL> {
+public class SimpleSearchRepository<MODEL extends BasicEntity> implements SearchRepository<MODEL> {
 
     private final EntityManager em;
     protected Class<MODEL> modelClass;

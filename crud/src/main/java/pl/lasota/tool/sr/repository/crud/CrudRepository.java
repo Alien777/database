@@ -1,9 +1,9 @@
 package pl.lasota.tool.sr.repository.crud;
 
 import org.springframework.lang.Nullable;
-import pl.lasota.tool.sr.repository.EntityBase;
+import pl.lasota.tool.sr.repository.BasicEntity;
 import pl.lasota.tool.sr.repository.Repository;
-public interface CrudRepository<MODEL extends EntityBase> extends Repository<MODEL> {
+public interface CrudRepository<MODEL extends BasicEntity> extends Repository<MODEL> {
 
     MODEL save(@Nullable MODEL create);
 

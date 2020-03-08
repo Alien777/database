@@ -1,20 +1,16 @@
 package pl.lasota.tool.sr.service.base;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import pl.lasota.tool.sr.mapping.DozerMapper;
-import pl.lasota.tool.sr.mapping.DozerPageMapping;
 import pl.lasota.tool.sr.mapping.Mapping;
-import pl.lasota.tool.sr.repository.EntityBase;
-import pl.lasota.tool.sr.repository.EntityRepository;
+import pl.lasota.tool.sr.repository.BasicEntity;
+import pl.lasota.tool.sr.repository.RepositoryAdapter;
 import pl.lasota.tool.sr.repository.query.QueryCriteria;
 import pl.lasota.tool.sr.repository.query.QueryDelete;
 import pl.lasota.tool.sr.repository.query.QueryUpdate;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
-public class AllAction<CREATING, READING, UPDATING, MODEL extends EntityBase>
+public class AllAction<CREATING, READING, UPDATING, MODEL extends BasicEntity>
         implements Crud<CREATING, READING, UPDATING>,
         Delete, Search<READING>, Update {
 
@@ -23,16 +19,16 @@ public class AllAction<CREATING, READING, UPDATING, MODEL extends EntityBase>
     private final Crud<CREATING, READING, UPDATING> crud;
     private final Delete delete;
 
-    public AllAction(EntityRepository<MODEL> entityRepository,
+    public AllAction(RepositoryAdapter<MODEL> repositoryAdapter,
                      Mapping<Page<MODEL>, Page<READING>> search,
                      Mapping<CREATING, MODEL> creatingToModel,
                      Mapping<UPDATING, MODEL> updatingToModel,
                      Mapping<MODEL, READING> modelToReading, Class<MODEL> modelClass) {
 
-        this.search = new SearchAction<>(entityRepository, search, modelClass);
-        update = new UpdateAction<>(entityRepository, modelClass);
-        crud = new CrudAction<>(entityRepository, creatingToModel, updatingToModel, modelToReading, modelClass);
-        delete = new DeleteAction<>(entityRepository, modelClass);
+        this.search = new SearchAction<>(repositoryAdapter, search, modelClass);
+        update = new UpdateAction<>(repositoryAdapter, modelClass);
+        crud = new CrudAction<>(repositoryAdapter, creatingToModel, updatingToModel, modelToReading, modelClass);
+        delete = new DeleteAction<>(repositoryAdapter, modelClass);
     }
 
 

@@ -1,6 +1,6 @@
 package pl.lasota.tool.sr.service.base;
 
-import pl.lasota.tool.sr.repository.EntityBase;
+import pl.lasota.tool.sr.repository.BasicEntity;
 import pl.lasota.tool.sr.repository.Specification;
 import pl.lasota.tool.sr.repository.delete.DeleteRepository;
 import pl.lasota.tool.sr.repository.delete.specification.DeleteCriteriaSpecification;
@@ -9,7 +9,7 @@ import pl.lasota.tool.sr.repository.query.QueryDelete;
 
 import java.util.List;
 
-public class DeleteAction<MODEL extends EntityBase> implements Delete, SpecificationProvider<Specification<MODEL>, QueryDelete> {
+public class DeleteAction<MODEL extends BasicEntity> implements Delete, SpecificationProvider<Specification<MODEL>, QueryDelete> {
 
     private final DeleteRepository<MODEL> repository;
 

@@ -2,7 +2,7 @@ package pl.lasota.tool.sr.service.base;
 
 
 import org.springframework.transaction.annotation.Transactional;
-import pl.lasota.tool.sr.repository.EntityBase;
+import pl.lasota.tool.sr.repository.BasicEntity;
 import pl.lasota.tool.sr.repository.Specification;
 import pl.lasota.tool.sr.repository.query.QueryUpdate;
 import pl.lasota.tool.sr.repository.update.UpdateRepository;
@@ -11,7 +11,7 @@ import pl.lasota.tool.sr.repository.update.specification.UpdateCriteriaSpecifica
 
 import java.util.List;
 
-public class UpdateAction<MODEL extends EntityBase> implements Update, SpecificationProvider<Specification<MODEL>, QueryUpdate> {
+public class UpdateAction<MODEL extends BasicEntity> implements Update, SpecificationProvider<Specification<MODEL>, QueryUpdate> {
 
     private final UpdateRepository<MODEL> repository;
 

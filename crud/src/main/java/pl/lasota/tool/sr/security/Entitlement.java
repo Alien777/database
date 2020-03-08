@@ -2,22 +2,16 @@ package pl.lasota.tool.sr.security;
 
 import lombok.ToString;
 import pl.lasota.tool.sr.mapping.NotUpdating;
-import pl.lasota.tool.sr.repository.EntityBase;
+import pl.lasota.tool.sr.repository.BasicEntity;
 
 import javax.persistence.*;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @ToString(callSuper = true)
-public abstract class EntitySecurity extends EntityBase implements CreatableSecurity {
+public class Entitlement extends BasicEntity implements Entitling {
 
-    public static final String AUTHORIZATION_PRIVILEGED = "authorization.privileged";
-    public static final String AUTHORIZATION_PERMISSION = "authorization.permission";
-
-    public EntitySecurity() {
-    }
 
     @Column(nullable = false)
     @NotUpdating
@@ -50,13 +44,14 @@ public abstract class EntitySecurity extends EntityBase implements CreatableSecu
                 .map(access -> new SpecialPermission(access.getPrivileged(), access.getPermission())).collect(Collectors.toSet());
     }
 
-
+    @Override
     public String getOwner() {
         return owner;
     }
 
-    public void setOwner(String user) {
-        this.owner = user;
+    @Override
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
     @Override
@@ -85,7 +80,7 @@ public abstract class EntitySecurity extends EntityBase implements CreatableSecu
     }
 
     @Override
-    public void setSpecialPermissions(Set<SpecialPermission> specialPermission) {
-        this.specialPermissions = specialPermission;
+    public void setSpecialPermissions(Set<SpecialPermission> specialPermissions) {
+        this.specialPermissions = specialPermissions;
     }
 }

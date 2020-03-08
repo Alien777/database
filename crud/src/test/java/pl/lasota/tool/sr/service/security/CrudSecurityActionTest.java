@@ -7,6 +7,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import pl.lasota.tool.sr.helper.Entit;
 import pl.lasota.tool.sr.mapping.DozerMapper;
 import pl.lasota.tool.sr.repository.crud.CrudRepository;
+import pl.lasota.tool.sr.security.Entitlement;
 import pl.lasota.tool.sr.security.SpecialPermission;
 
 import java.util.HashSet;
@@ -29,7 +30,7 @@ public class CrudSecurityActionTest {
     public void saveWithPrivilege() {
         ProvidingContext providingContext = () -> {
             List<String> stringList = new LinkedList<>();
-            return new Context("admin", "ADMIN", stringList);
+            return new Context("admindsadsada", "ADMINdsadsa", stringList);
         };
         CrudRepository<Entit> repo = (CrudRepository<Entit>) Mockito.mock(CrudRepository.class);
 
@@ -46,13 +47,13 @@ public class CrudSecurityActionTest {
 
         Entit toSave = new Entit();
         toSave.setColor(COLOR);
-        crud.save(toSave);
+        crud.save(toSave, new SecureInit("ADMIN", "admin"));
 
         assertThat(toSave).matches(e -> e.getColor().equals(COLOR)
-                && e.getGroup().equals("ADMIN")
-                && e.getOwner().equals("admin")
-                && e.getPermission() == (short) 1700
-                && e.getSpecialPermissions() == null);
+                && e.getEntitlement().getGroup().equals("admin")
+                && e.getEntitlement().getOwner().equals("ADMIN")
+                && e.getEntitlement().getPermission() == (short) 1700
+                && e.getEntitlement().getSpecialPermissions().isEmpty());
     }
 
     @Test
@@ -219,12 +220,13 @@ public class CrudSecurityActionTest {
         when(repo.update(Mockito.any(Entit.class))).thenReturn(Mockito.any(Entit.class));
 
         Entit tuUpdate = new Entit();
-        tuUpdate.setPermission((short) 666);
+        tuUpdate.setEntitlement(new Entitlement());
+        tuUpdate.getEntitlement().setPermission((short) 666);
         tuUpdate.setColor("WHITE");
-        tuUpdate.setGroup("AAAAAAAAAAAAAAAAAA");
+        tuUpdate.getEntitlement().setGroup("AAAAAAAAAAAAAAAAAA");
         Entit entit = crud.update(1L, tuUpdate);
 
-        assertThat(entit).isNotNull().matches(e -> e.getPermission() == 1170);
+        assertThat(entit).isNotNull().matches(e -> e.getEntitlement().getPermission() == 1170);
 
     }
 
@@ -260,12 +262,12 @@ public class CrudSecurityActionTest {
 //    @Test
 //    public void updateIfDifferentPrivileges() {
 //
-//        Entit entit = createEntity(Accessible::update, "admin");
+//        Entitling entit = createEntity(Accessible::update, "admin");
 //        when(crudAction.update(1L, entit)).thenReturn(entit);
 //        when(crudAction.get(Mockito.anyLong())).thenReturn(entit);
 //
 //
-//        Entit update = crudSecurityActionService.update(1L, entit, "admin");
+//        Entitling update = crudSecurityActionService.update(1L, entit, "admin");
 //        assertThat(update).isNotNull();
 //
 //
@@ -280,22 +282,23 @@ public class CrudSecurityActionTest {
 
     private Entit createEntity(ConfigurationAccessible configurationAccessible, String privilege, String username, String group, Short priv) {
         Entit entit = new Entit();
+        entit.setEntitlement(new Entitlement());
         entit.setColor(COLOR);
         if (privilege != null) {
             Set<SpecialPermission> specialPermissions = new HashSet<>();
             short privilegeRud = providingPrivilege.create(configurationAccessible);
             SpecialPermission specialPermission = new SpecialPermission(privilege, privilegeRud);
             specialPermissions.add(specialPermission);
-            entit.setSpecialPermissions(specialPermissions);
+            entit.getEntitlement().setSpecialPermissions(specialPermissions);
         }
         if (username != null)
-            entit.setOwner(username);
+            entit.getEntitlement().setOwner(username);
 
         if (group != null)
-            entit.setGroup(group);
+            entit.getEntitlement().setGroup(group);
 
         if (priv != null)
-            entit.setPermission(priv);
+            entit.getEntitlement().setPermission(priv);
 
         return entit;
     }

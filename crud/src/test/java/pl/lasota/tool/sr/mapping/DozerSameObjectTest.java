@@ -4,6 +4,7 @@ import org.junit.Test;
 import pl.lasota.tool.sr.helper.Entit;
 import pl.lasota.tool.sr.helper.ObjectTest;
 import pl.lasota.tool.sr.helper.TestNotMapping;
+import pl.lasota.tool.sr.security.Entitlement;
 import pl.lasota.tool.sr.security.SpecialPermission;
 
 import java.util.HashSet;
@@ -32,7 +33,9 @@ public class DozerSameObjectTest {
         toUpdate.setId(1L);
         HashSet<SpecialPermission> toUpdateSpecialPermissions = new HashSet<>();
         toUpdateSpecialPermissions.add(new SpecialPermission("role", (short) 4));
-        toUpdate.setSpecialPermissions(toUpdateSpecialPermissions);
+        Entitlement entitlement = new Entitlement();
+        entitlement.setSpecialPermissions(toUpdateSpecialPermissions);
+        toUpdate.setEntitlement(entitlement);
 
 
         Entit toOld = new Entit();
@@ -40,7 +43,9 @@ public class DozerSameObjectTest {
         toOld.setColor("STARY  KOLOR");
         HashSet<SpecialPermission> toOldSpecialPermissions = new HashSet<>();
         toOldSpecialPermissions.add(new SpecialPermission("stary_role", (short) 5));
-        toOld.setSpecialPermissions(toOldSpecialPermissions);
+        entitlement = new Entitlement();
+        entitlement.setSpecialPermissions(toOldSpecialPermissions);
+        toOld.setEntitlement(entitlement);
 
 
         DozerSameObject<Entit> object = new DozerSameObject<>(Entit.class);
@@ -49,12 +54,12 @@ public class DozerSameObjectTest {
         assertThat(toOld.getColor()).isEqualTo("NOWY KOLOR");
         assertThat(toOld.getId()).isEqualTo(2L);
 
-        assertThat(toOld.getSpecialPermissions())
+        assertThat(toOld.getEntitlement().getSpecialPermissions())
                 .hasSize(1)
                 .extracting((Function<SpecialPermission, String>) SpecialPermission::getPrivileged)
                 .contains("stary_role");
 
-        assertThat(toOld.getSpecialPermissions())
+        assertThat(toOld.getEntitlement().getSpecialPermissions())
                 .hasSize(1)
                 .extracting((Function<SpecialPermission, Short>) SpecialPermission::getPermission)
                 .contains((short) 5);

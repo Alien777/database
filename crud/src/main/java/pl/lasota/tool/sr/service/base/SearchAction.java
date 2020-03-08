@@ -1,20 +1,16 @@
 package pl.lasota.tool.sr.service.base;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.sr.mapping.Mapping;
-import pl.lasota.tool.sr.repository.EntityBase;
-import pl.lasota.tool.sr.repository.Specification;
+import pl.lasota.tool.sr.repository.BasicEntity;
 import pl.lasota.tool.sr.repository.query.QueryCriteria;
 import pl.lasota.tool.sr.repository.search.SearchRepository;
 import pl.lasota.tool.sr.repository.search.specification.SearchCriteriaSpecification;
 import pl.lasota.tool.sr.repository.search.specification.SpecificationQuery;
 
-import java.util.List;
-
 @Transactional(readOnly = true)
-public class SearchAction<READING, MODEL extends EntityBase> implements Search<READING>,
+public class SearchAction<READING, MODEL extends BasicEntity> implements Search<READING>,
         SpecificationProvider<SpecificationQuery<MODEL>, QueryCriteria> {
 
     private final SearchRepository<MODEL> repository;

@@ -1,6 +1,6 @@
 package pl.lasota.tool.sr.service.security;
 
-import pl.lasota.tool.sr.security.CreatableSecurity;
+import pl.lasota.tool.sr.security.Entitling;
 
 public interface ProvidingPrivilege {
 
@@ -10,11 +10,11 @@ public interface ProvidingPrivilege {
 
     Short[] update();
 
-    boolean canRead(CreatableSecurity creatableSecurity, Context context);
+    boolean canRead(Entitling entitling, Context context);
 
-    boolean canUpdate(CreatableSecurity creatableSecurity, Context context);
+    boolean canUpdate(Entitling entitling, Context context);
 
-    boolean canDelete(CreatableSecurity creatableSecurity, Context context);
+    boolean canDelete(Entitling entitling, Context context);
 
     Short create(ConfigurationAccessible configurationAccessible);
 

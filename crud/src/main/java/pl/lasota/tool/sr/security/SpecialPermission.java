@@ -1,18 +1,14 @@
 package pl.lasota.tool.sr.security;
 
 import lombok.ToString;
+import pl.lasota.tool.sr.repository.BasicEntity;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @ToString(callSuper = true)
-public class SpecialPermission {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id", unique = true, nullable = false)
-    private long id;
+public class SpecialPermission extends BasicEntity {
 
     @Column(nullable = false)
     private String privileged;
@@ -29,14 +25,6 @@ public class SpecialPermission {
         this.permission = permission;
     }
 
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getPrivileged() {
         return privileged;

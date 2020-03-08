@@ -9,7 +9,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lasota.tool.sr.mapping.DozerMapper;
 import pl.lasota.tool.sr.mapping.DozerPageMapping;
-import pl.lasota.tool.sr.repository.EntityRepository;
+import pl.lasota.tool.sr.repository.RepositoryAdapter;
 import pl.lasota.tool.sr.repository.query.CriteriaBuilderImpl;
 import pl.lasota.tool.sr.repository.query.Predicatable;
 import pl.lasota.tool.sr.repository.query.sort.Sortable;
@@ -34,7 +34,7 @@ class AllActionTestIT {
     @Test
     @Transactional
     void crud() {
-        AllAction<Shop, Shop, Shop, Shop> entityAll = new AllAction<>(new EntityRepository<>(em),
+        AllAction<Shop, Shop, Shop, Shop> entityAll = new AllAction<>(new RepositoryAdapter<>(em),
                 new DozerPageMapping<>(Shop.class),
                 new DozerMapper<>(Shop.class),
                 new DozerMapper<>(Shop.class),

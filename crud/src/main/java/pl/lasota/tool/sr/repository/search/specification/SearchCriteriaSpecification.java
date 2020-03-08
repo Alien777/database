@@ -1,13 +1,13 @@
 package pl.lasota.tool.sr.repository.search.specification;
 
 import pl.lasota.tool.sr.repository.CommonSpecification;
-import pl.lasota.tool.sr.repository.EntityBase;
+import pl.lasota.tool.sr.repository.BasicEntity;
 import pl.lasota.tool.sr.repository.query.Predicatable;
 import pl.lasota.tool.sr.repository.query.sort.Sortable;
 
 import javax.persistence.criteria.*;
 
-public class SearchCriteriaSpecification<MODEL extends EntityBase>
+public class SearchCriteriaSpecification<MODEL extends BasicEntity>
         extends CommonSpecification<MODEL> implements SpecificationQuery<MODEL> {
 
 

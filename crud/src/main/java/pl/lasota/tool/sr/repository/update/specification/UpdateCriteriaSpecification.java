@@ -1,14 +1,14 @@
 package pl.lasota.tool.sr.repository.update.specification;
 
 import pl.lasota.tool.sr.repository.CommonSpecification;
-import pl.lasota.tool.sr.repository.EntityBase;
+import pl.lasota.tool.sr.repository.BasicEntity;
 import pl.lasota.tool.sr.repository.query.Predicatable;
 import pl.lasota.tool.sr.repository.query.Updatable;
 
 import javax.persistence.criteria.*;
 import java.util.Map;
 
-public class UpdateCriteriaSpecification<MODEL extends EntityBase> extends CommonSpecification<MODEL> implements SpecificationUpdate<MODEL> {
+public class UpdateCriteriaSpecification<MODEL extends BasicEntity> extends CommonSpecification<MODEL> implements SpecificationUpdate<MODEL> {
 
     private final Updatable updatable;
 

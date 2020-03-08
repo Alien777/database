@@ -3,7 +3,7 @@ package pl.lasota.tool.sr.security;
 import java.util.Set;
 
 
-public interface CreatableSecurity {
+public interface Entitling {
 
     Set<SpecialPermission> getSpecialPermissions();
 

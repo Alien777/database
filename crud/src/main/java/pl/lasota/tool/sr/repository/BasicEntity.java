@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @MappedSuperclass
 @ToString(callSuper = true)
-public abstract class EntityBase {
+public abstract class BasicEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -15,7 +15,7 @@ public abstract class EntityBase {
     @NotUpdating
     private Long id;
 
-    public EntityBase() {
+    public BasicEntity() {
     }
 
     public Long getId() {

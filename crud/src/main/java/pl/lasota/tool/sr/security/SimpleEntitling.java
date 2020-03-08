@@ -3,10 +3,10 @@ package pl.lasota.tool.sr.security;
 import java.util.Set;
 
 
-public class CreatorSecurity implements CreatableSecurity {
+public class SimpleEntitling implements Entitling {
 
     private Set<SpecialPermission> specialPermissions;
-    private String user;
+    private String owner;
     private String group;
     private Short permission;
 
@@ -19,11 +19,11 @@ public class CreatorSecurity implements CreatableSecurity {
     }
 
     public String getOwner() {
-        return user;
+        return owner;
     }
 
     public void setOwner(String owner) {
-        this.user = owner;
+        this.owner = owner;
     }
 
     public String getGroup() {

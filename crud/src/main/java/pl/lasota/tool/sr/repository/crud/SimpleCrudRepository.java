@@ -2,12 +2,12 @@ package pl.lasota.tool.sr.repository.crud;
 
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import pl.lasota.tool.sr.repository.EntityBase;
+import pl.lasota.tool.sr.repository.BasicEntity;
 
 import javax.persistence.EntityManager;
 
 @Transactional(readOnly = true)
-public class SimpleCrudRepository<MODEL extends EntityBase> implements CrudRepository<MODEL> {
+public class SimpleCrudRepository<MODEL extends BasicEntity> implements CrudRepository<MODEL> {
     private final EntityManager em;
     private Class<MODEL> modelClass;
 
