@@ -27,15 +27,14 @@ public class Entitlement extends BasicEntity implements Entitling {
 
     @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @NotUpdating
-    @JoinTable(name = "entity_authorization",
-            joinColumns = @JoinColumn(name = "entity_id"),
-            inverseJoinColumns = @JoinColumn(name = "authorization_id", unique = true)
+    @JoinTable(name = "entitlement_special_permission",
+            joinColumns = @JoinColumn(name = "entitlement_id"),
+            inverseJoinColumns = @JoinColumn(name = "special_permission_id", unique = true)
     )
     private Set<SpecialPermission> specialPermissions;
 
-
     public void copySet(Set<SpecialPermission> specialPermissions) {
-        this.specialPermissions = specialPermissions.stream()
+        this.specialPermissions=specialPermissions.stream()
                 .map(access -> new SpecialPermission(access.getPrivileged(), access.getPermission())).collect(Collectors.toSet());
     }
 

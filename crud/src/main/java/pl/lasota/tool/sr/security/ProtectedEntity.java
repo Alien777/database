@@ -5,6 +5,8 @@ import pl.lasota.tool.sr.mapping.NotUpdating;
 import pl.lasota.tool.sr.repository.BasicEntity;
 
 import javax.persistence.*;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -15,9 +17,10 @@ public abstract class ProtectedEntity extends BasicEntity implements SecurityPro
     }
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "permission_id", referencedColumnName = "id", updatable = false)
+    @JoinColumn(name = "entitlement_id", referencedColumnName = "id", updatable = false)
     @NotUpdating
-    private Entitlement entitlement;
+    private Entitlement entitlement = new Entitlement();
+
 
     public Entitlement getEntitlement() {
         return entitlement;
