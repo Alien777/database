@@ -17,7 +17,7 @@ public class Entitlement extends BasicEntity implements Entitling {
     @NotUpdating
     private String owner;
 
-    @Column(nullable = false, name = "\"group\"")
+    @Column(name = "\"group\"")
     @NotUpdating
     private String group;
 

@@ -79,7 +79,7 @@ public class SimpleProvidingPrivileges implements ProvidingPrivilege {
         if (userRud > 7 || groupRud > 7 || otherRud > 7) {
             throw new UnsupportedOperationException("Value >7 for user, group, other is too big");
         }
-        return (short)  (1000 + userRud * 100 + groupRud * 10 + otherRud);
+        return (short) (1000 + userRud * 100 + groupRud * 10 + otherRud);
     }
 
     private short createRud(List<Boolean> roles) {
@@ -104,16 +104,21 @@ public class SimpleProvidingPrivileges implements ProvidingPrivilege {
         short o = digit(entitling.getPermission(), 3);
         if (context.getOwner().equals(entitling.getOwner()) && permissions.contains(u)) {
             return true;
-        } else if (context.getGroup().equals(entitling.getGroup()) && permissions.contains(g)) {
+        } else if (entitling.getGroup() != null
+                && context.getGroup() != null
+                && context.getGroup().equals(entitling.getGroup())
+                && permissions.contains(g)) {
             return true;
         } else if (permissions.contains(o)) {
             return true;
-        } else {
+        } else if (entitling.getSpecialPermissions() != null && !entitling.getSpecialPermissions().isEmpty()) {
             return entitling
                     .getSpecialPermissions()
                     .stream()
                     .anyMatch(sp -> context.getPrivilege().contains(sp.getPrivileged()) && permissions.contains(sp.getPermission()));
         }
+
+        return false;
     }
 
     private static Accessible createAccessible(List<Boolean> roles) {

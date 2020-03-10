@@ -49,9 +49,14 @@ public class CrudSecurityAction<CREATING extends SecurityProvider, READING, UPDA
     public READING save(CREATING creating, SecureInit secureInit) {
         Entitlement entitlement = new Entitlement();
         entitlement.setOwner(secureInit.getOwner());
-        entitlement.setGroup(secureInit.getGroup());
+        if (secureInit.getGroup() != null) {
+            entitlement.setGroup(secureInit.getGroup());
+        }
+
+        if (secureInit.getPrivilege() != null) {
+            entitlement.setSpecialPermissions(new HashSet<>(secureInit.getPrivilege()));
+        }
         entitlement.setPermission((short) 1700);
-        entitlement.setSpecialPermissions(new HashSet<>(secureInit.getPrivilege()));
         creating.setEntitlement(entitlement);
 
         return super.save(creating);

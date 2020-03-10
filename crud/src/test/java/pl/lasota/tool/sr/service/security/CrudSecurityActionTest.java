@@ -53,7 +53,7 @@ public class CrudSecurityActionTest {
                 && e.getEntitlement().getGroup().equals("admin")
                 && e.getEntitlement().getOwner().equals("ADMIN")
                 && e.getEntitlement().getPermission() == (short) 1700
-                && e.getEntitlement().getSpecialPermissions().isEmpty());
+                && e.getEntitlement().getSpecialPermissions()==null);
     }
 
     @Test
