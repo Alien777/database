@@ -3,25 +3,37 @@ package pl.lasota.tool.sr.repository.query.field;
 import lombok.Getter;
 import lombok.ToString;
 import pl.lasota.tool.sr.repository.query.ComparisonOperator;
+import pl.lasota.tool.sr.repository.query.normalize.Normalizable;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 
 @ToString(callSuper = true)
 @Getter
 public class EqualField extends Field {
-    private Object value;
+    private final Object value;
+    private final Normalizable[] normalizable;
 
     public EqualField(String paths, Object value, ComparisonOperator comparisonOperator) {
         super(paths, comparisonOperator);
         this.value = value;
+        this.normalizable = null;
+    }
+
+    public EqualField(String paths, Object value, ComparisonOperator comparisonOperator, Normalizable... normalizable) {
+        super(paths, comparisonOperator);
+        this.value = value;
+        this.normalizable = normalizable;
     }
 
     @Override
-    public Predicate predicate(Class model, Root root, CriteriaBuilder criteriaBuilder) {
-        Path<Object> objectPath = generatePath(path, root, model);
+    public Predicate predicate(Class<?> model, Root<?> root, CriteriaBuilder criteriaBuilder) {
+        Expression<String> objectPath = generatePath(path, root, model);
+        if (normalizable != null) {
+            for (Normalizable n : normalizable) {
+                objectPath = n.normalize(objectPath, criteriaBuilder);
+            }
+        }
+
         if (comparisonOperator == ComparisonOperator.NOT_EQUAL) {
             return criteriaBuilder.notEqual(objectPath, value);
         }

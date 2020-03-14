@@ -19,6 +19,8 @@ public interface CriteriaBuilder {
 
     Field equals(String path, Object object);
 
+    <T extends String> Field equals(String path, T value, Normalizable... normalizable);
+
     Field notEquals(String path, Object object);
 
     Field lt(String path, Number number);
@@ -29,17 +31,17 @@ public interface CriteriaBuilder {
 
     Field ge(String path, Number number);
 
-    Field like(String path, String number);
+    Field like(String path, String value);
 
-    Field likeR(String path, String number);
+    Field likeR(String path, String value);
 
-    Field likeL(String path, String number);
+    Field likeL(String path, String value);
 
-    Field like(String path, String number, Normalizable... normalizable);
+    Field like(String path, String value, Normalizable... normalizable);
 
-    Field likeR(String path, String number, Normalizable... normalizable);
+    Field likeR(String path, String value, Normalizable... normalizable);
 
-    Field likeL(String path, String number, Normalizable... normalizable);
+    Field likeL(String path, String value, Normalizable... normalizable);
 
     Field range(String path, Number min, Number max);
 

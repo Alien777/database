@@ -9,31 +9,36 @@ import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
-public class MailMessage implements Message {
-
+public class MailMailSenderExecutor implements MailSenderExecutor {
 
     private final MailService mailService;
-    private MimeMessage message;
-    private String from;
+    private final String from;
+    private final Session session;
 
-    public MailMessage(MailService mailService, String from) {
+    public MailMailSenderExecutor(MailService mailService, String from) {
         this.mailService = mailService;
         this.from = from;
+        session = Session.getDefaultInstance(new Properties(), null);
     }
 
+    public MailMailSenderExecutor(MailService mailService, String from, Properties properties) {
+        this.mailService = mailService;
+        this.from = from;
+        session = Session.getDefaultInstance(new Properties(), null);
+    }
 
     @Override
-    public Message create(String to, String subject, String body) {
+    public boolean send(String to, String subject, String body) {
         try {
-            message = createMessage(to, subject, body);
+            return send(createMessage(to, subject, body)) != -1;
         } catch (MessagingException e) {
             e.printStackTrace();
         }
-        return this;
+        return false;
     }
 
     @Override
-    public Message create(String to, String subject, String body, List<Placeholder> placeholders) {
+    public boolean send(String to, String subject, String body, List<Placeholder> placeholders) {
         String tempBody = body;
         String tempSubject = subject;
 
@@ -42,25 +47,23 @@ public class MailMessage implements Message {
             tempBody = tempBody.replaceAll(Pattern.quote(placeholder.getKey()), placeholder.getValue());
         }
 
-
-        return create(to, tempSubject, tempBody);
+        return send(to, tempSubject, tempBody);
     }
 
-    @Override
-    public int send() {
+
+    private int send(MimeMessage mimeMessage) {
         int send = -1;
         try {
-            send = mailService.send(message);
+            send = mailService.send(mimeMessage);
         } catch (IOException | MessagingException e) {
             e.printStackTrace();
         }
-
         return send;
     }
 
     private MimeMessage createMessage(String to, String subject, String body) throws MessagingException {
-        Session session = Session.getDefaultInstance(new Properties(), null);
-        MimeMessage email = new MimeMessage(session);
+
+        MimeMessage email = new MimeMessage();
         email.setFrom(new InternetAddress(from));
         email.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(to));
         email.setSubject(subject, "utf-8");

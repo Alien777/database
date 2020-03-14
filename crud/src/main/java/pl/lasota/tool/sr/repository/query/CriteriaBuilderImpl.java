@@ -72,6 +72,11 @@ public class CriteriaBuilderImpl implements BuilderQuery, CriteriaBuilder {
     }
 
     @Override
+    public <T extends String> Field equals(String path, T value, Normalizable... normalizable) {
+        return new EqualField(path, value, ComparisonOperator.EQUAL,normalizable);
+    }
+
+    @Override
     public Field notEquals(String path, Object object) {
         return new EqualField(path, object, ComparisonOperator.NOT_EQUAL);
     }
