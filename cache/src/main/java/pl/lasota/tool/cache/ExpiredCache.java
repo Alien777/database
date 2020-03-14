@@ -10,7 +10,7 @@ public class ExpiredCache<K, V> implements Cache<K, V> {
     private final TimeUnit timeUnit;
     private final long maxLife;
 
-    ExpiredCache(long maxLife, TimeUnit timeUnit) {
+    public ExpiredCache(long maxLife, TimeUnit timeUnit) {
         this.maxLife = maxLife;
         this.timeUnit = timeUnit;
     }
