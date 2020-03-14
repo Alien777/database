@@ -1,6 +1,8 @@
 package pl.lasota.tool.email;
 
+import javax.mail.Authenticator;
 import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -9,22 +11,49 @@ import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
-public class MailMailSenderExecutor implements MailSenderExecutor {
+public class MailSenderExecutorImpl implements MailSenderExecutor {
 
     private final MailService mailService;
     private final String from;
     private final Session session;
 
-    public MailMailSenderExecutor(MailService mailService, String from) {
+    public MailSenderExecutorImpl(MailService mailService, String from) {
         this.mailService = mailService;
         this.from = from;
         session = Session.getDefaultInstance(new Properties(), null);
     }
 
-    public MailMailSenderExecutor(MailService mailService, String from, Properties properties) {
+    public MailSenderExecutorImpl(MailService mailService, String from, String host) {
         this.mailService = mailService;
         this.from = from;
-        session = Session.getDefaultInstance(new Properties(), null);
+        Properties prop = new Properties();
+        prop.put("mail.smtp.auth", false);
+        prop.put("mail.smtp.starttls.enable", "false");
+        prop.put("mail.smtp.host", host);
+        session = Session.getDefaultInstance(prop, null);
+    }
+
+    public MailSenderExecutorImpl(MailService mailService, String from,
+                                  String host,
+                                  int port,
+                                  String username,
+                                  String password) {
+        this.mailService = mailService;
+        this.from = from;
+
+        Properties prop = new Properties();
+        prop.put("mail.smtp.auth", true);
+        prop.put("mail.smtp.starttls.enable", "true");
+        prop.put("mail.smtp.host", host);
+        prop.put("mail.smtp.port", port);
+        prop.put("mail.smtp.ssl.trust", host);
+
+        session = Session.getInstance(prop, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
+        });
     }
 
     @Override
@@ -62,8 +91,7 @@ public class MailMailSenderExecutor implements MailSenderExecutor {
     }
 
     private MimeMessage createMessage(String to, String subject, String body) throws MessagingException {
-
-        MimeMessage email = new MimeMessage();
+        MimeMessage email = new MimeMessage(session);
         email.setFrom(new InternetAddress(from));
         email.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(to));
         email.setSubject(subject, "utf-8");
