@@ -1,8 +1,10 @@
 package pl.lasota.tool.sr.reflection;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.springframework.security.core.parameters.P;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -93,11 +95,12 @@ public final class UtilsReflections {
                             .collect(Collectors.toCollection(LinkedList::new)));
                 }
             }
-
-            collect.addAll(FieldUtils.getAllFieldsList(reflectionField.getField()
-                    .getType()).stream()
-                    .map(field -> new ReflectionField(reflectionField.getPath() + "." + field.getName(), field, reflectionField.getField().getType()))
-                    .collect(Collectors.toCollection(LinkedList::new)));
+            if (!reflectionField.getField().isAnnotationPresent(IgnoreMap.class)) {
+                collect.addAll(FieldUtils.getAllFieldsList(reflectionField.getField()
+                        .getType()).stream()
+                        .map(field -> new ReflectionField(reflectionField.getPath() + "." + field.getName(), field, reflectionField.getField().getType()))
+                        .collect(Collectors.toCollection(LinkedList::new)));
+            }
 
             collect.forEach(UtilsReflections::markerProjectClass);
 

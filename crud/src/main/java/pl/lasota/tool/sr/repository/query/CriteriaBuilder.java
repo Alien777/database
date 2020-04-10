@@ -60,6 +60,8 @@ public interface CriteriaBuilder {
 
     Normalizable accent();
 
+    SetField update(String path, Object object);
+
     Updatable set(SetField... setField);
 
 

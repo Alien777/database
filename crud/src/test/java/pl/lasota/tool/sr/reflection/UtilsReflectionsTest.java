@@ -15,7 +15,6 @@ public class UtilsReflectionsTest {
     @Test
     public void allExistingFieldInStructureClass() {
         List<FieldClass> allField = UtilsReflections.getAllField(Blog.class);
-        allField.forEach(System.out::println);
         assertThat(allField).isNotNull()
                 .hasSize(12)
                 .flatExtracting((Function<FieldClass, String>) FieldClass::getPath)
@@ -37,7 +36,6 @@ public class UtilsReflectionsTest {
     @Test
     public void allFieldWithAnnotation() {
         List<FieldClass> allField = getAllFieldWithAnnotation(Blog.class, TestAnnotation.class);
-        allField.forEach(System.out::println);
         assertThat(allField).isNotNull()
                 .hasSize(5)
                 .flatExtracting((Function<FieldClass, String>) FieldClass::getPath)
@@ -63,7 +61,6 @@ public class UtilsReflectionsTest {
     @Test
     public void allFieldWithoutAnnotation() {
         List<FieldClass> allField = getAllFieldWithoutAnnotation(Blog.class, TestAnnotation.class);
-        allField.forEach(System.out::println);
         assertThat(allField).isNotNull()
                 .hasSize(7)
                 .flatExtracting((Function<FieldClass, String>) FieldClass::getPath)

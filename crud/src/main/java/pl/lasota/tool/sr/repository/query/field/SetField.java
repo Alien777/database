@@ -5,7 +5,6 @@ import lombok.Getter;
 @Getter
 public class SetField {
 
-
     private final String path;
     private final Object value;
 

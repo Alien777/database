@@ -4,5 +4,4 @@ public interface SecurityProvider {
     Entitlement getEntitlement();
 
     void setEntitlement(Entitlement entitlement);
-
 }

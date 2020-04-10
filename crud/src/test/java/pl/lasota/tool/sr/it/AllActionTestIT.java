@@ -12,6 +12,8 @@ import pl.lasota.tool.sr.mapping.DozerPageMapping;
 import pl.lasota.tool.sr.repository.RepositoryAdapter;
 import pl.lasota.tool.sr.repository.query.CriteriaBuilderImpl;
 import pl.lasota.tool.sr.repository.query.Predicatable;
+import pl.lasota.tool.sr.repository.query.Updatable;
+import pl.lasota.tool.sr.repository.query.field.SetField;
 import pl.lasota.tool.sr.repository.query.sort.Sortable;
 import pl.lasota.tool.sr.service.base.AllAction;
 
@@ -150,14 +152,14 @@ class AllActionTestIT {
         assertThat(delete).hasSize(3);
     }
 
-//    @Transactional
-//    public void update(AllAction<Shop, Shop, Shop, Shop> allAction) {
-//
-//        CriteriaBuilderImpl criteria = CriteriaBuilderImpl.criteria();
-//        Predicatable root = criteria.root(criteria.and(criteria.range("value", 0, 2)));
-//        Updatable set = criteria.set(new SetField("name", "po zmianie"));
-//        List<Long> update = allAction.update(criteria.build(root, set));
-//        assertThat(update).hasSize(1);
-//    }
+    @Transactional
+    public void update(AllAction<Shop, Shop, Shop, Shop> allAction) {
+
+        CriteriaBuilderImpl criteria = CriteriaBuilderImpl.criteria();
+        Predicatable root = criteria.root(criteria.and(criteria.range("value", 0, 2)));
+        Updatable set = criteria.set(  );
+        List<Long> update = allAction.update(criteria.build(root, set));
+        assertThat(update).hasSize(1);
+    }
 
 }

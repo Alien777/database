@@ -73,7 +73,7 @@ public class CriteriaBuilderImpl implements BuilderQuery, CriteriaBuilder {
 
     @Override
     public <T extends String> Field equals(String path, T value, Normalizable... normalizable) {
-        return new EqualField(path, value, ComparisonOperator.EQUAL,normalizable);
+        return new EqualField(path, value, ComparisonOperator.EQUAL, normalizable);
     }
 
     @Override
@@ -176,6 +176,11 @@ public class CriteriaBuilderImpl implements BuilderQuery, CriteriaBuilder {
     @Override
     public Normalizable accent() {
         return new AcccentNormalizer();
+    }
+
+    @Override
+    public SetField update(String path, Object object) {
+        return new SetField(path, object);
     }
 
     @Override

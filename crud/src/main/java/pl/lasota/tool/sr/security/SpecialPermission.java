@@ -1,6 +1,7 @@
 package pl.lasota.tool.sr.security;
 
 import lombok.ToString;
+import pl.lasota.tool.sr.mapping.NotUpdating;
 import pl.lasota.tool.sr.repository.BasicEntity;
 
 import javax.persistence.*;
@@ -8,14 +9,20 @@ import java.util.Objects;
 
 @Entity
 @ToString(callSuper = true)
-public class SpecialPermission extends BasicEntity {
+public class SpecialPermission implements BasicEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "option_sequence")
+    @SequenceGenerator(name = "option_sequence", sequenceName = "special_permission_id_seq", allocationSize = 1)
+    @Column(unique = true, nullable = false)
+    @NotUpdating
+    private Long id;
 
     @Column(nullable = false)
     private String privileged;
 
     @Column(nullable = false)
     private short permission;
-
 
     public SpecialPermission() {
     }
@@ -43,6 +50,16 @@ public class SpecialPermission extends BasicEntity {
     }
 
     @Override
+    public Long getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -55,4 +72,5 @@ public class SpecialPermission extends BasicEntity {
     public int hashCode() {
         return Objects.hash(privileged, permission);
     }
+
 }

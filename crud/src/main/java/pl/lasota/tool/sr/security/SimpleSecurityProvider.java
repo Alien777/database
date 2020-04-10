@@ -1,6 +1,7 @@
 package pl.lasota.tool.sr.security;
 
 public class SimpleSecurityProvider implements SecurityProvider {
+
     private Entitlement entitlement;
 
     @Override

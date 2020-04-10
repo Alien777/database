@@ -58,13 +58,7 @@ public final class DozerSameObject<S_D> {
             }
         });
 
-        field.forEach((aClass, fieldClasses) -> {
-            System.out.println(aClass);
-            fieldClasses.forEach(System.out::println);
-        });
-
         mapper = DozerBeanMapperBuilder.create().withMappingBuilders(configs).build();
-
     }
 
 
