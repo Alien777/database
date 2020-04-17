@@ -12,10 +12,6 @@ import java.util.regex.Pattern;
 
 public class Common {
 
-    public final static Pattern NUMBER_PATTERN = Pattern.compile("-?\\d+([.|,]\\d+)?");
-    public static final String DOT_REGEX_SPLIT = "\\.";
-    public static final String JAVA_LANG_STRING = "java.lang.String";
-
     public <T> Path<T> generatePath(final String path, final Root<?> root, Class<?> aClass) {
         Path<T> main;
         List<FieldClass> paths = UtilsReflections.getStructureFieldByPath(aClass, path);
