@@ -10,7 +10,7 @@ import javax.persistence.criteria.*;
 @ToString(callSuper = true)
 @Getter
 public class EqualField extends Field {
-    private final Object value;
+    private Object value;
     private final Normalizable[] normalizable;
 
     public EqualField(String paths, Object value, ComparisonOperator comparisonOperator) {
@@ -28,9 +28,10 @@ public class EqualField extends Field {
     @Override
     public Predicate predicate(Class<?> model, Root<?> root, CriteriaBuilder criteriaBuilder) {
         Expression<String> objectPath = generatePath(path, root, model);
-        if (normalizable != null) {
+        if (normalizable != null && value instanceof String) {
             for (Normalizable n : normalizable) {
                 objectPath = n.normalize(objectPath, criteriaBuilder);
+                value = n.normalize((String) value);
             }
         }
 

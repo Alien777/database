@@ -12,6 +12,8 @@ import pl.lasota.tool.sr.repository.query.normalize.UpperCaseNormalizer;
 import pl.lasota.tool.sr.repository.query.sort.SimpleSort;
 import pl.lasota.tool.sr.repository.query.sort.Sortable;
 
+import java.util.Arrays;
+
 
 @ToString(callSuper = true)
 @Data
@@ -47,13 +49,13 @@ public class CriteriaBuilderImpl implements BuilderQuery, CriteriaBuilder {
     }
 
     @Override
-    public Predicatable and(Field... fields) {
-        return new Predicate(fields, Operator.AND);
+    public Predicatable and(Field... expression) {
+        return new Predicate(expression, Operator.AND);
     }
 
     @Override
-    public Predicatable or(Field... fields) {
-        return new Predicate(fields, Operator.OR);
+    public Predicatable or(Field... expression) {
+        return new Predicate(expression, Operator.OR);
     }
 
     @Override

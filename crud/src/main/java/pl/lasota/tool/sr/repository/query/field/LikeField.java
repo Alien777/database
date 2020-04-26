@@ -13,7 +13,7 @@ import javax.persistence.criteria.Root;
 @ToString(callSuper = true)
 @Getter
 public class LikeField extends Field {
-    private final String value;
+    private String value;
     private final Normalizable[] normalizable;
 
 
@@ -35,6 +35,7 @@ public class LikeField extends Field {
         if (normalizable != null) {
             for (Normalizable n : normalizable) {
                 objectPath = n.normalize(objectPath, criteriaBuilder);
+                value = n.normalize(value);
             }
         }
 

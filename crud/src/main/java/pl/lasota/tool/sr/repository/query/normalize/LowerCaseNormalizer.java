@@ -8,4 +8,9 @@ public class LowerCaseNormalizer implements Normalizable {
     public Expression<String> normalize(Expression<String> objectPath, CriteriaBuilder criteriaBuilder) {
         return criteriaBuilder.lower(objectPath);
     }
+
+    @Override
+    public String normalize(String value) {
+        return value.toLowerCase();
+    }
 }

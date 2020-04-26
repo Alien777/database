@@ -8,4 +8,9 @@ public class UpperCaseNormalizer implements Normalizable {
     public Expression<String> normalize(Expression<String> objectPath, CriteriaBuilder criteriaBuilder) {
         return criteriaBuilder.upper(objectPath);
     }
+
+    @Override
+    public String normalize(String value) {
+        return value.toUpperCase();
+    }
 }
