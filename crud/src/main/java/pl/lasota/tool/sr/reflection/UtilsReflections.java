@@ -3,6 +3,7 @@ package pl.lasota.tool.sr.reflection;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -82,15 +83,18 @@ public final class UtilsReflections {
             reflectionField.setCovered(true);
             LinkedList<ReflectionField> collect = new LinkedList<>();
 
-            Type genericFieldType = reflectionField.getField().getGenericType();
-            if (genericFieldType instanceof ParameterizedType) {
-                ParameterizedType aType = (ParameterizedType) genericFieldType;
-                Type[] fieldArgTypes = aType.getActualTypeArguments();
-                for (Type fieldArgType : fieldArgTypes) {
-                    Class<?> stringListClass = (Class<?>) aType.getActualTypeArguments()[0];
-                    collect.addAll(FieldUtils.getAllFieldsList((Class<?>) fieldArgType).stream()
-                            .map(field -> new ReflectionField(reflectionField.getPath() + "." + field.getName(), field, stringListClass))
-                            .collect(Collectors.toCollection(LinkedList::new)));
+            Field listMap = reflectionField.getField();
+            if (!listMap.isAnnotationPresent(IgnoreMap.class)) {
+                Type genericFieldType = listMap.getGenericType();
+                if (genericFieldType instanceof ParameterizedType) {
+                    ParameterizedType aType = (ParameterizedType) genericFieldType;
+                    Type[] fieldArgTypes = aType.getActualTypeArguments();
+                    for (Type fieldArgType : fieldArgTypes) {
+                        Class<?> stringListClass = (Class<?>) aType.getActualTypeArguments()[0];
+                        collect.addAll(FieldUtils.getAllFieldsList((Class<?>) fieldArgType).stream()
+                                .map(field -> new ReflectionField(reflectionField.getPath() + "." + field.getName(), field, stringListClass))
+                                .collect(Collectors.toCollection(LinkedList::new)));
+                    }
                 }
             }
             if (!reflectionField.getField().isAnnotationPresent(IgnoreMap.class)) {
