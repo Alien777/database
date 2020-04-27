@@ -42,9 +42,13 @@ public class SimpleSearchRepository<MODEL extends BasicEntity> implements Search
                 .setFirstResult(pageable.getPageSize() * pageable.getPageNumber())
                 .getResultList();
 
+        CriteriaBuilder qb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> cq = qb.createQuery(Long.class);
+        cq.select(qb.count(cq.from(modelClass)));
+        cq.where(predicate);
+        Long singleResult = em.createQuery(cq).getSingleResult();
 
-
-        return new PageImpl<>(resultList, pageable, resultList.size()+1);
+        return new PageImpl<>(resultList, pageable, singleResult);
     }
 
     @Override
