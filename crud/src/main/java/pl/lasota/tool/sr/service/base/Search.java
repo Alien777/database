@@ -7,4 +7,6 @@ public interface Search<READING> {
 
     Page<READING> find(QueryCriteria queryCriteria);
 
+    Page<READING> findCount(QueryCriteria queryCriteria);
+
 }

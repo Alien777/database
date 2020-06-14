@@ -63,8 +63,8 @@ public class RepositoryAdapter<MODEL extends BasicEntity>
     }
 
     @Override
-    public Page<MODEL> find(SpecificationQuery<MODEL> specification, Pageable pageable) {
-        return searchRepository.find(specification,pageable);
+    public Page<MODEL> find(SpecificationQuery<MODEL> specification, Pageable pageable, boolean count) {
+        return searchRepository.find(specification, pageable, count);
     }
 
     @Override
@@ -79,5 +79,6 @@ public class RepositoryAdapter<MODEL extends BasicEntity>
         crudRepository.modelClass(modelClass);
         updateRepository.modelClass(modelClass);
     }
+
 
 }

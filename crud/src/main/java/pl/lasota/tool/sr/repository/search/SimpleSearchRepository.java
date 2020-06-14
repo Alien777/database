@@ -27,7 +27,7 @@ public class SimpleSearchRepository<MODEL extends BasicEntity> implements Search
     }
 
     @Override
-    public Page<MODEL> find(SpecificationQuery<MODEL> specification, Pageable pageable) {
+    public Page<MODEL> find(SpecificationQuery<MODEL> specification, Pageable pageable, boolean count) {
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<MODEL> query = cb.createQuery(modelClass);
@@ -42,13 +42,15 @@ public class SimpleSearchRepository<MODEL extends BasicEntity> implements Search
                 .setFirstResult(pageable.getPageSize() * pageable.getPageNumber())
                 .getResultList();
 
-        CriteriaBuilder qb = em.getCriteriaBuilder();
-        CriteriaQuery<Long> cq = qb.createQuery(Long.class);
-        cq.select(qb.count(cq.from(modelClass)));
-        cq.where(predicate);
-        Long singleResult = em.createQuery(cq).getSingleResult();
-
-        return new PageImpl<>(resultList, pageable, singleResult);
+        if (count) {
+            CriteriaBuilder qb = em.getCriteriaBuilder();
+            CriteriaQuery<Long> cq = qb.createQuery(Long.class);
+            cq.select(qb.count(cq.from(modelClass)));
+            cq.where(predicate);
+            Long singleResult = em.createQuery(cq).getSingleResult();
+            return new PageImpl<>(resultList, pageable, singleResult);
+        }
+        return new PageImpl<>(resultList, pageable, resultList.size());
     }
 
     @Override

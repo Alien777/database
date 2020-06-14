@@ -60,4 +60,9 @@ public class AllNoMappingAction<MODEL extends BasicEntity>
     public Page<MODEL> find(QueryCriteria queryCriteria) {
         return search.find(queryCriteria);
     }
+
+    @Override
+    public Page<MODEL> findCount(QueryCriteria queryCriteria) {
+        return search.findCount(queryCriteria);
+    }
 }

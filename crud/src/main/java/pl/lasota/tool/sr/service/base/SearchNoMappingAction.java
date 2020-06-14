@@ -15,14 +15,19 @@ public class SearchNoMappingAction<MODEL extends BasicEntity> implements Search<
 
     private final SearchRepository<MODEL> repository;
 
-    public SearchNoMappingAction(SearchRepository<MODEL> repository,  Class<MODEL> modelClass) {
+    public SearchNoMappingAction(SearchRepository<MODEL> repository, Class<MODEL> modelClass) {
         this.repository = repository;
         repository.modelClass(modelClass);
     }
 
     @Override
     public Page<MODEL> find(QueryCriteria queryCriteria) {
-        return repository.find(providerSpecification(queryCriteria),queryCriteria.getPageable());
+        return repository.find(providerSpecification(queryCriteria), queryCriteria.getPageable(), false);
+    }
+
+    @Override
+    public Page<MODEL> findCount(QueryCriteria queryCriteria) {
+        return repository.find(providerSpecification(queryCriteria), queryCriteria.getPageable(), true);
     }
 
 

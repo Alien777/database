@@ -25,7 +25,13 @@ public class SearchAction<READING, MODEL extends BasicEntity> implements Search<
 
     @Override
     public Page<READING> find(QueryCriteria queryCriteria) {
-        Page<MODEL> models = repository.find(providerSpecification(queryCriteria),queryCriteria.getPageable());
+        Page<MODEL> models = repository.find(providerSpecification(queryCriteria), queryCriteria.getPageable(), false);
+        return mapping.mapper(models);
+    }
+
+    @Override
+    public Page<READING> findCount(QueryCriteria queryCriteria) {
+        Page<MODEL> models = repository.find(providerSpecification(queryCriteria), queryCriteria.getPageable(), true);
         return mapping.mapper(models);
     }
 

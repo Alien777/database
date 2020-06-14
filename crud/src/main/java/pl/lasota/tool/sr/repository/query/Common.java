@@ -3,6 +3,7 @@ package pl.lasota.tool.sr.repository.query;
 import pl.lasota.tool.sr.reflection.FieldClass;
 import pl.lasota.tool.sr.reflection.UtilsReflections;
 
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 import java.text.NumberFormat;
@@ -26,7 +27,7 @@ public class Common {
         for (int i = 1; i < paths.size(); i++) {
             FieldClass fieldClass1 = paths.get(i);
             if (fieldClass1.getTypeField() != null && isCollectionClass(fieldClass1.getTypeField().getTypeName())) {
-                main = ((Root<?>) (main)).join(fieldClass1.getName());
+                main = ((Root<?>) (main)).join(fieldClass1.getName(), JoinType.RIGHT);
             } else {
                 main = main.get(fieldClass1.getName());
             }

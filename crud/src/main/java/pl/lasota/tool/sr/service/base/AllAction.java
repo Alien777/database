@@ -66,4 +66,9 @@ public class AllAction<CREATING, READING, UPDATING, MODEL extends BasicEntity>
     public Page<READING> find(QueryCriteria queryCriteria) {
         return search.find(queryCriteria);
     }
+
+    @Override
+    public Page<READING> findCount(QueryCriteria queryCriteria) {
+        return search.findCount(queryCriteria);
+    }
 }
