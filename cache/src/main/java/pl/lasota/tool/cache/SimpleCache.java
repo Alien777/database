@@ -9,7 +9,7 @@ public class SimpleCache<K, V> implements Cache<K, V> {
 
     private final ConcurrentMap<K, V> cache;
 
-    SimpleCache(ConcurrentMap<K, V> cache) {
+    public SimpleCache(ConcurrentMap<K, V> cache) {
         this.cache = cache;
     }
 

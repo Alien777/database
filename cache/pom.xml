@@ -11,7 +11,7 @@
 
     <artifactId>cache</artifactId>
     <groupId>pl.lasota.tool.cache</groupId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <dependencies>
         <dependency>
