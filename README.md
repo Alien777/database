@@ -1,3 +1,3 @@
 # database syntax
 
-Module provide wrapper on JPA syntax.
+Module provide wrapper on Criteria API.
