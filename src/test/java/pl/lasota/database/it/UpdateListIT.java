@@ -1,15 +1,11 @@
 package pl.lasota.database.it;
 
-import org.junit.After;
 import org.junit.Ignore;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
-import org.springframework.test.context.event.annotation.AfterTestMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,8 +19,6 @@ import pl.lasota.database.repository.query.Updatable;
 import pl.lasota.database.service.base.AllAction;
 
 import javax.persistence.EntityManager;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
